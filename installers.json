@@ -1,0 +1,37 @@
+{
+    "categories": [
+        {
+            "display_name": "Web Servers",
+            "description": "Web Servers",
+            "scripts": [
+                {
+                    "display_name": "Nginx",
+                    "description": "Nginx",
+                    "script_name": "nginx.sh",
+                }
+            ]
+        },
+        {
+            "display_name": "Programming Languages",
+            "description": "Programming Languages",
+            "scripts": [
+                {
+                    "display_name": "PHP",
+                    "description": "PHP",
+                    "script_name": "php.sh",
+                }
+            ]
+        },
+        {
+            "display_name": "Relational Databases",
+            "description": "Relational Databases",
+            "scripts": [
+                {
+                    "display_name": "MySQL",
+                    "description": "MySQL",
+                    "script_name": "mysql.sh",
+                }
+            ]
+        }
+    ]
+}
