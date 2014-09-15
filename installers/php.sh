@@ -8,7 +8,7 @@ fi
 apt-get -y install php5 php5-cli php5-pgsql php5-mysql php5-curl php5-mcrypt php5-gd php5-imagick php5-fpm
 
 # Remove the default php-fpm pool.
-#rm -f /etc/php5/fpm/pool.d/www.conf
+mv -f /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf.orig
 
 # Create directory for logging.
 mkdir -p /var/log/php

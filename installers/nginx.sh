@@ -13,18 +13,17 @@ apt-get update
 
 apt-get -y install nginx
 
-# Disable and remove default site.
-#rm -f /etc/nginx/sites-enabled/default
-#rm -f /etc/nginx/sites-available/default
+# Disable the default site.
+rm -f /etc/nginx/sites-enabled/default
 
 # Create a location for site specific log files.
 mkdir -p /var/log/nginx
 
 # Copy nginx config template.
-#cp $INSTALLERS_DIR/../templates/nginx/nginx.conf /etc/nginx/nginx.conf
+cp $INSTALLERS_DIR/../templates/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Create a location for nginx configuration includes and copy include templates.
-#mkdir -p /etc/nginx/includes
-#cp $INSTALLERS_DIR/../templates/nginx/location.conf /etc/nginx/includes/location.conf
+mkdir -p /etc/nginx/includes
+cp $INSTALLERS_DIR/../templates/nginx/location.conf /etc/nginx/includes/location.conf
 
 touch /tmp/restart-nginx
