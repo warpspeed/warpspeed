@@ -5,14 +5,14 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ###############################################################################
 # Run installers.
 ###############################################################################
 
-source $SCRIPT_DIR/installers/nginx.sh
-source $SCRIPT_DIR/installers/php.sh
+source $SCRIPTS_ROOT/installers/nginx.sh
+source $SCRIPTS_ROOT/installers/php.sh
 #./installers/nodejs.sh
 #./installers/python.sh
 #./installers/ruby.sh

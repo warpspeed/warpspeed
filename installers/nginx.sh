@@ -5,7 +5,7 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+INSTALLERS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Install nginx ppa for more frequent updates.
 apt-add-repository -y ppa:nginx/stable
@@ -21,10 +21,10 @@ rm -f /etc/nginx/sites-available/default
 mkdir -p /var/log/nginx
 
 # Copy nginx config template.
-cp $SCRIPT_DIR/../templates/nginx/nginx.conf /etc/nginx/nginx.conf
+cp $INSTALLERS_DIR/../templates/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Create a location for nginx configuration includes and copy include templates.
 mkdir -p /etc/nginx/includes
-cp $SCRIPT_DIR/../templates/nginx/location.conf /etc/nginx/includes/location.conf
+cp $INSTALLERS_DIR/../templates/nginx/location.conf /etc/nginx/includes/location.conf
 
 touch /tmp/restart-nginx
