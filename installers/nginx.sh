@@ -14,8 +14,8 @@ apt-get update
 apt-get -y install nginx
 
 # Disable and remove default site.
-rm -f /etc/nginx/sites-enabled/default
-rm -f /etc/nginx/sites-available/default
+#rm -f /etc/nginx/sites-enabled/default
+#rm -f /etc/nginx/sites-available/default
 
 # Create a location for site specific log files.
 mkdir -p /var/log/nginx
