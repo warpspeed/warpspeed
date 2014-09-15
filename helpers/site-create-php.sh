@@ -22,16 +22,23 @@ fi
 
 echo "Creating site..."
 
+# Create the site directory.
 sudo -u $USER mkdir -p "/home/$USER/sites/$1"
 
+# Configure nginx to serve the new site.
 sudo cp $SCRIPT_DIR/../templates/nginx/site-php.conf /etc/nginx/sites-available/$1
 sudo sed -i "s/{{domain}}/$1/g" /etc/nginx/sites-available/$1
 sudo sed -i "s/{{user}}/$USER/g" /etc/nginx/sites-available/$1
 sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
 
+# Setup a site specific PHP-FPM pool.
 sudo cp $SCRIPT_DIR/../templates/php/www.conf /etc/php5/fpm/pool.d/$1.conf
 sudo sed -i "s/{{domain}}/$1/g" /etc/php5/fpm/pool.d/$1.conf
 sudo sed -i "s/{{user}}/$USER/g" /etc/php5/fpm/pool.d/$1.conf
+
+# Create directory for uploads and sessions.
+sudo mkdir -p /var/lib/php/{{domain}}
+sudo chown -R www-data:www-data /var/lib/php/{{domain}}
 
 # Create a git repo for push deploy unless we are on a vagrant box.
 if [ $USER != "vagrant" ]; then
@@ -41,6 +48,8 @@ if [ $USER != "vagrant" ]; then
 	cd "/home/$USER/repos/$1.git"
 	sudo -u $USER git init --bare
 	sudo -u $USER cp $SCRIPT_DIR/../templates/git/post-receive /home/$USER/repos/$1.git/hooks/post-receive
+	sudo sed -i "s/{{domain}}/$1/g" /home/$USER/repos/$1.git/hooks/post-receive
+	sudo sed -i "s/{{user}}/$USER/g" /home/$USER/repos/$1.git/hooks/post-receive
 	sudo chmod +x "/home/$USER/repos/$1.git/hooks/post-receive"
 
 	echo "Use: git remote add web ssh://$USER@$1/home/$user/repos/$1.git"

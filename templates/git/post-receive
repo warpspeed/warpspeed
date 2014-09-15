@@ -1,4 +1,5 @@
 #!/bin/sh
-GIT_WORK_TREE={{ www_home }}/{{ domain }}/
+
+GIT_WORK_TREE=/home/{{user}}/sites/{{domain}}/
 export GIT_WORK_TREE
 git checkout -f
