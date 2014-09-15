@@ -5,19 +5,21 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 ###############################################################################
 # Run installers.
 ###############################################################################
 
-./installers/nginx.sh
-./installers/php.sh
+source $DIR/installers/nginx.sh
+#./installers/php.sh
 #./installers/nodejs.sh
 #./installers/python.sh
 #./installers/ruby.sh
 #./installers/mongodb.sh
 #./installers/mysql.sh
-./installers/postgres.sh
-./installers/beanstalkd.sh
+#./installers/postgres.sh
+#./installers/beanstalkd.sh
 
 ###############################################################################
 # Cleanup, restart services, and show init info.
@@ -30,5 +32,3 @@ for service_name in $(ls /tmp/ | grep restart-* | cut -d- -f2-10); do
     service $service_name restart
     rm -f /tmp/restart-$service_name
 done
-
-exit 0

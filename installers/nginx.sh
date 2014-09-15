@@ -5,6 +5,8 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Install nginx ppa for more frequent updates.
 apt-add-repository -y ppa:nginx/stable
 apt-get update
@@ -19,12 +21,10 @@ rm -f /etc/nginx/sites-available/default
 mkdir -p /var/log/nginx
 
 # Copy nginx config template.
-cp ./templates/nginx/nginx.conf /etc/nginx/nginx.conf
+cp $DIR/../templates/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Create a location for nginx configuration includes and copy include templates.
 mkdir -p /etc/nginx/includes
-cp ./templates/nginx/location.conf /etc/nginx/includes/location.conf
+cp $DIR/../templates/nginx/location.conf /etc/nginx/includes/location.conf
 
 touch /tmp/restart-nginx
-
-exit 0
