@@ -23,14 +23,15 @@ fi
 echo "Creating site..."
 
 sudo -u $USER mkdir -p "/home/$USER/sites/$1"
-#chown -R $USER:$USER "/home/$USER/sites/$1"
 
 sudo cp $SCRIPT_DIR/../templates/nginx/site-php.conf /etc/nginx/sites-available/$1
+sudo sed -i "s/{{domain}}/$1/g" /etc/nginx/sites-available/$1
+sudo sed -i "s/{{user}}/$USER/g" /etc/nginx/sites-available/$1
 sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
 
 sudo cp $SCRIPT_DIR/../templates/php/www.conf /etc/php5/fpm/pool.d/$1.conf
-sed -i "s/{{domain}}/$1/g" /etc/php5/fpm/pool.d/$1.conf
-sed -i "s/{{user}}/$USER/g" /etc/php5/fpm/pool.d/$1.conf
+sudo sed -i "s/{{domain}}/$1/g" /etc/php5/fpm/pool.d/$1.conf
+sudo sed -i "s/{{user}}/$USER/g" /etc/php5/fpm/pool.d/$1.conf
 
 # Create a git repo for push deploy unless we are on a vagrant box.
 if [ $USER != "vagrant" ]; then
