@@ -20,7 +20,7 @@ apt-get -y install mysql-server
 php -v > /dev/null 2>&1
 PHP_INSTALLED=$?
 
-if [ PHP_INSTALLED -eq 0 ]; then
+if [ $PHP_INSTALLED -eq 0 ]; then
     apt-get -y install php5-mysql
     service php5-fpm restart
 fi
