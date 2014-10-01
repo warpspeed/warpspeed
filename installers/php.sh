@@ -32,4 +32,11 @@ cp $PHPINI $PHPINI.orig
 sed -i 's/^;date.timezone =.*/date.timezone = UTC/' $PHPINI
 sed -i 's@;error_log =.*@error_log = /var/log/php/error-cli.log@' $PHPINI
 
+# Ensure that mcrypt is enabled
+php5enmod mcrypt
+
+# Download and install composer globally
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+
 touch /tmp/restart-php5-fpm
