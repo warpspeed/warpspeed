@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-  echo "Usage: site-create-php <hostname>"
+  echo "Usage: site-create-php.sh hostname"
   exit 1
 fi
 
@@ -31,14 +31,15 @@ sudo sed -i "s/{{domain}}/$1/g" /etc/nginx/sites-available/$1
 sudo sed -i "s/{{user}}/$USER/g" /etc/nginx/sites-available/$1
 sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
 
-# Setup a site specific PHP-FPM pool.
+# Setup a site specific php-fpm pool.
 sudo cp $HELPERS_DIR/../templates/php/www.conf /etc/php5/fpm/pool.d/$1.conf
 sudo sed -i "s/{{domain}}/$1/g" /etc/php5/fpm/pool.d/$1.conf
 sudo sed -i "s/{{user}}/$USER/g" /etc/php5/fpm/pool.d/$1.conf
 
-# Create directory for uploads and sessions.
-sudo mkdir -p /var/lib/php/{{domain}}
-sudo chown -R www-data:www-data /var/lib/php/{{domain}}
+# Create site specific directories for uploads and sessions.
+sudo mkdir -p /var/lib/php/$1/upload
+sudo mkdir -p /var/lib/php/$1/session
+sudo chown -R www-data:www-data /var/lib/php/$1
 
 # Create a git repo for push deploy unless we are on a vagrant box.
 if [ $USER != "vagrant" ]; then

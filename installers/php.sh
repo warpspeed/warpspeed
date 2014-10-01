@@ -18,15 +18,17 @@ chown -R www-data:www-data /var/log/php
 mkdir -p /var/lib/php
 chown -R www-data:www-data /var/lib/php
 
-# Modify php ini settings for fpm.
+# Backup original and then modify php ini settings for fpm.
 PHPINI=/etc/php5/fpm/php.ini
+cp $PHPINI $PHPINI.orig
 sed -i 's/^display_errors = On/display_errors = Off/' $PHPINI
 sed -i 's/^expose_php = On/expose_php = Off/' $PHPINI
 sed -i 's/^;date.timezone =.*/date.timezone = UTC/' $PHPINI
 sed -i 's/^;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/' $PHPINI
 
-# Modify php ini settings for cli.
+# Backup original and then modify php ini settings for cli.
 PHPINI=/etc/php5/cli/php.ini
+cp $PHPINI $PHPINI.orig
 sed -i 's/^;date.timezone =.*/date.timezone = UTC/' $PHPINI
 sed -i 's@;error_log =.*@error_log = /var/log/php/error-cli.log@' $PHPINI
 

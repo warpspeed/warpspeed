@@ -19,7 +19,8 @@ rm -f /etc/nginx/sites-enabled/default
 # Create a location for site specific log files.
 mkdir -p /var/log/nginx
 
-# Copy nginx config template.
+# Backup original nginx config and use template version.
+mv -f /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
 cp $INSTALLERS_DIR/../templates/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Create a location for nginx configuration includes and copy include templates.
