@@ -11,14 +11,10 @@
 		#heading {
 			text-align: center;
 			padding: 40px;
-			background-color: rgb(31, 79, 105);
-			color: #FFF;
+			background-color: #9999cc;
 			font-size: 50px;
-		}
-		#main {
-			text-align: center;
-			padding: 40px;
-			font-size: 30px;
+			border-bottom: 1px solid #000;
+			margin-bottom: 20px;
 		}
 	</style>
 </head>
