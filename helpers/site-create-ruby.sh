@@ -28,7 +28,7 @@ sudo -u $USER mkdir -p "/home/$USER/sites/$1/public"
 sudo -u $USER mkdir -p "/home/$USER/sites/$1/tmp"
 
 # Configure nginx to serve the new site.
-sudo cp $HELPERS_DIR/../templates/nginx/site-python.conf /etc/nginx/sites-available/$1
+sudo cp $HELPERS_DIR/../templates/nginx/site-ruby.conf /etc/nginx/sites-available/$1
 sudo sed -i "s/{{domain}}/$1/g" /etc/nginx/sites-available/$1
 sudo sed -i "s/{{user}}/$USER/g" /etc/nginx/sites-available/$1
 sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
