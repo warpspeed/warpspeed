@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-  echo "Usage: site-delete <hostname>"
+  echo "Usage: $0 hostname"
   exit 1
 fi
 

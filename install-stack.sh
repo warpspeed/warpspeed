@@ -11,8 +11,9 @@ SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Run installers.
 ###############################################################################
 
-source $SCRIPTS_ROOT/installers/nginx.sh
 source $SCRIPTS_ROOT/installers/php.sh
+source $SCRIPTS_ROOT/installers/python.sh
+source $SCRIPTS_ROOT/installers/nginx-passenger.sh
 source $SCRIPTS_ROOT/installers/mysql.sh root
 source $SCRIPTS_ROOT/installers/postgres.sh
 

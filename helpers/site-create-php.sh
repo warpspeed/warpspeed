@@ -15,7 +15,7 @@ if [ -d "/home/vagrant" ]; then
 fi
 
 # Make sure the site doesn't already exist.
-if [ -d "/home/$USER/sites/$1" ] && [ "$2" != "yes" ]; then
+if [ -d "/home/$USER/sites/$1" ] && [ "$2" != "force" ]; then
   echo "Error: The site /home/$USER/sites/$1 already exists. Use '$0 $1 force' to override."
   exit 1
 fi
@@ -55,6 +55,10 @@ if [ $USER != "vagrant" ]; then
 
 	echo "Use: git remote add web ssh://$USER@$1/home/$user/repos/$1.git"
 	echo "and: git push web +master:refs/heads/master"
+
+else
+
+	sudo sh -c 'env[SYSTEM_ENV] = local >> /etc/php5/fpm/pool.d/$1.conf'
 
 fi
 

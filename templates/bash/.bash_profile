@@ -5,7 +5,7 @@ PATH="$HOME/warpspeed/helpers:$PATH"
 
 # If the vagrant home directory exists, assume we are using vagrant.
 if [ -d "/home/vagrant" ]; then
-	LARAVEL_ENV="local"
+	SYSTEM_ENV="local"
 fi
 
 # Include the .bashrc file.
