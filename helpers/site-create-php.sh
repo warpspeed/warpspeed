@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-  echo "Usage: site-create-php.sh hostname"
+  echo "Usage: $0 hostname [force:yes|no]"
   exit 1
 fi
 
@@ -15,8 +15,8 @@ if [ -d "/home/vagrant" ]; then
 fi
 
 # Make sure the site doesn't already exist.
-if [ -d "/home/$USER/sites/$1" ]; then
-  echo "Error: The site /home/$USER/sites/$1 already exists."
+if [ -d "/home/$USER/sites/$1" ] && [ $2 != "yes" ]; then
+  echo "Error: The site /home/$USER/sites/$1 already exists. Use $0 $1 yes to override."
   exit 1
 fi
 

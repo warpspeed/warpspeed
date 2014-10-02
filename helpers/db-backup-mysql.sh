@@ -25,4 +25,6 @@ else
 	mysqldump -u root -p --add-drop-table $1 | gzip -9 > $FILENAME
 fi
 
-echo "Backup saved to: $FILENAME"
+if [ $? -eq 0 ]; then
+    echo "Backup saved to: $FILENAME"
+fi
