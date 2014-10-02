@@ -60,7 +60,7 @@ if [ $USER != "vagrant" ]; then
 
 else
 
-	echo "env[LARAVEL_ENV] = local" | sudo tee -a /etc/php5/fpm/pool.d/php.dev.conf
+	echo "env[LARAVEL_ENV] = local" | sudo tee -a /etc/php5/fpm/pool.d/$1.conf
 
 fi
 
