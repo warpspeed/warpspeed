@@ -13,13 +13,8 @@ SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 source $SCRIPTS_ROOT/installers/nginx.sh
 source $SCRIPTS_ROOT/installers/php.sh
-#./installers/nodejs.sh
-#./installers/python.sh
-#./installers/ruby.sh
-#./installers/mongodb.sh
-#./installers/mysql.sh
-#./installers/postgres.sh
-#./installers/beanstalkd.sh
+source $SCRIPTS_ROOT/installers/mysql.sh root
+source $SCRIPTS_ROOT/installers/postgres.sh
 
 ###############################################################################
 # Cleanup, restart services, and show init info.

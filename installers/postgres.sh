@@ -5,6 +5,12 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
-aptitude -y install postgresql
+aptitude -y install postgresql postgresql-contrib
 
-exit 0
+php -v > /dev/null 2>&1
+PHP_INSTALLED=$?
+
+if [ PHP_INSTALLED -eq 0 ]; then
+    apt-get -y install php5-pgsql
+    service php5-fpm restart
+fi
