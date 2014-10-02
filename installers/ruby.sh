@@ -12,9 +12,8 @@ cd /usr/local
 git clone git://github.com/sstephenson/rbenv.git rbenv
 git clone git://github.com/sstephenson/ruby-build.git rbenv/plugins/ruby-build
 
-echo 'export PATH="/usr/local/rbenv/bin:/usr/local/rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bash_profile
-echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
-exec $SHELL
+export PATH="/usr/local/rbenv/bin:/usr/local/rbenv/plugins/ruby-build/bin:$PATH"
+eval "$(rbenv init -)"
 
 rbenv install 2.1.3
 rbenv global 2.1.3
