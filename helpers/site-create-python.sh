@@ -33,7 +33,7 @@ sudo sed -i "s/{{domain}}/$1/g" /etc/nginx/sites-available/$1
 sudo sed -i "s/{{user}}/$USER/g" /etc/nginx/sites-available/$1
 sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
 
-cp $HELPERS_DIR/../templates/python/passenger_wsgi.py /home/$USER/sites/$1/public/passenger_wsgi.py
+cp $HELPERS_DIR/../templates/python/passenger_wsgi.py /home/$USER/sites/$1/passenger_wsgi.py
 
 sudo service nginx reload
 
