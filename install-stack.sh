@@ -12,6 +12,7 @@ SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ###############################################################################
 
 source $SCRIPTS_ROOT/installers/php.sh
+source $SCRIPTS_ROOT/installers/ruby.sh
 source $SCRIPTS_ROOT/installers/python.sh
 source $SCRIPTS_ROOT/installers/nginx-passenger.sh
 source $SCRIPTS_ROOT/installers/mysql.sh root
