@@ -24,10 +24,7 @@
 </head>
 <body>
 	<div id="heading">
-		Deployed at Warpspeed
-	</div>
-	<div id="main">
-		Your PHP site is ready!
+		Warspeed says hello, from PHP!
 	</div>
 	<?php phpinfo(); ?>
 </body>

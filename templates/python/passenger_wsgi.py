@@ -1,3 +1,3 @@
 def application(environ, start_response):
   start_response('200 OK', [('Content-Type', 'text/plain')])
-  return [b"hello world!\n"]
+  return ["Warpspeed says hello, from Python!"]

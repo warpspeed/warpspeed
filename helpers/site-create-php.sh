@@ -23,7 +23,9 @@ fi
 echo "Creating site..."
 
 # Create the site directory.
-sudo -u $USER mkdir -p "/home/$USER/sites/$1"
+sudo -u $USER mkdir -p "/home/$USER/sites/$1/public"
+
+cp $HELPERS_DIR/../templates/php/index.php /home/$USER/sites/$1/public
 
 # Configure nginx to serve the new site.
 sudo cp $HELPERS_DIR/../templates/nginx/site-php.conf /etc/nginx/sites-available/$1
