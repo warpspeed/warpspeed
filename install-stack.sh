@@ -16,6 +16,9 @@ source $SCRIPTS_ROOT/installers/php.sh
 source $SCRIPTS_ROOT/installers/mysql.sh root
 source $SCRIPTS_ROOT/installers/postgres.sh
 
+# Copy bash profile to proper location.
+cp $SCRIPTS_ROOT/templates/bash/.bash_profile $SCRIPTS_ROOT/../.bash_profile
+
 ###############################################################################
 # Cleanup, restart services, and show init info.
 ###############################################################################
