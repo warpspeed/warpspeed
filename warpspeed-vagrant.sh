@@ -1,19 +1,20 @@
 #!/bin/bash
 
-if [ $(id -u) != "0" ]; then
-    echo "This script must be run as root." 1>&2
-    exit 1
-fi
+# Determine the directory this script is executing from.
+local WS_SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Include the warpspeed functions file.
+source $WS_SCRIPTS_ROOT/ws-functions.sh
+
+# Require that the root user be executing this script.
+ws_require_root
 
 # Declare array to track installers that should be run.
 # Installers are added via command line args by passing --installer.
 INSTALLERS=()
 
 # Retrieve system ip address.
-IPADDRESS=$(ifconfig eth0 | awk -F: '/inet addr:/ {print $2}' | awk '{ print $1 }')
-
-# Determine the directory this script is executing from.
-SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+IPADDRESS=$(ws_get_ip_address)
 
 # Any script that requires a password (such as database installers) will use this.
 PASSWORD=warpspeed
@@ -54,20 +55,23 @@ fi
 # Update system hostname and add to hosts file.
 ###############################################################################
 
-echo $HOSTNAME > /etc/hostname
-hostname -F /etc/hostname
-sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$HOSTNAME $HOSTNAME/" /etc/hosts
+ws_log_header "Configuring timezone."
+ln -s -f "/usr/share/zoneinfo/$1" /etc/localtime
 
 ###############################################################################
 # Set timezone to UTC
 ###############################################################################
 
-ln -s -f /usr/share/zoneinfo/UTC /etc/localtime
+ws_log_header "Configuring hostname."
+echo $1 > /etc/hostname
+hostname -F /etc/hostname
+sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$1 $1/" /etc/hosts
 
 ###############################################################################
 # Run system updates and install prerequisites.
 ###############################################################################
 
+ws_log_header "Running system updates."
 apt-get update
 apt-get -y upgrade
 apt-get -y install python-software-properties build-essential git-core
@@ -76,16 +80,18 @@ apt-get -y install python-software-properties build-essential git-core
 # Setup bash profile.
 ###############################################################################
 
-cp -f $SCRIPTS_ROOT/templates/bash/.bash_profile /home/vagrant/.bash_profile
+ws_log_header "Configuring bash profile."
+cp -f $WS_SCRIPTS_ROOT/templates/bash/.bash_profile /home/vagrant/.bash_profile
 chown vagrant:vagrant /home/vagrant/.bash_profile
 
 ###############################################################################
 # Run all installers that were passed as arguments.
 ###############################################################################
 
+ws_log_header "Running specified installers."
 for installer in "${INSTALLERS[@]}"; do
-	INSTALLER_FULL_PATH="$SCRIPTS_ROOT/installers/$installer.sh"
-	if [ -f "$INSTALLER_FULL_PATH" ]; then
+	local INSTALLER_FULL_PATH="$SCRIPTS_ROOT/installers/$installer.sh"
+	if [ -x "$INSTALLER_FULL_PATH" ]; then
 		# Installer exists and is executable, run it.
 		# Note: Installer scripts will have access to vars declared herein.
 		source "$INSTALLER_FULL_PATH"
@@ -93,11 +99,7 @@ for installer in "${INSTALLERS[@]}"; do
 done
 
 ###############################################################################
-# Clean up and restart services.
+# Restart services and show summary info.
 ###############################################################################
 
-# Restarts services that have a restart-service_name file in /tmp.
-for service_name in $(ls /tmp/ | grep restart-* | cut -d- -f2-10); do
-    service $service_name restart
-    rm -f /tmp/restart-$service_name
-done
+ws_restart_flagged_services
