@@ -5,16 +5,22 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
-if [ -z "$PASSWORD"] && [ -z "$1" ]; then
-    # Password to add to mysql root user must be set or passed in.
-    echo "Usage: $0 password"
-    exit 1
+if [ -z "$PASSWORD"]; then
+    if [ -z "$1" ]; then
+        # Password to add to mysql root user must be set or passed in.
+        echo "Usage: $0 password"
+        exit 1
+    else
+        MYSQLPASSWORD="$1"
+    fi
+else
+    MYSQLPASSWORD="$PASSWORD"
 fi
 
-INSTALLERS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+IPADDRESS=$(ifconfig eth0 | awk -F: '/inet addr:/ {print $2}' | awk '{ print $1 }')
 
-debconf-set-selections <<< "mysql-server mysql-server/root_password password $1"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $1"
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQLPASSWORD"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQLPASSWORD"
 
 apt-get -y install mysql-server
 
