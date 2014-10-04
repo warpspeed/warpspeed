@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Determine the directory this script is executing from.
-local WS_SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+WS_SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Include the warpspeed functions file.
 source $WS_SCRIPTS_ROOT/ws-functions.sh
@@ -171,7 +171,7 @@ chown warpspeed:warpspeed /home/warpspeed/.bash_profile
 
 ws_log_header "Running specified installers."
 for installer in "${INSTALLERS[@]}"; do
-	local INSTALLER_FULL_PATH="$SCRIPTS_ROOT/installers/$installer.sh"
+	INSTALLER_FULL_PATH="$SCRIPTS_ROOT/installers/$installer.sh"
 	if [ -x "$INSTALLER_FULL_PATH" ]; then
 		# Installer exists and is executable, run it.
 		# Note: Installer scripts will have access to vars declared herein.
