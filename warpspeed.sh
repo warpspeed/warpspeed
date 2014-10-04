@@ -63,16 +63,16 @@ fi
 ###############################################################################
 
 ws_log_header "Configuring timezone."
-ln -s -f "/usr/share/zoneinfo/$1" /etc/localtime
+ln -s -f /usr/share/zoneinfo/UTC /etc/localtime
 
 ###############################################################################
 # Set timezone to UTC
 ###############################################################################
 
 ws_log_header "Configuring hostname."
-echo $1 > /etc/hostname
+echo $HOMENAME > /etc/hostname
 hostname -F /etc/hostname
-sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$1 $1/" /etc/hosts
+sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$HOMENAME $HOMENAME/" /etc/hosts
 
 ###############################################################################
 # Run system updates and install prerequisites.
@@ -162,7 +162,7 @@ chmod 0600 /home/warpspeed/.ssh/authorized_keys
 ###############################################################################
 
 ws_log_header "Configuring bash profile."
-cp -f $SCRIPTS_ROOT/templates/bash/.bash_profile /home/warpspeed/.bash_profile
+cp -f $WS_SCRIPTS_ROOT/templates/bash/.bash_profile /home/warpspeed/.bash_profile
 chown warpspeed:warpspeed /home/warpspeed/.bash_profile
 
 ###############################################################################
@@ -171,7 +171,7 @@ chown warpspeed:warpspeed /home/warpspeed/.bash_profile
 
 ws_log_header "Running specified installers."
 for installer in "${INSTALLERS[@]}"; do
-	INSTALLER_FULL_PATH="$SCRIPTS_ROOT/installers/$installer.sh"
+	INSTALLER_FULL_PATH="$WS_SCRIPTS_ROOT/installers/$installer.sh"
 	if [ -x "$INSTALLER_FULL_PATH" ]; then
 		# Installer exists and is executable, run it.
 		# Note: Installer scripts will have access to vars declared herein.

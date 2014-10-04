@@ -55,17 +55,17 @@ fi
 # Update system hostname and add to hosts file.
 ###############################################################################
 
-ws_log_header "Configuring timezone."
-ln -s -f "/usr/share/zoneinfo/$1" /etc/localtime
+ws_log_header "Configuring hostname."
+echo $HOSTNAME > /etc/hostname
+hostname -F /etc/hostname
+sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$HOSTNAME $HOSTNAME/" /etc/hosts
 
 ###############################################################################
 # Set timezone to UTC
 ###############################################################################
 
-ws_log_header "Configuring hostname."
-echo $1 > /etc/hostname
-hostname -F /etc/hostname
-sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$1 $1/" /etc/hosts
+ws_log_header "Configuring timezone."
+ln -s -f /usr/share/zoneinfo/UTC /etc/localtime
 
 ###############################################################################
 # Run system updates and install prerequisites.
@@ -90,7 +90,7 @@ chown vagrant:vagrant /home/vagrant/.bash_profile
 
 ws_log_header "Running specified installers."
 for installer in "${INSTALLERS[@]}"; do
-	INSTALLER_FULL_PATH="$SCRIPTS_ROOT/installers/$installer.sh"
+	INSTALLER_FULL_PATH="$WS_SCRIPTS_ROOT/installers/$installer.sh"
 	if [ -x "$INSTALLER_FULL_PATH" ]; then
 		# Installer exists and is executable, run it.
 		# Note: Installer scripts will have access to vars declared herein.
