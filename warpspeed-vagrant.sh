@@ -15,6 +15,9 @@ IPADDRESS=$(ifconfig eth0 | awk -F: '/inet addr:/ {print $2}' | awk '{ print $1 
 # Determine the directory this script is executing from.
 SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# Any script that requires a password (such as database installers) will use this.
+PASSWORD=warpspeed
+
 ###############################################################################
 # Process command line arguments.
 ###############################################################################

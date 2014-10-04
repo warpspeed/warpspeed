@@ -5,9 +5,10 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
-if [ -z "$1" ]; then
-  echo "Usage: mysql.sh root-password"
-  exit 1
+if [ -z "$PASSWORD"] && [ -z "$1" ]; then
+    # Password to add to mysql root user must be set or passed in.
+    echo "Usage: $0 password"
+    exit 1
 fi
 
 INSTALLERS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
