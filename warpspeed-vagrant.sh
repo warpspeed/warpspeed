@@ -91,7 +91,7 @@ chown vagrant:vagrant /home/vagrant/.bash_profile
 ws_log_header "Running specified installers."
 for installer in "${INSTALLERS[@]}"; do
 	INSTALLER_FULL_PATH="$WS_SCRIPTS_ROOT/installers/$installer.sh"
-	if [ -x "$INSTALLER_FULL_PATH" ]; then
+	if [ -f "$INSTALLER_FULL_PATH" ]; then
 		# Installer exists and is executable, run it.
 		# Note: Installer scripts will have access to vars declared herein.
 		source "$INSTALLER_FULL_PATH"
