@@ -141,21 +141,32 @@ ws_flag_service fail2ban
 ws_log_header "Adding warpspeed user."
 useradd -m -s /bin/bash warpspeed
 echo "warpspeed:$PASSWORD" | chpasswd
-usermod -aG sudo warpspeed
+adduser warpspeed sudo
 
 ###############################################################################
 # Add ssh key for warpspeed user.
 ###############################################################################
 
-ws_log_header "Adding ssh key for warpspeed user."
-sudo -u warpspeed mkdir -p /home/warpspeed/.ssh
-sudo -u warpspeed touch $USER_HOME/.ssh/authorized_keys
-sudo -u warpspeed echo "# WARPSPEED USER" >> /home/warpspeed/.ssh/authorized_keys
-sudo -u warpspeed echo "$SSHKEY" >> /home/warpspeed/.ssh/authorized_keys
+ws_log_header "Adding ssh key."
+
+mkdir -p ~/.ssh
+echo "# WARPSPEED USER" >> ~/.ssh/authorized_keys
+echo "$SSHKEY" >> ~/.ssh/authorized_keys
+
+mkdir -p /home/warpspeed/.ssh
+cp ~/.ssh/authorized_keys /home/warpspeed/.ssh/authorized_keys
+
+ssh-keygen -f /home/warpspeed/.ssh/id_rsa -t rsa -N ''
+ssh-keyscan -H github.com >> /home/warpspeed/.ssh/known_hosts
+ssh-keyscan -H bitbucket.org >> /home/warpspeed/.ssh/known_hosts
+
+chown -R warpspeed:warpspeed /home/warpspeed
+chmod -R 755 /home/warpspeed
+chmod 700 /home/warpspeed/.ssh/id_rsa
 
 # Update ssh key permissions.
-chmod 0700 /home/warpspeed/.ssh
-chmod 0600 /home/warpspeed/.ssh/authorized_keys
+#chmod 0700 /home/warpspeed/.ssh
+#chmod 0600 /home/warpspeed/.ssh/authorized_keys
 
 ###############################################################################
 # Setup bash profile.
