@@ -5,7 +5,7 @@ if [ $(id -u) != "0" ]; then
     exit 1
 fi
 
-if [ -z "$PASSWORD"]; then
+if [ -z "$PASSWORD" ]; then
     if [ -z "$1" ]; then
         # Password to add to mysql root user must be set or passed in.
         echo "Usage: $0 password"
