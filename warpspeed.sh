@@ -70,9 +70,9 @@ ln -s -f /usr/share/zoneinfo/UTC /etc/localtime
 ###############################################################################
 
 ws_log_header "Configuring hostname."
-echo $HOMENAME > /etc/hostname
+echo $HOSTNAME > /etc/hostname
 hostname -F /etc/hostname
-sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$HOMENAME $HOMENAME/" /etc/hosts
+sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$HOSTNAME $HOSTNAME/" /etc/hosts
 
 ###############################################################################
 # Run system updates and install prerequisites.
