@@ -135,38 +135,41 @@ sed -ri "/^\[ssh-ddos\]$/,/^\[/s/enabled[[:blank:]]*=.*/enabled = true/" /etc/fa
 ws_flag_service fail2ban
 
 ###############################################################################
-# Add warpspeed user, set password, and enable sudo.
+# Configure the warpspeed user.
 ###############################################################################
 
-ws_log_header "Adding warpspeed user."
+ws_log_header "Configuring warpspeed user."
+
+# Add the user and specify the shell.
 useradd -m -s /bin/bash warpspeed
+
+# Set the user password.
 echo "warpspeed:$PASSWORD" | chpasswd
+
+# Add the user to the sudo group.
 adduser warpspeed sudo
 
-###############################################################################
-# Add ssh key for warpspeed user.
-###############################################################################
-
-ws_log_header "Adding ssh key."
-
+# Ensure .ssh dir exists.
 mkdir -p ~/.ssh
-echo "# WARPSPEED USER" >> ~/.ssh/authorized_keys
+
+# Add the warpspeed ssh key, overwriting any existing keys.
+echo "# WARPSPEED" > ~/.ssh/authorized_keys
 echo "$SSHKEY" >> ~/.ssh/authorized_keys
 
+# Add the .ssh dir for the new user and copy over the authorized keys.
 mkdir -p /home/warpspeed/.ssh
 cp ~/.ssh/authorized_keys /home/warpspeed/.ssh/authorized_keys
 
+# Generate a keypair for the new user and add common site to the known hosts.
 ssh-keygen -f /home/warpspeed/.ssh/id_rsa -t rsa -N ''
 ssh-keyscan -H github.com >> /home/warpspeed/.ssh/known_hosts
 ssh-keyscan -H bitbucket.org >> /home/warpspeed/.ssh/known_hosts
 
+# Update directory permissions for the new user.
 chown -R warpspeed:warpspeed /home/warpspeed
 chmod -R 755 /home/warpspeed
-chmod 700 /home/warpspeed/.ssh/id_rsa
-
-# Update ssh key permissions.
-#chmod 0700 /home/warpspeed/.ssh
-#chmod 0600 /home/warpspeed/.ssh/authorized_keys
+chmod 0700 /home/warpspeed/.ssh
+chmod 0600 /home/warpspeed/.ssh/authorized_keys
 
 ###############################################################################
 # Setup bash profile.
