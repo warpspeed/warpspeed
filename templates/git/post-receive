@@ -1,5 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
-GIT_WORK_TREE=/home/{{user}}/sites/{{domain}}/
+GIT_WORK_TREE=/home/warpspeed/sites/{{domain}}/
 export GIT_WORK_TREE
 git checkout -f
+
+if [ -x "/home/warpspeed/sites/{{domain}}/post-receive.sh" ]; then
+	cd "/home/warpspeed/sites/{{domain}}"
+	echo "Executing user-defined post-receive script."
+	./post-receive.sh
+fi
