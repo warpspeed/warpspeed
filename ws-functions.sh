@@ -1,21 +1,11 @@
 #!/bin/bash
 
-WS_FUNCTIONS_DECLARED=1
-
 ws_log_header() {
     echo -en "\n"
     echo "###############################################################################"
     echo "# $@"
     echo "###############################################################################"
     echo -en "\n"
-}
-
-ws_log_error() {
-    echo -en "\n" 1>&2
-    echo "*******************************************************************************" 1>&2
-    echo "* Error: $@" 1>&2
-    echo "*******************************************************************************" 1>&2
-    echo -en "\n" 1>&2
 }
 
 ws_require_root() {
@@ -60,7 +50,6 @@ ws_create_git_push_deploy_repo() {
 	git init --bare
 	cp $WS_HELPERS_DIR/../templates/git/post-receive /home/$WS_USER/repos/$WS_DOMAIN.git/hooks/post-receive
 	sed -i "s/{{domain}}/$WS_DOMAIN/g" /home/$WS_USER/repos/$WS_DOMAIN.git/hooks/post-receive
-	sed -i "s/{{user}}/$WS_USER/g" /home/$WS_USER/repos/$WS_DOMAIN.git/hooks/post-receive
 	chmod +x "/home/$WS_USER/repos/$WS_DOMAIN.git/hooks/post-receive"
 	chown -R $WS_USER:$WS_USER "/home/$WS_USER/repos/$WS_DOMAIN.git"
 	echo "Use: git remote add web ssh://$WS_USER@$WS_DOMAIN/home/$WS_USER/repos/$WS_DOMAIN.git"
