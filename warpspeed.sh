@@ -17,7 +17,7 @@ INSTALLERS=()
 IPADDRESS=$(ws_get_ip_address)
 
 ###############################################################################
-# Process command line arguments and make sure required args were provided.
+# Process command line arguments and make sure the required args were passed.
 ###############################################################################
 
 for arg in "$@"; do
@@ -48,7 +48,7 @@ if [ -z "$HOSTNAME" ] || [ -z "$SSHKEY" ] || [ -z "$PASSWORD" ]; then
   echo -en "\n" 1>&2
   echo "Mandatory arguments:" 1>&2
   echo "  -h, --hostname=HOSTNAME         Hostname to be used for server." 1>&2
-  echo "  -k, --sshkey='SSH PUBLIC KEY'   Public key used for authentication to server." 1>&2
+  echo "  -k, --sshkey=\"SSH PUBLIC KEY\"   Public key used for authentication to server." 1>&2
   echo "  -p, --password=PASSWORD         Password for the warpspeed user (and database admins)." 1>&2
   echo -en "\n" 1>&2
   echo "Optional arguments:" 1>&2
