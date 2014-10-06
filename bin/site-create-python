@@ -27,7 +27,7 @@ echo "Creating site..."
 ws_create_site_structure $1
 
 # Configure nginx to serve the new site.
-ws_create_nginx_site $1
+ws_create_nginx_site $1 site-python.conf
 
 cp $WARPSPEED_ROOT/templates/python/passenger_wsgi.py /home/$USER/sites/$1/passenger_wsgi.py
 

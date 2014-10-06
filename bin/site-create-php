@@ -41,7 +41,7 @@ echo "Creating site..."
 ws_create_site_structure $SITE_NAME
 
 # Configure nginx to serve the new site.
-ws_create_nginx_site $SITE_NAME
+ws_create_nginx_site $SITE_NAME site-php.conf
 
 cp $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
 
