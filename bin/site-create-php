@@ -1,0 +1,72 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 hostname [force]"
+  exit 1
+fi
+
+# Determine the directory this script is executing from.
+WS_HELPERS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Include the ws-functions.
+source $WS_INSTALLERS_DIR/../ws-functions.sh
+
+# Get the user (either warpspeed or vagrant)
+WS_USER=$(ws_get_user)
+WS_USER_HOME=/home/$WS_USER
+
+# Make sure the site doesn't already exist.
+if [ -d "$WS_USER_HOME/sites/$1" ] && [ "$2" != "force" ]; then
+  echo "Error: The site $WS_USER_HOME/sites/$1 already exists. Use '$0 $1 force' to override."
+  exit 1
+fi
+
+echo "Creating site..."
+
+# Create the site directory.
+sudo -u $WS_USER mkdir -p "$WS_USER_HOME/sites/$1/public"
+
+cp $WS_HELPERS_DIR/../templates/php/index.php $WS_USER_HOME/sites/$1/public
+
+# Configure nginx to serve the new site.
+sudo cp $WS_HELPERS_DIR/../templates/nginx/site-php.conf /etc/nginx/sites-available/$1
+sudo sed -i "s/{{domain}}/$1/g" /etc/nginx/sites-available/$1
+sudo sed -i "s/{{user}}/$WS_USER/g" /etc/nginx/sites-available/$1
+sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
+
+# Setup a site specific php-fpm pool.
+sudo cp $WS_HELPERS_DIR/../templates/php/www.conf /etc/php5/fpm/pool.d/$1.conf
+sudo sed -i "s/{{domain}}/$1/g" /etc/php5/fpm/pool.d/$1.conf
+sudo sed -i "s/{{user}}/$WS_USER/g" /etc/php5/fpm/pool.d/$1.conf
+
+# Create site specific directories for uploads and sessions.
+sudo mkdir -p /var/lib/php/$1/upload
+sudo mkdir -p /var/lib/php/$1/session
+sudo chown -R www-data:www-data /var/lib/php/$1
+
+# Create a git repo for push deploy unless we are on a vagrant box.
+if [ $WS_USER != "vagrant" ]; then
+	
+	sudo -u $WS_USER mkdir -p "$WS_USER_HOME/repos/$1.git"
+
+	cd "$WS_USER_HOME/repos/$1.git"
+	sudo -u $WS_USER git init --bare
+	sudo -u $WS_USER cp $WS_HELPERS_DIR/../templates/git/post-receive $WS_USER_HOME/repos/$1.git/hooks/post-receive
+	sudo sed -i "s/{{domain}}/$1/g" $WS_USER_HOME/repos/$1.git/hooks/post-receive
+	sudo sed -i "s/{{user}}/$WS_USER/g" $WS_USER_HOME/repos/$1.git/hooks/post-receive
+	sudo chmod +x "$WS_USER_HOME/repos/$1.git/hooks/post-receive"
+
+	echo "Use: git remote add web ssh://$WS_USER@$1$WS_USER_HOME/repos/$1.git"
+	echo "and: git push web +master:refs/heads/master"
+
+else
+
+	echo "env[LARAVEL_ENV] = local" | sudo tee -a /etc/php5/fpm/pool.d/$1.conf
+
+fi
+
+# Restart services.
+sudo service nginx reload
+sudo service php5-fpm restart
+
+echo "Site setup is complete for: $WS_USER_HOME/sites/$1"

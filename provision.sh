@@ -177,6 +177,7 @@ chmod 0600 /home/warpspeed/.ssh/authorized_keys
 
 ws_log_header "Configuring bash profile."
 cp -f $WS_SCRIPTS_ROOT/templates/bash/.bash_profile /home/warpspeed/.bash_profile
+sed -i "s/{{user}}/warpspeed/g" /home/vagrant/.bash_profile
 chown warpspeed:warpspeed /home/warpspeed/.bash_profile
 
 ###############################################################################

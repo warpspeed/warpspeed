@@ -82,6 +82,7 @@ apt-get -y install python-software-properties build-essential git-core
 
 ws_log_header "Configuring bash profile."
 cp -f $WS_SCRIPTS_ROOT/templates/bash/.bash_profile /home/vagrant/.bash_profile
+sed -i "s/{{user}}/vagrant/g" /home/vagrant/.bash_profile
 chown vagrant:vagrant /home/vagrant/.bash_profile
 
 ###############################################################################
