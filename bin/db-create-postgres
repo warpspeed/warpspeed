@@ -5,8 +5,8 @@ E_BADARGS=65
  
 if [ $# -ne $EXPECTED_ARGS ]
 then
-  echo "Usage: $0 dbname dbuser dbpass"
-  exit $E_BADARGS
+    echo "Usage: $0 dbname dbuser dbpass"
+    exit $E_BADARGS
 fi
 
 echo "Please enter your sudo password when prompted."

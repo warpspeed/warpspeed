@@ -5,7 +5,7 @@ export GIT_WORK_TREE
 git checkout -f
 
 if [ -x "/home/warpspeed/sites/{{domain}}/post-receive.sh" ]; then
-	cd "/home/warpspeed/sites/{{domain}}"
-	echo "Executing user-defined post-receive script."
-	./post-receive.sh
+    cd "/home/warpspeed/sites/{{domain}}"
+    echo "Executing user-defined post-receive script."
+    ./post-receive.sh
 fi

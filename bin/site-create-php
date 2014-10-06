@@ -1,72 +1,70 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  echo "Usage: $0 hostname [force]"
-  exit 1
+# Make sure warpspeed environment vars are available before proceeding.
+if [ -z "$WARPSPEED_ROOT" ] || [ -z "$WARPSPEED_USER" ]; then
+    echo "Error: It appears that this server was not provisioned with Warpspeed."
+    echo "WARPSPEED_ROOT and WARPSPEED_USER env vars were not found."
+    exit 1
 fi
 
-# Determine the directory this script is executing from.
-WS_HELPERS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Import the warpspeed functions.
+source $WARPSPEED_ROOT/includes/functions.sh
 
-# Include the ws-functions.
-source $WS_INSTALLERS_DIR/../ws-functions.sh
+if [ -z "$SITE_NAME" ]; then
+    echo "Usage: $0 sitename [OPTIONS]..."
+    exit 1
+fi
 
-# Get the user (either warpspeed or vagrant)
-WS_USER=$(ws_get_user)
-WS_USER_HOME=/home/$WS_USER
+SITE_NAME=$1
+FORCE=0
+PUSHREPO=0
+
+for arg in "$@"; do
+case $arg in
+    --force)
+        FORCE=1
+    ;;
+    --push)
+        PUSHREPO=1
+    ;;
+esac; done
 
 # Make sure the site doesn't already exist.
-if [ -d "$WS_USER_HOME/sites/$1" ] && [ "$2" != "force" ]; then
-  echo "Error: The site $WS_USER_HOME/sites/$1 already exists. Use '$0 $1 force' to override."
-  exit 1
+if [ -d "/home/$WARPSPEED_USER/sites/$SITE_NAME" ] && [ $FORCE -ne 1 ]; then
+    echo "Error: The site /home/$WARPSPEED_USER/sites/$SITE_NAME already exists. Use '$0 $SITE_NAME --force' to override."
+    exit 1
 fi
 
 echo "Creating site..."
 
-# Create the site directory.
-sudo -u $WS_USER mkdir -p "$WS_USER_HOME/sites/$1/public"
-
-cp $WS_HELPERS_DIR/../templates/php/index.php $WS_USER_HOME/sites/$1/public
+# Create the site directory structure.
+ws_create_site_structure $SITE_NAME
 
 # Configure nginx to serve the new site.
-sudo cp $WS_HELPERS_DIR/../templates/nginx/site-php.conf /etc/nginx/sites-available/$1
-sudo sed -i "s/{{domain}}/$1/g" /etc/nginx/sites-available/$1
-sudo sed -i "s/{{user}}/$WS_USER/g" /etc/nginx/sites-available/$1
-sudo ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
+ws_create_nginx_site $SITE_NAME
+
+cp $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
 
 # Setup a site specific php-fpm pool.
-sudo cp $WS_HELPERS_DIR/../templates/php/www.conf /etc/php5/fpm/pool.d/$1.conf
-sudo sed -i "s/{{domain}}/$1/g" /etc/php5/fpm/pool.d/$1.conf
-sudo sed -i "s/{{user}}/$WS_USER/g" /etc/php5/fpm/pool.d/$1.conf
+sudo cp $WARPSPEED_ROOT/templates/php/www.conf /etc/php5/fpm/pool.d/$SITE_NAME.conf
+sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
+sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
 
 # Create site specific directories for uploads and sessions.
-sudo mkdir -p /var/lib/php/$1/upload
-sudo mkdir -p /var/lib/php/$1/session
-sudo chown -R www-data:www-data /var/lib/php/$1
+sudo mkdir -p /var/lib/php/$SITE_NAME/upload
+sudo mkdir -p /var/lib/php/$SITE_NAME/session
+sudo chown -R www-data:www-data /var/lib/php/$SITE_NAME
 
-# Create a git repo for push deploy unless we are on a vagrant box.
-if [ $WS_USER != "vagrant" ]; then
-	
-	sudo -u $WS_USER mkdir -p "$WS_USER_HOME/repos/$1.git"
-
-	cd "$WS_USER_HOME/repos/$1.git"
-	sudo -u $WS_USER git init --bare
-	sudo -u $WS_USER cp $WS_HELPERS_DIR/../templates/git/post-receive $WS_USER_HOME/repos/$1.git/hooks/post-receive
-	sudo sed -i "s/{{domain}}/$1/g" $WS_USER_HOME/repos/$1.git/hooks/post-receive
-	sudo sed -i "s/{{user}}/$WS_USER/g" $WS_USER_HOME/repos/$1.git/hooks/post-receive
-	sudo chmod +x "$WS_USER_HOME/repos/$1.git/hooks/post-receive"
-
-	echo "Use: git remote add web ssh://$WS_USER@$1$WS_USER_HOME/repos/$1.git"
-	echo "and: git push web +master:refs/heads/master"
-
-else
-
-	echo "env[LARAVEL_ENV] = local" | sudo tee -a /etc/php5/fpm/pool.d/$1.conf
-
+if [ $PUSHREPO -eq 1 ]; then
+    ws_create_git_push_deploy_repo 
 fi
+
+# todo
+# echo "env[LARAVEL_ENV] = local" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.conf
 
 # Restart services.
 sudo service nginx reload
 sudo service php5-fpm restart
 
-echo "Site setup is complete for: $WS_USER_HOME/sites/$1"
+echo "New site created at: /home/$WARPSPEED_USER/sites/$SITE_NAME"
+echo "Setup DNS or modify your hosts file to allow site to be accessed via: $SITE_NAME."

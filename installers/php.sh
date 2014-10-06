@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# Determine the directory this script is executing from.
-WS_INSTALLERS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-# Include the ws-functions if they are not present.
-if [ -z "$WS_FUNCTIONS_DECLARED" ]; then
-	source $WS_INSTALLERS_DIR/../ws-functions.sh
+# Make sure warpspeed environment vars are available before proceeding.
+if [ -z "$WARPSPEED_ROOT" ] || [ -z "$WARPSPEED_USER" ]; then
+    echo "Error: It appears that this server was not provisioned with Warpspeed."
+    echo "WARPSPEED_ROOT and WARPSPEED_USER env vars were not found."
+    exit 1
 fi
+
+# Import the warpspeed functions.
+source $WARPSPEED_ROOT/includes/functions.sh
 
 # Require that the root user be executing this script.
 ws_require_root
@@ -47,4 +49,12 @@ php5enmod mcrypt
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 
-ws_flag_service php5-fpm
+service php5-fpm restart
+
+# todo
+# if [ $WARPSPEED_USER == "vagrant" ]; then
+# cat > /home/$WARPSPEED_USER/.ws_env_php << EOF
+# export LARAVEL_ENV="local"
+# EOF
+# chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.ws_env_php
+# fi

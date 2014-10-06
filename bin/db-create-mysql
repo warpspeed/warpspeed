@@ -10,8 +10,8 @@ SQL="${Q1}${Q2}${Q3}"
  
 if [ $# -ne $EXPECTED_ARGS ]
 then
-  echo "Usage: $0 dbname dbuser dbpass"
-  exit $E_BADARGS
+    echo "Usage: $0 dbname dbuser dbpass"
+    exit $E_BADARGS
 fi
 
 echo "Please enter your mysql root database password when prompted."

@@ -1,10 +1,13 @@
 #!/bin/bash
 
 # Determine the directory this script is executing from.
-WS_SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+WARPSPEED_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Set the warpspeed user.
+WARPSPEED_USER="vagrant"
 
 # Include the warpspeed functions file.
-source $WS_SCRIPTS_ROOT/ws-functions.sh
+source $WARPSPEED_ROOT/includes/functions.sh
 
 # Require that the root user be executing this script.
 ws_require_root
@@ -25,7 +28,7 @@ PASSWORD=warpspeed
 
 for arg in "$@"; do
 case $arg in
-	-h=*|--hostname=*)
+    -h=*|--hostname=*)
         HOSTNAME="${arg#*=}"
         shift
     ;;
@@ -37,22 +40,22 @@ case $arg in
 esac; done
 
 if [ -z "$HOSTNAME" ]; then
-  echo "Usage: warpspeed-vagrant.sh [OPTION]..." 1>&2
-  echo "Initializes a vagrant server and runs any installer scripts specified in the options." 1>&2
-  echo "For complete information, visit: warpspeed.io" 1>&2
-  echo -en "\n" 1>&2
-  echo "Mandatory arguments:" 1>&2
-  echo "  -h, --hostname=HOSTNAME         Hostname to be used for server." 1>&2
-  echo -en "\n" 1>&2
-  echo "Optional arguments:" 1>&2
-  echo "  --installer                     Installer script to run. Ex: --php will run the 'php.sh'" 1>&2
-  echo "                                  installer script found in the installers directory." 1>&2
-  echo -en "\n" 1>&2
-  exit 1
+    echo "Usage: warpspeed-vagrant.sh [OPTION]..." 1>&2
+    echo "Initializes a vagrant server and runs any installer scripts specified in the options." 1>&2
+    echo "For complete information, visit: warpspeed.io" 1>&2
+    echo -en "\n" 1>&2
+    echo "Mandatory arguments:" 1>&2
+    echo "  -h, --hostname=HOSTNAME         Hostname to be used for server." 1>&2
+    echo -en "\n" 1>&2
+    echo "Optional arguments:" 1>&2
+    echo "  --installer                     Installer script to run. Ex: --php will run the 'php.sh'" 1>&2
+    echo "                                  installer script found in the installers directory." 1>&2
+    echo -en "\n" 1>&2
+    exit 1
 fi
 
 ###############################################################################
-# Update system hostname and add to hosts file.
+# Set hostname and add to hosts file.
 ###############################################################################
 
 ws_log_header "Configuring hostname."
@@ -61,7 +64,7 @@ hostname -F /etc/hostname
 sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$HOSTNAME $HOSTNAME/" /etc/hosts
 
 ###############################################################################
-# Set timezone to UTC
+# Set timezone.
 ###############################################################################
 
 ws_log_header "Configuring timezone."
@@ -81,9 +84,10 @@ apt-get -y install python-software-properties build-essential git-core
 ###############################################################################
 
 ws_log_header "Configuring bash profile."
-cp -f $WS_SCRIPTS_ROOT/templates/bash/.bash_profile /home/vagrant/.bash_profile
-sed -i "s/{{user}}/vagrant/g" /home/vagrant/.bash_profile
-chown vagrant:vagrant /home/vagrant/.bash_profile
+cp -f $WARPSPEED_ROOT/templates/bash/.bash_profile ~/.bash_profile
+sed -i "s/{{user}}/$WARPSPEED_USER/g" /home/$WARPSPEED_USER/.bash_profile
+cp -f ~/.bash_profile /home/$WARPSPEED_USER/.bash_profile
+chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.bash_profile
 
 ###############################################################################
 # Run all installers that were passed as arguments.
@@ -91,12 +95,12 @@ chown vagrant:vagrant /home/vagrant/.bash_profile
 
 ws_log_header "Running specified installers."
 for installer in "${INSTALLERS[@]}"; do
-	INSTALLER_FULL_PATH="$WS_SCRIPTS_ROOT/installers/$installer.sh"
-	if [ -f "$INSTALLER_FULL_PATH" ]; then
-		# Installer exists and is executable, run it.
-		# Note: Installer scripts will have access to vars declared herein.
-		source "$INSTALLER_FULL_PATH"
-	fi
+    INSTALLER_FULL_PATH="$WARPSPEED_ROOT/installers/$installer.sh"
+    if [ -f "$INSTALLER_FULL_PATH" ]; then
+        # Installer exists and is executable, run it.
+        # Note: Installer scripts will have access to vars declared herein.
+        source "$INSTALLER_FULL_PATH"
+    fi
 done
 
 ###############################################################################

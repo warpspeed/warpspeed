@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Determine the directory this script is executing from.
-WS_SCRIPTS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+WARPSPEED_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Include the warpspeed functions file.
-source $WS_SCRIPTS_ROOT/ws-functions.sh
+source $WARPSPEED_ROOT/includes/functions.sh
 
 # Require that the root user be executing this script.
 ws_require_root
@@ -34,6 +34,10 @@ case $arg in
         PASSWORD="${arg#*=}"
         shift
     ;;
+    -u=*|--user=*)
+        WARPSPEED_USER="${arg#*=}"
+        shift
+    ;;
     --*)
         # Add arg to installers array.
         INSTALLERS+=("${arg:2}")
@@ -42,37 +46,43 @@ case $arg in
 esac; done
 
 if [ -z "$HOSTNAME" ] || [ -z "$SSHKEY" ] || [ -z "$PASSWORD" ]; then
-  echo "Usage: warpspeed.sh [OPTION]..." 1>&2
-  echo "Initializes a server and runs any installer scripts specified in the options." 1>&2
-  echo "For complete information, visit: warpspeed.io" 1>&2
-  echo -en "\n" 1>&2
-  echo "Mandatory arguments:" 1>&2
-  echo "  -h, --hostname=HOSTNAME         Hostname to be used for server." 1>&2
-  echo "  -k, --sshkey=\"SSH PUBLIC KEY\"   Public key used for authentication to server." 1>&2
-  echo "  -p, --password=PASSWORD         Password for the warpspeed user (and database admins)." 1>&2
-  echo -en "\n" 1>&2
-  echo "Optional arguments:" 1>&2
-  echo "  --installer                     Installer script to run. Ex: --php will run the 'php.sh'" 1>&2
-  echo "                                  installer script found in the installers directory." 1>&2
-  echo -en "\n" 1>&2
-  exit 1
+    echo "Usage: provision.sh [OPTION]..." 1>&2
+    echo "Initializes a server and runs any installer scripts specified in the options." 1>&2
+    echo "For complete information, visit: warpspeed.io" 1>&2
+    echo -en "\n" 1>&2
+    echo "Mandatory arguments:" 1>&2
+    echo "  -h, --hostname=HOSTNAME         Hostname to be used for server." 1>&2
+    echo "  -k, --sshkey=\"SSH PUBLIC KEY\"   Public key used for authentication to server." 1>&2
+    echo "  -p, --password=PASSWORD         Password for the warpspeed user (and database admins)." 1>&2
+    echo -en "\n" 1>&2
+    echo "Optional arguments:" 1>&2
+    echo "  --installer                     Installer script to run. Ex: --php will run the 'php.sh'" 1>&2
+    echo "                                  installer script found in the installers directory." 1>&2
+    echo "  -u, --user=username             Overrides default username (warpspeed)." 1>&2
+    echo -en "\n" 1>&2
+    exit 1
+fi
+
+# Username defaults to warpspeed if not overridden.
+if [ -z "$HOSTNAME" ]; then
+    $WARPSPEED_USER="warpspeed"
 fi
 
 ###############################################################################
-# Update system hostname and add to hosts file.
-###############################################################################
-
-ws_log_header "Configuring timezone."
-ln -s -f /usr/share/zoneinfo/UTC /etc/localtime
-
-###############################################################################
-# Set timezone to UTC
+# Set hostname and add to hosts file.
 ###############################################################################
 
 ws_log_header "Configuring hostname."
 echo $HOSTNAME > /etc/hostname
 hostname -F /etc/hostname
 sed -i "s/^127\.0\.1\.1.*/127\.0\.1\.1\t$HOSTNAME $HOSTNAME/" /etc/hosts
+
+###############################################################################
+# Set timezone.
+###############################################################################
+
+ws_log_header "Configuring timezone."
+ln -s -f /usr/share/zoneinfo/UTC /etc/localtime
 
 ###############################################################################
 # Run system updates and install prerequisites.
@@ -141,13 +151,13 @@ ws_flag_service fail2ban
 ws_log_header "Configuring warpspeed user."
 
 # Add the user and specify the shell.
-useradd -m -s /bin/bash warpspeed
+useradd -m -s /bin/bash $WARPSPEED_USER
 
 # Set the user password.
-echo "warpspeed:$PASSWORD" | chpasswd
+echo "$WARPSPEED_USER:$PASSWORD" | chpasswd
 
 # Add the user to the sudo group.
-adduser warpspeed sudo
+adduser $WARPSPEED_USER sudo
 
 # Ensure .ssh dir exists.
 mkdir -p ~/.ssh
@@ -158,27 +168,28 @@ echo "$SSHKEY" >> ~/.ssh/authorized_keys
 
 # Add the .ssh dir for the new user and copy over the authorized keys.
 mkdir -p /home/warpspeed/.ssh
-cp ~/.ssh/authorized_keys /home/warpspeed/.ssh/authorized_keys
+cp ~/.ssh/authorized_keys /home/$WARPSPEED_USER/.ssh/authorized_keys
 
 # Generate a keypair for the new user and add common site to the known hosts.
-ssh-keygen -f /home/warpspeed/.ssh/id_rsa -t rsa -N ''
-ssh-keyscan -H github.com >> /home/warpspeed/.ssh/known_hosts
-ssh-keyscan -H bitbucket.org >> /home/warpspeed/.ssh/known_hosts
+ssh-keygen -f /home/$WARPSPEED_USER/.ssh/id_rsa -t rsa -N ''
+ssh-keyscan -H github.com >> /home/$WARPSPEED_USER/.ssh/known_hosts
+ssh-keyscan -H bitbucket.org >> /home/$WARPSPEED_USER/.ssh/known_hosts
 
 # Update directory permissions for the new user.
-chown -R warpspeed:warpspeed /home/warpspeed
-chmod -R 755 /home/warpspeed
-chmod 0700 /home/warpspeed/.ssh
-chmod 0600 /home/warpspeed/.ssh/authorized_keys
+chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER
+chmod -R 755 /home/$WARPSPEED_USER
+chmod 0700 /home/$WARPSPEED_USER/.ssh
+chmod 0600 /home/$WARPSPEED_USER/.ssh/authorized_keys
 
 ###############################################################################
 # Setup bash profile.
 ###############################################################################
 
 ws_log_header "Configuring bash profile."
-cp -f $WS_SCRIPTS_ROOT/templates/bash/.bash_profile /home/warpspeed/.bash_profile
-sed -i "s/{{user}}/warpspeed/g" /home/vagrant/.bash_profile
-chown warpspeed:warpspeed /home/warpspeed/.bash_profile
+cp -f $WARPSPEED_ROOT/templates/bash/.bash_profile ~/.bash_profile
+sed -i "s/{{user}}/$WARPSPEED_USER/g" /home/$WARPSPEED_USER/.bash_profile
+cp -f ~/.bash_profile /home/$WARPSPEED_USER/.bash_profile
+chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.bash_profile
 
 ###############################################################################
 # Run all installers that were passed as arguments.
@@ -186,12 +197,12 @@ chown warpspeed:warpspeed /home/warpspeed/.bash_profile
 
 ws_log_header "Running specified installers."
 for installer in "${INSTALLERS[@]}"; do
-	INSTALLER_FULL_PATH="$WS_SCRIPTS_ROOT/installers/$installer.sh"
-	if [ -f "$INSTALLER_FULL_PATH" ]; then
-		# Installer exists and is executable, run it.
-		# Note: Installer scripts will have access to vars declared herein.
-		source "$INSTALLER_FULL_PATH"
-	fi
+    INSTALLER_FULL_PATH="$WARPSPEED_ROOT/installers/$installer.sh"
+    if [ -f "$INSTALLER_FULL_PATH" ]; then
+        # Installer exists and is executable, run it.
+        # Note: Installer scripts will have access to vars declared herein.
+        source "$INSTALLER_FULL_PATH"
+    fi
 done
 
 ###############################################################################
@@ -201,7 +212,7 @@ done
 ws_restart_flagged_services
 
 echo "Server initialization complete."
-echo "User: warpspeed was created with password: $PASSWORD"
+echo "User: $WARPSPEED_USER was created with password: $PASSWORD"
 echo "Please record this information and keep it in a safe place."
 echo "To remotely access this server, use the following command:"
-echo "ssh warpspeed@$IPADDRESS"
+echo "ssh $WARPSPEED_USER@$IPADDRESS"

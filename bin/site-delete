@@ -1,25 +1,28 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  echo "Usage: $0 hostname"
-  exit 1
+# Make sure warpspeed environment vars are available before proceeding.
+if [ -z "$WARPSPEED_ROOT" ] || [ -z "$WARPSPEED_USER" ]; then
+    echo "Error: It appears that this server was not provisioned with Warpspeed."
+    echo "WARPSPEED_ROOT and WARPSPEED_USER env vars were not found."
+    exit 1
 fi
 
-USER=warpspeed
+# Import the warpspeed functions.
+source $WARPSPEED_ROOT/includes/functions.sh
 
-# If the vagrant home directory exists, assume we are using vagrant.
-if [ -d "/home/vagrant" ]; then
-	USER=vagrant
+if [ -z "$1" ]; then
+    echo "Usage: $0 site.com"
+    exit 1
 fi
 
 # Make sure the site exists
-if [ ! -d "/home/$USER/sites/$1" ]; then
-  echo "Error: The site /home/$USER/sites/$1 does not exist."
-  exit 1
+if [ ! -d "/home/$WARPSPEED_USER/sites/$1" ]; then
+    echo "Error: The site /home/$WARPSPEED_USER/sites/$1 does not exist."
+    exit 1
 fi
 
-rm -rf /home/$USER/sites/$1
-rm -rf /home/$USER/repos/$1.git
+rm -rf /home/$WARPSPEED_USER/sites/$1
+rm -rf /home/$WARPSPEED_USER/repos/$1.git
 
 sudo rm -f /etc/nginx/sites-enabled/$1
 sudo rm -f /etc/nginx/sites-available/$1

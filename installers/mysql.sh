@@ -1,10 +1,20 @@
 #!/bin/bash
 
-if [ $(id -u) != "0" ]; then
-    echo "This script must be run as root." 1>&2
+# Make sure warpspeed environment vars are available before proceeding.
+if [ -z "$WARPSPEED_ROOT" ] || [ -z "$WARPSPEED_USER" ]; then
+    echo "Error: It appears that this server was not provisioned with Warpspeed."
+    echo "WARPSPEED_ROOT and WARPSPEED_USER env vars were not found."
     exit 1
 fi
 
+# Import the warpspeed functions.
+source $WARPSPEED_ROOT/includes/functions.sh
+
+# Require that the root user be executing this script.
+ws_require_root
+
+
+# todo, improve password handling
 if [ -z "$PASSWORD" ]; then
     if [ -z "$1" ]; then
         # Password to add to mysql root user must be set or passed in.
@@ -24,10 +34,11 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 
 apt-get -y install mysql-server
 
-php -v > /dev/null 2>&1
-PHP_INSTALLED=$?
+# sed -i 's/^bind-address.*/bind-address = */' /etc/mysql/my.cnf
+# mysql --user="root" --password="$MYSQLPASSWORD" -e "GRANT ALL ON *.* TO root@'$IPADDRESS' IDENTIFIED BY '$MYSQLPASSWORD';"
+# mysql --user="root" --password="$MYSQLPASSWORD" -e "GRANT ALL ON *.* TO root@'%' IDENTIFIED BY '$MYSQLPASSWORD';"
+# mysql --user="root" --password="$MYSQLPASSWORD" -e "GRANT ALL ON *.* TO warpspeed@'$IPADDRESS' IDENTIFIED BY '$MYSQLPASSWORD';"
+# mysql --user="root" --password="$MYSQLPASSWORD" -e "GRANT ALL ON *.* TO warpspeed@'%' IDENTIFIED BY '$MYSQLPASSWORD';"
+# mysql --user="root" --password="$MYSQLPASSWORD" -e "FLUSH PRIVILEGES;"
 
-if [ $PHP_INSTALLED -eq 0 ]; then
-    apt-get -y install php5-mysql
-    service php5-fpm restart
-fi
+service mysql restart

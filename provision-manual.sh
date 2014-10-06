@@ -14,9 +14,9 @@ apt-get -y install git-core
 
 # Clone warpspeed repository if it is not present.
 if [ ! -d /home/warpspeed/.warpspeed ]; then
-	mkdir -p /home/warpspeed
-  	git clone https://github.com/$REPOPATH.git /home/warpspeed/.warpspeed
-  	chown -R warpspeed:warpspeed /home/warpspeed/.warpspeed
+    mkdir -p /home/warpspeed
+    git clone https://github.com/$REPOPATH.git /home/warpspeed/.warpspeed
+    chown -R warpspeed:warpspeed /home/warpspeed/.warpspeed
 fi
 
 # Run the provisioning script and pass along any desired installer params.

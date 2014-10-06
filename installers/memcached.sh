@@ -13,7 +13,6 @@ source $WARPSPEED_ROOT/includes/functions.sh
 # Require that the root user be executing this script.
 ws_require_root
 
-apt-get -y install beanstalkd
-sed -i "s/#START=yes/START=yes/g" /etc/default/beanstalkd
-# sed -i "s/BEANSTALKD_LISTEN_ADDR.*/BEANSTALKD_LISTEN_ADDR=0.0.0.0/" /etc/default/beanstalkd
-service beanstalkd restart
+apt-get install -y memcached
+# sed -i 's/-l 127.0.0.1/-l 0.0.0.0/' /etc/memcached.conf
+service memcached restart
