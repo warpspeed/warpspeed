@@ -187,7 +187,7 @@ chmod 0600 /home/$WARPSPEED_USER/.ssh/authorized_keys
 
 ws_log_header "Configuring bash profile."
 cp -f $WARPSPEED_ROOT/templates/bash/.bash_profile ~/.bash_profile
-sed -i "s/{{user}}/$WARPSPEED_USER/g" /home/$WARPSPEED_USER/.bash_profile
+sed -i "s/{{user}}/$WARPSPEED_USER/g" ~/.bash_profile
 cp -f ~/.bash_profile /home/$WARPSPEED_USER/.bash_profile
 chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.bash_profile
 

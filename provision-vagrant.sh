@@ -85,7 +85,7 @@ apt-get -y install python-software-properties build-essential git-core
 
 ws_log_header "Configuring bash profile."
 cp -f $WARPSPEED_ROOT/templates/bash/.bash_profile ~/.bash_profile
-sed -i "s/{{user}}/$WARPSPEED_USER/g" /home/$WARPSPEED_USER/.bash_profile
+sed -i "s/{{user}}/$WARPSPEED_USER/g" ~/.bash_profile
 cp -f ~/.bash_profile /home/$WARPSPEED_USER/.bash_profile
 chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.bash_profile
 
