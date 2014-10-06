@@ -10,14 +10,14 @@ fi
 # Import the warpspeed functions.
 source $WARPSPEED_ROOT/includes/functions.sh
 
+SITE_NAME=$1
+FORCE=0
+PUSHREPO=0
+
 if [ -z "$SITE_NAME" ]; then
     echo "Usage: $0 sitename [OPTIONS]..."
     exit 1
 fi
-
-SITE_NAME=$1
-FORCE=0
-PUSHREPO=0
 
 for arg in "$@"; do
 case $arg in
