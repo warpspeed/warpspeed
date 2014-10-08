@@ -21,6 +21,9 @@ fi
 
 for arg in "$@"; do
 case $arg in
+    -env=*)
+        APP_ENV="${arg#*=}"
+    ;;
     --force)
         FORCE=1
     ;;
@@ -50,6 +53,11 @@ sudo cp $WARPSPEED_ROOT/templates/php/www.conf /etc/php5/fpm/pool.d/$SITE_NAME.c
 sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
 sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
 
+# If an env value is passed, set it in the php-fpm pool config as "APP_ENV".
+if [ -n $APP_ENV ]; then
+    echo "env[APP_ENV] = $APP_ENV" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.conf
+fi
+
 # Create site specific directories for uploads and sessions.
 sudo mkdir -p /var/lib/php/$SITE_NAME/upload
 sudo mkdir -p /var/lib/php/$SITE_NAME/session
@@ -58,9 +66,6 @@ sudo chown -R www-data:www-data /var/lib/php/$SITE_NAME
 if [ $PUSHREPO -eq 1 ]; then
     ws_create_git_push_deploy_repo 
 fi
-
-# todo
-# echo "env[LARAVEL_ENV] = local" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.conf
 
 # Restart services.
 sudo service nginx reload
