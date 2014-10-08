@@ -11,6 +11,7 @@ fi
 source $WARPSPEED_ROOT/includes/functions.sh
 
 SITE_NAME=$1
+APP_ENV="production"
 FORCE=0
 PUSHREPO=0
 
@@ -21,7 +22,7 @@ fi
 
 for arg in "$@"; do
 case $arg in
-    -env=*)
+    --env=*)
         APP_ENV="${arg#*=}"
     ;;
     --force)
@@ -57,10 +58,8 @@ sudo cp $WARPSPEED_ROOT/templates/php/www.conf /etc/php5/fpm/pool.d/$SITE_NAME.c
 sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
 sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
 
-# If an env value is passed, set it in the php-fpm pool config as "APP_ENV".
-if [ -n $APP_ENV ]; then
-    echo "env[APP_ENV] = $APP_ENV" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.conf
-fi
+# Set APP_ENV environment variable in php fpm pool.
+echo "env[APP_ENV] = $APP_ENV" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.conf
 
 # Create site specific directories for uploads and sessions.
 sudo mkdir -p /var/lib/php/$SITE_NAME/upload
