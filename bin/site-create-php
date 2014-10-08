@@ -44,8 +44,9 @@ echo "Creating site..."
 # Create the site directory structure.
 ws_create_site_structure $SITE_NAME
 
-mkdir -p "/home/$USER/sites/$SITE_NAME/tmp/session"
-mkdir -p "/home/$USER/sites/$SITE_NAME/tmp/upload"
+# Create site specific directories for uploads and sessions.
+mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME/tmp/session"
+mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME/tmp/upload"
 chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/sites/$SITE_NAME
 
 # Configure nginx to serve the new site.
@@ -60,11 +61,6 @@ sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
 
 # Set APP_ENV environment variable in php fpm pool.
 echo "env[APP_ENV] = $APP_ENV" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.conf
-
-# Create site specific directories for uploads and sessions.
-sudo mkdir -p /var/lib/php/$SITE_NAME/upload
-sudo mkdir -p /var/lib/php/$SITE_NAME/session
-sudo chown -R www-data:www-data /var/lib/php/$SITE_NAME
 
 if [ $PUSHREPO -eq 1 ]; then
     ws_create_git_push_deploy_repo 

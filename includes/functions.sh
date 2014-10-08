@@ -47,10 +47,10 @@ ws_create_git_push_deploy_repo() {
 
 ws_create_site_structure() {
     local SITE_NAME=$1
-    mkdir -p "/home/$USER/sites/$SITE_NAME"
-    mkdir -p "/home/$USER/sites/$SITE_NAME/public"
-    mkdir -p "/home/$USER/sites/$SITE_NAME/tmp"
-    mkdir -p "/home/$USER/sites/$SITE_NAME/logs"
+    mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME"
+    mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME/public"
+    mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME/tmp"
+    mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME/logs"
     chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/sites/$SITE_NAME
 }
 
