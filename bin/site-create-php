@@ -43,6 +43,10 @@ echo "Creating site..."
 # Create the site directory structure.
 ws_create_site_structure $SITE_NAME
 
+mkdir -p "/home/$USER/sites/$SITE_NAME/tmp/session"
+mkdir -p "/home/$USER/sites/$SITE_NAME/tmp/upload"
+chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/sites/$SITE_NAME
+
 # Configure nginx to serve the new site.
 ws_create_nginx_site $SITE_NAME site-php.conf
 
