@@ -67,7 +67,6 @@ ws_flag_service() {
 }
 
 ws_restart_flagged_services() {
-    ws_log_header "Restarting services."
     for service_name in $(ls /tmp/ | grep restart-* | cut -d- -f2-10); do
         sudo service $service_name restart
         rm -f /tmp/restart-$service_name
