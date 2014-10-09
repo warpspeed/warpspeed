@@ -75,71 +75,22 @@ ws_log_header "Running system updates."
 ws_run_system_updates
 
 ws_log_header "Configuring unattended upgrades."
-apt-get -y install unattended-upgrades
-
-# Configure auto update intervals and allowed origins.
-cp templates/apt/10periodic /etc/apt/apt.conf.d/10periodic
-cp templates/apt/50unattended-upgrades/etc/apt/apt.conf.d/50unattended-upgrades
+ws_setup_automatic_updates
 
 ws_log_header "Configuring firewall."
-sudo apt-get -y install ufw
-
-# Set default rules: deny all incoming traffic, allow all outgoing traffic.
-ufw default deny incoming
-ufw default allow outgoing
-ufw logging on
-
-# Only allow ssh, http, and https.
-ufw allow ssh
-ufw allow http
-ufw allow https
-
-# Enable firewall.
-echo y|ufw enable
+ws_setup_firewall
 
 ws_log_header "Hardening SSH settings."
-sed -i "s/LoginGraceTime 120/LoginGraceTime 30/" /etc/ssh/sshd_config
-sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
-ws_flag_service ssh
+ws_setup_ssh_security
 
 ws_log_header "Configuring fail2ban."
-apt-get -y install fail2ban
-cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-sed -ri "/^\[ssh-ddos\]$/,/^\[/s/enabled[[:blank:]]*=.*/enabled = true/" /etc/fail2ban/jail.local
-ws_flag_service fail2ban
+ws_setup_fail2ban
 
 ws_log_header "Configuring warpspeed user."
-
-# Add the user and specify the shell.
-useradd -m -s /bin/bash $WARPSPEED_USER
-
-# Set the user password.
-echo "$WARPSPEED_USER:$PASSWORD" | chpasswd
-
-# Add the user to the sudo and www-data groups.
-adduser $WARPSPEED_USER sudo
-adduser $WARPSPEED_USER www-data
-
-# Ensure .ssh dir exists.
-mkdir -p ~/.ssh
-
-# Add the warpspeed ssh key, overwriting any existing keys.
-echo "# WARPSPEED" > ~/.ssh/authorized_keys
-echo "$SSHKEY" >> ~/.ssh/authorized_keys
-
-# Add the .ssh dir for the new user and copy over the authorized keys.
-mkdir -p /home/warpspeed/.ssh
-cp ~/.ssh/authorized_keys /home/$WARPSPEED_USER/.ssh/authorized_keys
+ws_create_user $WARPSPEED_USER $PASSWORD sudo www-data
 
 ws_log_header "Configuring ssh keys and known hosts."
-ws_setup_ssh_keys
-
-# Update directory permissions for the new user.
-chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER
-chmod -R 755 /home/$WARPSPEED_USER
-chmod 0700 /home/$WARPSPEED_USER/.ssh
-chmod 0600 /home/$WARPSPEED_USER/.ssh/authorized_keys
+ws_setup_ssh_keys $SSHKEY
 
 ws_log_header "Configuring bash profile."
 ws_setup_bash_profile

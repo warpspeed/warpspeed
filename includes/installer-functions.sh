@@ -37,6 +37,22 @@ ws_run_system_updates() {
     apt-get -y install python-software-properties build-essential git-core
 }
 
+ws_create_user() {
+    local USER=$1; shift
+    local PASS=$2; shift
+    useradd -m -s /bin/bash $USER
+    echo "$USER:$PASS" | chpasswd
+    for group in "$@"; do
+        adduser $USER $group
+    done
+}
+
+ws_setup_automatic_updates() {
+    apt-get -y install unattended-upgrades
+    cp templates/apt/10periodic /etc/apt/apt.conf.d/10periodic
+    cp templates/apt/50unattended-upgrades/etc/apt/apt.conf.d/50unattended-upgrades
+}
+
 ws_setup_bash_profile() {
     cp -f $WARPSPEED_ROOT/templates/bash/.bash_profile ~/.bash_profile
     sed -i "s/{{user}}/$WARPSPEED_USER/g" ~/.bash_profile
@@ -45,9 +61,48 @@ ws_setup_bash_profile() {
 }
 
 ws_setup_ssh_keys() {
+    local SSHKEY=$1
     ssh-keygen -f /home/$WARPSPEED_USER/.ssh/id_rsa -t rsa -N ''
     ssh-keyscan -H github.com >> /home/$WARPSPEED_USER/.ssh/known_hosts
     ssh-keyscan -H bitbucket.org >> /home/$WARPSPEED_USER/.ssh/known_hosts
+    if [ -n "$SSHKEY" ]; then
+        # Add the warpspeed ssh key, overwriting any existing keys.
+        echo "# WARPSPEED" > ~/.ssh/authorized_keys
+        echo "$SSHKEY" >> ~/.ssh/authorized_keys
+        # Add the .ssh dir for the new user and copy over the authorized keys.
+        cp ~/.ssh/authorized_keys /home/$WARPSPEED_USER/.ssh/authorized_keys
+        chmod 0700 /home/$WARPSPEED_USER/.ssh
+        chmod 0600 /home/$WARPSPEED_USER/.ssh/authorized_keys
+    fi
+    chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.ssh
+}
+
+ws_setup_fail2ban() {
+    apt-get -y install fail2ban
+    cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+    sed -ri "/^\[ssh-ddos\]$/,/^\[/s/enabled[[:blank:]]*=.*/enabled = true/" /etc/fail2ban/jail.local
+    ws_flag_service fail2ban
+}
+
+ws_setup_ssh_security() {
+    sed -i "s/LoginGraceTime 120/LoginGraceTime 30/" /etc/ssh/sshd_config
+    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+    sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
+    ws_flag_service ssh
+}
+
+ws_setup_firewall() {
+    apt-get -y install ufw
+    # Set default rules: deny all incoming traffic, allow all outgoing traffic.
+    ufw default deny incoming
+    ufw default allow outgoing
+    ufw logging on
+    # Only allow ssh, http, and https.
+    ufw allow ssh
+    ufw allow http
+    ufw allow https
+    # Enable firewall.
+    echo y|ufw enable
 }
 
 ws_run_installers() {
