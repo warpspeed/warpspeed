@@ -69,6 +69,7 @@ echo "env[APP_ENV] = $APP_ENV" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.con
 # Create an init.d file for managing this php-fpm site.
 sudo cp -f $WARPSPEED_ROOT/templates/php/php5-fpm-init.d /etc/init.d/php5-fpm-$SITE_NAME
 sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/init.d/php5-fpm-$SITE_NAME
+sudo initctl reload-configuration
 
 if [ $PUSHREPO -eq 1 ]; then
     ws_create_git_push_deploy_repo 
@@ -76,7 +77,7 @@ fi
 
 # Restart services.
 sudo service nginx reload
-sudo service php5-fpm restart
+sudo service php5-fpm-$SITE_NAME restart
 
 echo "New site created at: /home/$WARPSPEED_USER/sites/$SITE_NAME"
 echo "Setup DNS or modify your hosts file to allow site to be accessed via: $SITE_NAME."

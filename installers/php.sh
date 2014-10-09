@@ -49,9 +49,11 @@ php5enmod mcrypt
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 
-# Stop the service and remove the init.d file.
+# Stop the service, remove startup files, and add modified checkconf.
 service php5-fpm stop
 rm /etc/init.d/php5-fpm
+rm /etc/init/php5-fpm.conf
+#cp $WARPSPEED_ROOT/templates/php/php5-fpm-checkconf /usr/lib/php5/php5-fpm-checkconf-warpspeed
 
 # todo
 # if [ $WARPSPEED_USER == "vagrant" ]; then
