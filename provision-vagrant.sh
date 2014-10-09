@@ -49,10 +49,10 @@ if [ -z "$HOSTNAME" ]; then
 fi
 
 ws_log_header "Configuring hostname."
-ws_set_hostname $HOSTNAME
+ws_set_hostname "$HOSTNAME"
 
 ws_log_header "Configuring timezone."
-ws_set_timezone UTC
+ws_set_timezone "UTC"
 
 ws_log_header "Running system updates."
 ws_run_system_updates

@@ -66,10 +66,10 @@ if [ -z "$WARPSPEED_USER" ]; then
 fi
 
 ws_log_header "Configuring hostname."
-ws_set_hostname $HOSTNAME
+ws_set_hostname "$HOSTNAME"
 
 ws_log_header "Configuring timezone."
-ws_set_timezone UTC
+ws_set_timezone "UTC"
 
 ws_log_header "Running system updates."
 ws_run_system_updates
@@ -90,7 +90,7 @@ ws_log_header "Configuring warpspeed user."
 ws_create_user $WARPSPEED_USER $PASSWORD sudo www-data
 
 ws_log_header "Configuring ssh keys and known hosts."
-ws_setup_ssh_keys $SSHKEY
+ws_setup_ssh_keys "$SSHKEY"
 
 ws_log_header "Configuring bash profile."
 ws_setup_bash_profile
