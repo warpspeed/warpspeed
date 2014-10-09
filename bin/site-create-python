@@ -24,7 +24,7 @@ fi
 echo "Creating site..."
 
 # Create the site directory structure.
-ws_create_site_structure $1
+ws_create_site_structure $1 public tmp
 
 # Configure nginx to serve the new site.
 ws_create_nginx_site $1 site-python.conf

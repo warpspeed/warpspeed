@@ -42,7 +42,7 @@ fi
 echo "Creating site..."
 
 # Create the site directory structure.
-ws_create_site_structure $SITE_NAME
+ws_create_site_structure $SITE_NAME public
 
 # Copy the site template to the public directory.
 cp $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
