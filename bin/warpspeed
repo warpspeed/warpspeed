@@ -31,6 +31,14 @@ ws_show_usage() {
     exit 1
 }
 
+ws_sudo_test() {
+    sudo echo "Testing sudo" > /dev/null
+    if [ $? -ne 0 ]; then
+        echo "You must have your sudo password to continue." 1>&2
+        exit 1
+    fi
+}
+
 ws_site_error_on_missing() {
     local SITE_NAME=$1
     if [ ! -d "/home/$WARPSPEED_USER/sites/$SITE_NAME" ]; then
@@ -289,6 +297,7 @@ fi
 
 case $COMMAND in
     site:create)
+        ws_sudo_test
         if [ -z "$1" ] || [ -z "$2" ]; then
             ws_show_usage
         else
@@ -296,9 +305,11 @@ case $COMMAND in
         fi
     ;;
     site:remove)
+        ws_sudo_test
         ws_site_remove $1
     ;;
     site:reload)
+        ws_sudo_test
         ws_site_reload $1
     ;;
     site:update)
@@ -312,9 +323,11 @@ case $COMMAND in
         ws_mysql_db_backup $@
     ;;
     postgres:db)
+        ws_sudo_test
         ws_postgres_db_create $@
     ;;
     postgres:backup)
+        ws_sudo_test
         ws_postgres_db_backup $@
     ;;
     update)
