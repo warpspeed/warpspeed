@@ -1,0 +1,326 @@
+#!/bin/bash
+
+# Make sure warpspeed environment vars are available before proceeding.
+if [ -z "$WARPSPEED_ROOT" ] || [ -z "$WARPSPEED_USER" ]; then
+    echo "Error: It appears that this server was not provisioned with Warpspeed."
+    echo "WARPSPEED_ROOT and WARPSPEED_USER env vars were not found."
+    exit 1
+fi
+
+ws_show_usage() {
+    echo -en "\n"
+    echo "Usage: warpspeed [COMMAND] [PARAMS] [OPTIONS]..."
+    echo "  This is the WarpSpeed.io server management utility."
+    echo "  For complete information, visit: warpspeed.io."
+    echo -en "\n"
+    echo "Available commands:" 1>&2
+    echo -en "\n"
+    echo "  site:create [TYPE] [NAME] [OPTIONS]..."
+    echo "  site:remove [NAME]"
+    echo "  site:reload [NAME]"
+    echo "  site:update [NAME]"
+    echo -en "\n"
+    echo "  mysql:db [DBNAME] [USER] [PASS]"
+    echo "  mysql:backup [DBNAME]"
+    echo -en "\n"
+    echo "  postgres:db [DBNAME] [USER] [PASS]"
+    echo "  postgres:backup [DBNAME]"
+    echo -en "\n"
+    echo "  update"
+    echo -en "\n"
+    exit 1
+}
+
+ws_site_error_on_missing() {
+    local SITE_NAME=$1
+    if [ ! -d "/home/$WARPSPEED_USER/sites/$SITE_NAME" ]; then
+        echo "Error: The site /home/$WARPSPEED_USER/sites/$SITE_NAME does not exist."
+        exit 1
+    fi
+}
+
+ws_site_create_git_push_deploy_repo() {
+    local SITE_NAME=$1
+    mkdir -p "/home/$WARPSPEED_USER/repos/$SITE_NAME.git"
+    cd "/home/$WARPSPEED_USER/repos/$SITE_NAME.git"
+    git init --bare
+    cp $WARPSPEED_ROOT/templates/git/post-receive /home/$WARPSPEED_USER/repos/$SITE_NAME.git/hooks/post-receive
+    sed -i "s/{{domain}}/$SITE_NAME/g" /home/$WARPSPEED_USER/repos/$SITE_NAME.git/hooks/post-receive
+    chmod +x "/home/$WARPSPEED_USER/repos/$SITE_NAME.git/hooks/post-receive"
+    chown -R $WARPSPEED_USER:$WARPSPEED_USER "/home/$WARPSPEED_USER/repos/$SITE_NAME.git"
+    echo "Use: git remote add web ssh://$WARPSPEED_USER@$SITE_NAME/home/$WARPSPEED_USER/repos/$SITE_NAME.git"
+    echo "and: git push web +master:refs/heads/master"
+}
+
+ws_site_create_structure() {
+    local SITE_NAME=$1
+    shift
+    mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME"
+    for folder in "$@"; do
+        mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME/$folder"
+    done
+    chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/sites/$SITE_NAME
+}
+
+ws_site_setup_nginx() {
+    local SITE_NAME=$1
+    local SITE_TEMPLATE=$2
+    sudo cp -f $WARPSPEED_ROOT/templates/nginx/$SITE_TEMPLATE /etc/nginx/sites-available/$SITE_NAME
+    sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/nginx/sites-available/$SITE_NAME
+    sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/nginx/sites-available/$SITE_NAME
+    sudo ln -fs /etc/nginx/sites-available/$SITE_NAME /etc/nginx/sites-enabled/$SITE_NAME
+}
+
+ws_site_create() {
+    local TYPE=$1
+    local SITE_NAME=$2
+    local APP_ENV="production"
+    local FORCE=0
+    local PUSHREPO=0
+
+    for arg in "$@"; do
+    case $arg in
+        --env=*)
+            local APP_ENV="${arg#*=}"
+        ;;
+        --force)
+            local FORCE=1
+        ;;
+        --push)
+            local PUSHREPO=1
+        ;;
+    esac; done
+
+    # Make sure the site doesn't already exist.
+    if [ -d "/home/$WARPSPEED_USER/sites/$SITE_NAME" ] && [ $FORCE -ne 1 ]; then
+        echo "Error: The site /home/$WARPSPEED_USER/sites/$SITE_NAME already exists. Use --force to overwrite configuration."
+        exit 1
+    fi
+
+    case $TYPE in
+        php)
+            ws_site_create_structure $SITE_NAME public
+
+            # Copy the site template to the public directory.
+            cp $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
+
+            # Create site specific directories for uploads and sessions.
+            sudo mkdir -p /var/lib/php/$SITE_NAME/upload
+            sudo mkdir -p /var/lib/php/$SITE_NAME/session
+            sudo chown -R $WARPSPEED_USER:www-data /var/lib/php/$SITE_NAME
+
+            # Setup a site specific php-fpm configuration.
+            sudo cp -f $WARPSPEED_ROOT/templates/php/www.conf /etc/php5/fpm/pool.d/$SITE_NAME.conf
+            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
+            sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
+
+            # Set APP_ENV environment variable in php fpm pool.
+            echo "env[APP_ENV] = $APP_ENV" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.conf
+
+            # Create an init.d file for managing this php-fpm site.
+            sudo cp -f $WARPSPEED_ROOT/templates/php/php5-fpm-init.conf /etc/init/php5-fpm-$SITE_NAME.conf
+            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/init/php5-fpm-$SITE_NAME.conf
+
+            # When using vagrant, the upstart service needs to wait till the vagrant share is mounted.
+            if [ $WARPSPEED_USER == "vagrant" ]; then
+                sudo sed -i "s/{{starton}}/vagrant-mounted/g" /etc/init/php5-fpm-$SITE_NAME.conf
+            else
+                sudo sed -i "s/{{starton}}/runlevel [2345]/g" /etc/init/php5-fpm-$SITE_NAME.conf
+            fi
+
+            # Reload the upstart config to make the new service available.
+            sudo initctl reload-configuration
+
+            # Start/restart the new service.
+            sudo service php5-fpm-$SITE_NAME restart
+
+            # Configure the nginx site.
+            ws_site_setup_nginx $SITE_NAME site-php.conf
+        ;;
+        ruby)
+            ws_site_create_structure $SITE_NAME public tmp
+            ws_site_setup_nginx $SITE_NAME site-ruby.conf
+            cp $WARPSPEED_ROOT/templates/ruby/config.ru /home/$WARPSPEED_USER/sites/$SITE_NAME
+        ;;
+        python)
+            ws_site_create_structure $SITE_NAME public tmp
+            ws_site_setup_nginx $SITE_NAME site-python.conf
+            cp $WARPSPEED_ROOT/templates/python/passenger_wsgi.py /home/$WARPSPEED_USER/sites/$SITE_NAME
+        ;;
+        *)
+            ws_show_usage
+        ;;
+    esac;
+
+    # Ensure that the ownership settings on the site folder are correct.
+    chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/sites/$SITE_NAME
+
+    sudo service nginx reload
+
+    if [ $PUSHREPO -eq 1 ]; then
+        ws_site_create_git_push_deploy_repo $SITE_NAME
+    fi
+
+    echo "New site created at: /home/$WARPSPEED_USER/sites/$SITE_NAME"
+    echo "Setup DNS or modify your hosts file to allow site to be accessed via: $SITE_NAME."
+}
+
+ws_site_reload() {
+    local SITE_NAME=$1
+    ws_site_error_on_missing $SITE_NAME
+    sudo service nginx reload
+    if [ -f "/etc/init/php5-fpm-$SITE_NAME.conf" ]; then
+        sudo service php5-fpm-$SITE_NAME reload
+    else
+        touch /home/$WARPSPEED_USER/sites/$SITE_NAME/tmp/restart.txt
+    fi
+}
+
+ws_site_remove() {
+    local SITE_NAME=$1
+    ws_site_error_on_missing $SITE_NAME
+    # Remove nginx config and reload.
+    sudo rm -f /etc/nginx/sites-enabled/$SITE_NAME
+    sudo rm -f /etc/nginx/sites-available/$SITE_NAME
+    sudo service nginx reload
+    # Check if we need to cleanup php files and services.
+    if [ -f /etc/init/php5-fpm-$SITE_NAME.conf ]; then
+        sudo service php5-fpm-$SITE_NAME stop
+        sudo rm -f /etc/init/php5-fpm-$SITE_NAME.conf
+        sudo initctl reload-configuration
+        sudo rm -rf /var/lib/php/$SITE_NAME
+        sudo rm -f /var/log/php/$SITE_NAME-*.log
+        sudo rm -f /etc/php5/fpm/pool.d/$SITE_NAME.conf
+    fi
+    # Remove site files and push repo. 
+    rm -rf /home/$WARPSPEED_USER/sites/$SITE_NAME
+    rm -rf /home/$WARPSPEED_USER/repos/$SITE_NAME.git
+    echo "All files for site $SITE_NAME have been removed."
+}
+
+ws_mysql_db_create() {
+    local DB=$1
+    local USER=$2
+    local PASS=$3
+    local SQL="CREATE DATABASE IF NOT EXISTS $DB;"
+    if [ -n "$USER" ] && [ -n "$PASS" ]; then
+        local SQL="${SQL}GRANT ALL ON $DB.* TO '$USER'@'localhost' IDENTIFIED BY '$PASS';FLUSH PRIVILEGES;"
+    fi
+    echo "Please enter your mysql root database password when prompted."
+    mysql -uroot -p -e "$SQL"
+    if [ $? -eq 0 ]; then
+        if [ -n "$USER" ] && [ -n "$PASS" ]; then
+            echo "Database: '$DB' was created successfully and is accessible by user: '$USER'."
+        else
+            echo "Database: '$DB' was created successfully."
+        fi
+    fi
+}
+
+ws_mysql_db_backup() {
+    # Place backup in sites directory.
+    # This is mainly because the sites directory is shared with the host in vagrant.
+    local BACKUPDIR="/home/$WARPSPEED_USER/sites/db-backups"
+    local DB=$1
+    # Create the db backup directory if it doesn't exist.
+    if [ ! -d $BACKUPDIR ]; then
+        mkdir -p $BACKUPDIR
+        echo "Created the db backup directory."
+    fi
+
+    echo "Please enter your mysql root database password when prompted."
+
+    if [ -z "$DB" ]; then
+        local FILENAME="$BACKUPDIR/all_dbs_$(date +%Y-%m-%d_%H%M%S).sql.gz"
+        mysqldump -u root -p --add-drop-table --all-databases | gzip -9 > $FILENAME
+    else
+        local FILENAME="$BACKUPDIR/$DB_$(date +%Y-%m-%d_%H%M%S).sql.gz"
+        mysqldump -u root -p --add-drop-table $1 | gzip -9 > $FILENAME
+    fi
+
+    if [ $? -eq 0 ]; then
+        echo "Backup saved to: $FILENAME"
+    fi
+}
+
+ws_postgres_db_create() {
+    local DB=$1
+    local USER=$2
+    local PASS=$3
+
+    echo "Please enter your sudo password when prompted."
+
+    if [ -n "$USER" ] && [ -n "$PASS" ]; then
+        echo "CREATE ROLE $USER WITH LOGIN ENCRYPTED PASSWORD '$PASS';" | sudo -i -u postgres psql
+        sudo -i -u postgres createdb --owner=$USER $DB
+    else
+        sudo -i -u postgres createdb $DB
+    fi
+
+    if [ $? -eq 0 ]; then
+        if [ -n "$USER" ] && [ -n "$PASS" ]; then
+            echo "Database: '$DB' was created successfully and is accessible by user: '$USER'."
+        else
+            echo "Database: '$DB' was created successfully."
+        fi
+    fi
+}
+
+ws_postgres_db_backup() {
+    # Place backup in sites directory.
+    # This is mainly because the sites directory is shared with the host in vagrant.
+    local BACKUPDIR="/home/$WARPSPEED_USER/sites/db-backups"
+    local DB=$1
+    # Create the db backup directory if it doesn't exist.
+    if [ ! -d $BACKUPDIR ]; then
+        mkdir -p $BACKUPDIR
+        echo "Created the db backup directory."
+    fi
+    # todo
+}
+
+# Determine what command is being called.
+COMMAND=$1
+shift
+
+if [ -z "$COMMAND" ]; then
+    ws_show_usage
+fi
+
+case $COMMAND in
+    site:create)
+        if [ -z "$1" ] || [ -z "$2" ]; then
+            ws_show_usage
+        else
+            ws_site_create $@
+        fi
+    ;;
+    site:remove)
+        ws_site_remove $1
+    ;;
+    site:reload)
+        ws_site_reload $1
+    ;;
+    site:update)
+        ws_site_error_on_missing $1
+        git -C "/home/$WARPSPEED_USER/sites/$1" pull origin master
+    ;;
+    mysql:db)
+        ws_mysql_db_create $@
+    ;;
+    mysql:backup)
+        ws_mysql_db_backup $@
+    ;;
+    postgres:db)
+        ws_postgres_db_create $@
+    ;;
+    postgres:backup)
+        ws_postgres_db_backup $@
+    ;;
+    update)
+        git -C "$WARPSPEED_ROOT" pull origin master
+    ;;
+    *)
+        ws_show_usage
+    ;;
+esac

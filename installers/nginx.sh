@@ -8,7 +8,7 @@ if [ -z "$WARPSPEED_ROOT" ] || [ -z "$WARPSPEED_USER" ]; then
 fi
 
 # Import the warpspeed functions.
-source $WARPSPEED_ROOT/includes/functions.sh
+source $WARPSPEED_ROOT/includes/installer-functions.sh
 
 # Require that the root user be executing this script.
 ws_require_root
