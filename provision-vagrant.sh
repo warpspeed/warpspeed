@@ -64,7 +64,7 @@ ws_log_header "Configuring ssh keys and known hosts."
 ws_setup_ssh_keys
 
 ws_log_header "Running specified installers."
-ws_run_installers "$INSTALLERS"
+ws_run_installers "${INSTALLERS[@]}"
 
 ws_log_header "Restarting services."
 ws_restart_flagged_services

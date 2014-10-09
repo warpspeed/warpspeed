@@ -145,7 +145,7 @@ ws_log_header "Configuring bash profile."
 ws_setup_bash_profile
 
 ws_log_header "Running specified installers."
-ws_run_installers "$INSTALLERS"
+ws_run_installers "${INSTALLERS[@]}"
 
 ws_log_header "Restarting services."
 ws_restart_flagged_services
