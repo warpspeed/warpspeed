@@ -44,15 +44,16 @@ echo "Creating site..."
 # Create the site directory structure.
 ws_create_site_structure $SITE_NAME
 
-# Create site specific directories for uploads and sessions.
-mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME/tmp/session"
-mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME/tmp/upload"
-
 # Copy the site template to the public directory.
 cp $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
 
 # Ensure that the ownership settings on the site folder are correct.
 chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/sites/$SITE_NAME
+
+# Create site specific directories for uploads and sessions.
+sudo mkdir -p /var/lib/php/$SITE_NAME/upload
+sudo mkdir -p /var/lib/php/$SITE_NAME/session
+sudo chown -R $WARPSPEED_USER:www-data /var/lib/php/$SITE_NAME
 
 # Configure nginx to serve the new site.
 ws_create_nginx_site $SITE_NAME site-php.conf
