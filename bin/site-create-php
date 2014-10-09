@@ -45,7 +45,7 @@ echo "Creating site..."
 ws_create_site_structure $SITE_NAME public
 
 # Copy the site template to the public directory.
-cp $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
+cp -f $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
 
 # Ensure that the ownership settings on the site folder are correct.
 chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/sites/$SITE_NAME

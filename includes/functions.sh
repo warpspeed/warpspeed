@@ -58,8 +58,8 @@ ws_create_site_structure() {
 ws_create_nginx_site() {
     local SITE_NAME=$1
     local SITE_TEMPLATE=$2
-    sudo cp $WARPSPEED_ROOT/templates/nginx/$SITE_TEMPLATE /etc/nginx/sites-available/$SITE_NAME
+    sudo cp -f $WARPSPEED_ROOT/templates/nginx/$SITE_TEMPLATE /etc/nginx/sites-available/$SITE_NAME
     sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/nginx/sites-available/$SITE_NAME
     sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/nginx/sites-available/$SITE_NAME
-    sudo ln -s /etc/nginx/sites-available/$SITE_NAME /etc/nginx/sites-enabled/$SITE_NAME
+    sudo ln -fs /etc/nginx/sites-available/$SITE_NAME /etc/nginx/sites-enabled/$SITE_NAME
 }
