@@ -13,7 +13,7 @@ ws_show_usage() {
     echo "  This is the WarpSpeed.io server management utility."
     echo "  For complete information, visit: warpspeed.io."
     echo -en "\n"
-    echo "Available commands:" 1>&2
+    echo "Available commands:"
     echo -en "\n"
     echo "  site:create [TYPE] [NAME] [OPTIONS]..."
     echo "  site:remove [NAME]"
