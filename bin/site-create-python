@@ -11,13 +11,13 @@ fi
 source $WARPSPEED_ROOT/includes/functions.sh
 
 if [ -z "$1" ]; then
-    echo "Usage: $0 hostname"
+    echo "Usage: $0 site.com"
     exit 1
 fi
 
 # Make sure the site doesn't already exist.
-if [ -d "/home/$USER/sites/$1" ]; then
-    echo "Error: The site /home/$USER/sites/$1 already exists."
+if [ -d "/home/$WARPSPEED_ROOT/sites/$1" ]; then
+    echo "Error: The site /home/$WARPSPEED_ROOT/sites/$1 already exists."
     exit 1
 fi
 
