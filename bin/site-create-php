@@ -69,6 +69,15 @@ echo "env[APP_ENV] = $APP_ENV" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.con
 # Create an init.d file for managing this php-fpm site.
 sudo cp -f $WARPSPEED_ROOT/templates/php/php5-fpm-init.conf /etc/init/php5-fpm-$SITE_NAME.conf
 sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/init/php5-fpm-$SITE_NAME.conf
+
+# When using vagrant, the upstart service needs to wait till the vagrant share is mounted.
+if [ $WARPSPEED_USER == "vagrant" ]; then
+    sudo sed -i "s/{{starton}}/vagrant-mounted/g" /etc/init/php5-fpm-$SITE_NAME.conf
+else
+    sudo sed -i "s/{{starton}}/runlevel [2345]/g" /etc/init/php5-fpm-$SITE_NAME.conf
+fi
+
+# Reload the upstart config to make the new service available.
 sudo initctl reload-configuration
 
 if [ $PUSHREPO -eq 1 ]; then
