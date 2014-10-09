@@ -170,7 +170,7 @@ echo "$SSHKEY" >> ~/.ssh/authorized_keys
 mkdir -p /home/warpspeed/.ssh
 cp ~/.ssh/authorized_keys /home/$WARPSPEED_USER/.ssh/authorized_keys
 
-# Generate a keypair for the new user and add common site to the known hosts.
+# Generate a keypair for the new user and add common sites to the known hosts.
 ssh-keygen -f /home/$WARPSPEED_USER/.ssh/id_rsa -t rsa -N ''
 ssh-keyscan -H github.com >> /home/$WARPSPEED_USER/.ssh/known_hosts
 ssh-keyscan -H bitbucket.org >> /home/$WARPSPEED_USER/.ssh/known_hosts

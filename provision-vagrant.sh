@@ -89,6 +89,11 @@ sed -i "s/{{user}}/$WARPSPEED_USER/g" ~/.bash_profile
 cp -f ~/.bash_profile /home/$WARPSPEED_USER/.bash_profile
 chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.bash_profile
 
+# Generate a keypair for the new user and add common sites to the known hosts.
+ssh-keygen -f /home/$WARPSPEED_USER/.ssh/id_rsa -t rsa -N ''
+ssh-keyscan -H github.com >> /home/$WARPSPEED_USER/.ssh/known_hosts
+ssh-keyscan -H bitbucket.org >> /home/$WARPSPEED_USER/.ssh/known_hosts
+
 ###############################################################################
 # Run all installers that were passed as arguments.
 ###############################################################################
