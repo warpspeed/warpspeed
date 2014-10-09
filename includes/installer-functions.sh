@@ -40,11 +40,14 @@ ws_run_system_updates() {
 ws_create_user() {
     local USER=$1; shift
     local PASS=$2; shift
-    useradd -m -s /bin/bash $USER
+    useradd -m -s /bin/bash $USERNAME
     echo "$USER:$PASS" | chpasswd
+    echo "$USER ALL=(ALL) ALL" >> /etc/sudoers
     for group in "$@"; do
         adduser $USER $group
     done
+    # Make sure home directory permissions are correct.
+    chown -R $USER:$USER /home/$USER
 }
 
 ws_setup_automatic_updates() {
