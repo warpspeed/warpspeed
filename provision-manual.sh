@@ -1,23 +1,62 @@
 #!/bin/bash
 
-# This script is for manual provisioning without warpspeed.io.
-# You must provide values for these variables.
-HOSTNAME=""
-PASSWORD=""
-SSHKEY=""
+# Default set of installers to run.
+DEFAULT_INSTALLERS="--nginx --php --mysql --postgres"
 
-# Setup github repo to pull from.
-REPOPATH="warpspeedio/warpspeed"
+# Read input from user.
+echo "System hostname (default: $HOSTNAME):"
+read SYSTEM_HOSTNAME
+
+echo "WarpSpeed repository to pull from (default: warpspeedio/warpspeed):"
+read REPOPATH
+
+echo "WarpSpeed user (default: warpspeed):"
+read USERNAME
+
+echo "WarpSpeed user password (for sudo):"
+read PASSWORD
+
+echo "SSH public key for authentication (password access will be disabled):"
+read SSHKEY
+
+echo "Installers options (default: $DEFAULT_INSTALLERS):"
+read INSTALLERS
+
+# Process inputs, defaults, and required params.
+if [ -z "$SYSTEM_HOSTNAME" ]; then
+    SYSTEM_HOSTNAME=$HOSTNAME
+fi
+
+if [ -z "$REPOPATH" ]; then
+    REPOPATH="warpspeedio/warpspeed"
+fi
+
+if [ -z "$USERNAME" ]; then
+    USERNAME="warpspeed"
+fi
+
+if [ -z "$PASSWORD" ]; then
+    echo "Error: WarpSpeed user password is required."
+    exit 1
+fi
+
+if [ -z "$SSHKEY" ]; then
+    echo "Error: WarpSpeed user SSH public key is required."
+    exit 1
+fi
+
+if [ -z "$INSTALLERS" ]; then
+    INSTALLERS=$DEFAULT_INSTALLERS
+fi
 
 # Ensure git is installed.
 apt-get -y install git-core
 
 # Clone warpspeed repository if it is not present.
-if [ ! -d /home/warpspeed/.warpspeed ]; then
-    mkdir -p /home/warpspeed
-    git clone https://github.com/$REPOPATH.git /home/warpspeed/.warpspeed
-    chown -R warpspeed:warpspeed /home/warpspeed/.warpspeed
+if [ ! -d /home/$USERNAME/.warpspeed ]; then
+    mkdir -p /home/$USERNAME
+    git clone https://github.com/$REPOPATH.git /home/$USERNAME/.warpspeed
 fi
 
 # Run the provisioning script and pass along any desired installer params.
-source /home/warpspeed/.warpspeed/provision.sh --h=$HOSTNAME --p="$PASSWORD" --k="$SSHKEY" --nginx --php
+source /home/$USERNAME/.warpspeed/provision.sh -h="$SYSTEM_HOSTNAME" -u="$USERNAME" -p="$PASSWORD" -k="$SSHKEY" $INSTALLERS
