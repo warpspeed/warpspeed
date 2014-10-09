@@ -67,8 +67,8 @@ sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
 echo "env[APP_ENV] = $APP_ENV" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.conf
 
 # Create an init.d file for managing this php-fpm site.
-sudo cp -f $WARPSPEED_ROOT/templates/php/php5-fpm-init.d /etc/init.d/php5-fpm-$SITE_NAME
-sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/init.d/php5-fpm-$SITE_NAME
+sudo cp -f $WARPSPEED_ROOT/templates/php/php5-fpm-init.conf /etc/init.d/php5-fpm-$SITE_NAME.conf
+sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/init.d/php5-fpm-$SITE_NAME.conf
 sudo initctl reload-configuration
 
 if [ $PUSHREPO -eq 1 ]; then
