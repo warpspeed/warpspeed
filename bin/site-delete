@@ -29,18 +29,17 @@ rm -rf /home/$WARPSPEED_USER/repos/$SITE_NAME.git
 sudo rm -f /etc/nginx/sites-enabled/$SITE_NAME
 sudo rm -f /etc/nginx/sites-available/$SITE_NAME
 
-sudo rm -rf /var/lib/php/$SITE_NAME
-sudo rm -f /var/log/php/$SITE_NAME-*.log
-sudo rm -f /etc/php5/fpm/pool.d/$SITE_NAME.conf
-
 # Reload nginx configs
 sudo service nginx reload
 
-# Check if we need to cleanup php upstart files and stop php fpm site.
+# Check if we need to cleanup php files and services.
 if [ -f /etc/init/php5-fpm-$SITE_NAME.conf ]; then
     sudo service php5-fpm-$SITE_NAME stop
     sudo rm -f /etc/init/php5-fpm-$SITE_NAME.conf
     sudo initctl reload-configuration
+    sudo rm -rf /var/lib/php/$SITE_NAME
+    sudo rm -f /var/log/php/$SITE_NAME-*.log
+    sudo rm -f /etc/php5/fpm/pool.d/$SITE_NAME.conf
 fi
 
 echo "All files for site $1 have been removed."
