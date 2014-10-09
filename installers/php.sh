@@ -49,7 +49,9 @@ php5enmod mcrypt
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 
-service php5-fpm restart
+# Stop the service and remove the init.d file.
+service php5-fpm stop
+rm /etc/init.d/php5-fpm
 
 # todo
 # if [ $WARPSPEED_USER == "vagrant" ]; then
