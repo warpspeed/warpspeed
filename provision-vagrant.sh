@@ -7,7 +7,7 @@ WARPSPEED_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 WARPSPEED_USER="vagrant"
 
 # Include the warpspeed functions file.
-source $WARPSPEED_ROOT/includes/functions.sh
+source $WARPSPEED_ROOT/includes/installer-functions.sh
 
 # Require that the root user be executing this script.
 ws_require_root
