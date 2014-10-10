@@ -115,7 +115,7 @@ ws_site_create() {
             # Create site specific directories for uploads and sessions.
             sudo mkdir -p /var/lib/php/$SITE_NAME/upload
             sudo mkdir -p /var/lib/php/$SITE_NAME/session
-            sudo chown -R $WARPSPEED_USER:www-data /var/lib/php/$SITE_NAME
+            sudo chown -R $WARPSPEED_USER:$WARPSPEED_USER /var/lib/php/$SITE_NAME
 
             # Setup a site specific php-fpm configuration.
             sudo cp -f $WARPSPEED_ROOT/templates/php/www.conf /etc/php5/fpm/pool.d/$SITE_NAME.conf

@@ -22,11 +22,11 @@ mv -f /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf.orig
 
 # Create directory for logging.
 mkdir -p /var/log/php
-chown -R www-data:www-data /var/log/php
+chown -R $WARPSPEED_USER:www-data /var/log/php
 
 # Create directory for uploads and sessions.
 mkdir -p /var/lib/php
-chown -R www-data:www-data /var/lib/php
+chown -R $WARPSPEED_USER:www-data /var/lib/php
 
 # Backup original and then modify php ini settings for fpm.
 PHPINI=/etc/php5/fpm/php.ini

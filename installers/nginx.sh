@@ -32,6 +32,7 @@ mkdir -p /var/log/nginx
 # Backup original nginx config and use template version.
 mv -f /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
 cp $WARPSPEED_ROOT/templates/nginx/nginx.conf /etc/nginx/nginx.conf
+sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/nginx/nginx.conf
 
 # Create a location for nginx configuration includes and copy include templates.
 mkdir -p /etc/nginx/includes
