@@ -38,10 +38,11 @@ ws_run_system_updates() {
 }
 
 ws_create_user() {
-    local USER=$1; shift
-    local PASS=$2; shift
-    useradd -m -s /bin/bash $USERNAME
-    usermod -p $PASS $USER
+    local USER=$1
+    local PASS=$2
+    shift 2
+    useradd -m -s /bin/bash $USER
+    echo "$USER:$PASS" | chpasswd
     echo "$USER ALL=(ALL) ALL" >> /etc/sudoers
     for group in "$@"; do
         adduser $USER $group
