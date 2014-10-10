@@ -1,11 +1,13 @@
 #!/bin/bash
 
+# Update the site with the latest code push.
 GIT_WORK_TREE=/home/warpspeed/sites/{{domain}}/
 export GIT_WORK_TREE
 git checkout -f
 
-if [ -x "/home/warpspeed/sites/{{domain}}/post-receive.sh" ]; then
+# If a user defined post-receive script exists, run it.
+if [ -f "/home/warpspeed/sites/{{domain}}/post-receive.sh" ]; then
     cd "/home/warpspeed/sites/{{domain}}"
-    echo "Executing user-defined post-receive script."
-    ./post-receive.sh
+    echo "Executing user-defined post-receive script..."
+    bash post-receive.sh
 fi
