@@ -178,7 +178,7 @@ ws_site_reload() {
     ws_site_error_on_missing $SITE_NAME
     sudo service nginx reload
     if [ -f "/etc/init/php5-fpm-$SITE_NAME.conf" ]; then
-        sudo service php5-fpm-$SITE_NAME reload
+        sudo service php5-fpm-$SITE_NAME restart
     else
         touch /home/$WARPSPEED_USER/sites/$SITE_NAME/tmp/restart.txt
     fi
