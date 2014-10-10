@@ -77,6 +77,9 @@ ws_run_system_updates
 ws_log_header "Configuring unattended upgrades."
 ws_setup_automatic_updates
 
+ws_log_header "Allocating swap space."
+ws_setup_swap_space "1G"
+
 ws_log_header "Configuring firewall."
 ws_setup_firewall
 

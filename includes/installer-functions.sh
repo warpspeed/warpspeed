@@ -56,6 +56,17 @@ ws_setup_automatic_updates() {
     cp templates/apt/50unattended-upgrades/etc/apt/apt.conf.d/50unattended-upgrades
 }
 
+ws_setup_swap_space() {
+    local SWAP=$(free -m | grep -oP '^Swap:[\s]*\K[0-9]*')
+    local SIZE=$1
+    if [ $SWAP -eq 0 ]; then
+        fallocate -l $SIZE /swap
+        mkswap /swap
+        echo "/swap none swap sw 0 0" >> /etc/fstab
+        swapon -ae
+    fi
+}
+
 ws_setup_bash_profile() {
     cp -f $WARPSPEED_ROOT/templates/bash/.bash_profile ~/.bash_profile
     sed -i "s/{{user}}/$WARPSPEED_USER/g" ~/.bash_profile
