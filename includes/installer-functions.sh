@@ -91,7 +91,6 @@ ws_setup_fail2ban() {
 ws_setup_ssh_security() {
     sed -i "s/LoginGraceTime 120/LoginGraceTime 30/" /etc/ssh/sshd_config
     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-    sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
     ws_flag_service ssh
 }
 
