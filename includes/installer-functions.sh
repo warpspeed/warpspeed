@@ -43,7 +43,6 @@ ws_create_user() {
     shift 2
     useradd -m -s /bin/bash $USER
     echo "$USER:$PASS" | chpasswd
-    echo "$USER ALL=(ALL) ALL" >> /etc/sudoers
     for group in "$@"; do
         adduser $USER $group
     done
