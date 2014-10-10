@@ -109,8 +109,8 @@ ws_site_create() {
         php)
             ws_site_create_structure $SITE_NAME public
 
-            # Copy the site template to the public directory.
-            cp $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
+            # Copy the site template to the public directory (do not overwrite if exists).
+            cp -n $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
 
             # Create site specific directories for uploads and sessions.
             sudo mkdir -p /var/lib/php/$SITE_NAME/upload
@@ -148,12 +148,12 @@ ws_site_create() {
         ruby)
             ws_site_create_structure $SITE_NAME public tmp
             ws_site_setup_nginx $SITE_NAME site-ruby.conf
-            cp $WARPSPEED_ROOT/templates/ruby/config.ru /home/$WARPSPEED_USER/sites/$SITE_NAME
+            cp -n $WARPSPEED_ROOT/templates/ruby/config.ru /home/$WARPSPEED_USER/sites/$SITE_NAME
         ;;
         python)
             ws_site_create_structure $SITE_NAME public tmp
             ws_site_setup_nginx $SITE_NAME site-python.conf
-            cp $WARPSPEED_ROOT/templates/python/passenger_wsgi.py /home/$WARPSPEED_USER/sites/$SITE_NAME
+            cp -n $WARPSPEED_ROOT/templates/python/passenger_wsgi.py /home/$WARPSPEED_USER/sites/$SITE_NAME
         ;;
         *)
             ws_show_usage
