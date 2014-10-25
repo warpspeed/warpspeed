@@ -7,7 +7,7 @@ DEFAULT_INSTALLERS="--nginx --php --mysql --postgres"
 echo "System hostname (default: $HOSTNAME):"
 read SYSTEM_HOSTNAME
 
-echo "WarpSpeed repository to pull from (default: warpspeedio/warpspeed):"
+echo "WarpSpeed repository to pull from (default: warpspeed/warpspeed):"
 read REPOPATH
 
 echo "WarpSpeed user (default: warpspeed):"
@@ -28,7 +28,7 @@ if [ -z "$SYSTEM_HOSTNAME" ]; then
 fi
 
 if [ -z "$REPOPATH" ]; then
-    REPOPATH="warpspeedio/warpspeed"
+    REPOPATH="warpspeed/warpspeed"
 fi
 
 if [ -z "$USERNAME" ]; then
