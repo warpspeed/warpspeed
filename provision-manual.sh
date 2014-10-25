@@ -1,18 +1,12 @@
 #!/bin/bash
 
+# Visit http://warpspeed.io for complete information.
+# (c) Turner Logic, LLC. Distributed under the GNU GPL v2.0.
+
 # Default set of installers to run.
 DEFAULT_INSTALLERS="--nginx --php --mysql --postgres"
 
 # Read input from user.
-echo "System hostname (default: $HOSTNAME):"
-read SYSTEM_HOSTNAME
-
-echo "WarpSpeed repository to pull from (default: warpspeed/warpspeed):"
-read REPOPATH
-
-echo "WarpSpeed user (default: warpspeed):"
-read USERNAME
-
 echo "WarpSpeed user password (for sudo):"
 read PASSWORD
 
@@ -22,18 +16,9 @@ read SSHKEY
 echo "Installers options (default: $DEFAULT_INSTALLERS):"
 read INSTALLERS
 
-# Process inputs, defaults, and required params.
-if [ -z "$SYSTEM_HOSTNAME" ]; then
-    SYSTEM_HOSTNAME=$HOSTNAME
-fi
-
-if [ -z "$REPOPATH" ]; then
-    REPOPATH="warpspeed/warpspeed"
-fi
-
-if [ -z "$USERNAME" ]; then
-    USERNAME="warpspeed"
-fi
+# Setup defaults and process params.
+REPOPATH="warpspeed/warpspeed"
+USERNAME="warpspeed"
 
 if [ -z "$PASSWORD" ]; then
     echo "Error: WarpSpeed user password is required."
@@ -59,4 +44,4 @@ if [ ! -d /home/$USERNAME/.warpspeed ]; then
 fi
 
 # Run the provisioning script and pass along any desired installer params.
-source /home/$USERNAME/.warpspeed/provision.sh -h="$SYSTEM_HOSTNAME" -u="$USERNAME" -p="$PASSWORD" -k="$SSHKEY" $INSTALLERS
+source /home/$USERNAME/.warpspeed/provision.sh -h="$HOSTNAME" -u="$USERNAME" -p="$PASSWORD" -k="$SSHKEY" $INSTALLERS

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Visit http://warpspeed.io for complete information.
+# (c) Turner Logic, LLC. Distributed under the GNU GPL v2.0.
+
 # Determine the directory this script is executing from.
 WARPSPEED_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 

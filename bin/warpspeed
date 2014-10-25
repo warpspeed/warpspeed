@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Visit http://warpspeed.io for complete information.
+# (c) Turner Logic, LLC. Distributed under the GNU GPL v2.0.
+
 # Make sure warpspeed environment vars are available before proceeding.
 if [ -z "$WARPSPEED_ROOT" ] || [ -z "$WARPSPEED_USER" ]; then
     echo "Error: It appears that this server was not provisioned with Warpspeed."
