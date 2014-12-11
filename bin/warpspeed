@@ -148,6 +148,10 @@ ws_site_create() {
             # Configure the nginx site.
             ws_site_setup_nginx $SITE_NAME site-php.conf
         ;;
+        html)
+            ws_site_create_structure $SITE_NAME public
+            ws_site_setup_nginx $SITE_NAME site-html.conf
+        ;;
         ruby)
             ws_site_create_structure $SITE_NAME public tmp
             ws_site_setup_nginx $SITE_NAME site-ruby.conf
