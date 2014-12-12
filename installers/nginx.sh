@@ -17,7 +17,7 @@ ws_require_root
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7
 apt-get -y install apt-transport-https ca-certificates
 echo 'deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main' >> /etc/apt/sources.list.d/passenger.list
-chmod 600 /etc/apt/sources.list.d/passenger.list
+chmod 644 /etc/apt/sources.list.d/passenger.list
 apt-get update
 
 # Install nginx and passenger.
