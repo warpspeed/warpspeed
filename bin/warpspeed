@@ -44,8 +44,9 @@ ws_sudo_test() {
 
 ws_site_error_on_missing() {
     local SITE_NAME=$1
-    if [ ! -d "/home/$WARPSPEED_USER/sites/$SITE_NAME" ]; then
-        echo "Error: The site /home/$WARPSPEED_USER/sites/$SITE_NAME does not exist."
+    local SITE_HOME=$(ws_get_site_home $SITE_NAME)
+    if [ ! -d "$SITE_HOME" ]; then
+        echo "Error: The site $SITE_HOME does not exist."
         exit 1
     fi
 }
@@ -64,13 +65,26 @@ ws_site_create_git_push_deploy_repo() {
 }
 
 ws_site_create_structure() {
-    local SITE_NAME=$1
-    shift
-    mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME"
+    local SITE_TYPE=$1
+    local SITE_NAME=$2
+    local SITE_HOME=$(ws_get_site_home $SITE_NAME)
+    shift 2 # shift off first 2 parameters
+
+    # make site directory
+    mkdir -p "$SITE_HOME"
+
+    # create site config if it doesn't already exist
+    if [ ! -f "$SITE_HOME/warpspeed.conf" ]; then
+        echo "SITE_TYPE=$SITE_TYPE" >> "$SITE_HOME/warpspeed.conf"
+    fi
+
+    # create all specified folders
     for folder in "$@"; do
-        mkdir -p "/home/$WARPSPEED_USER/sites/$SITE_NAME/$folder"
+        mkdir -p "$SITE_HOME/$folder"
     done
-    chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/sites/$SITE_NAME
+
+    # ensure the proper permissions are set
+    chown -R $WARPSPEED_USER:$WARPSPEED_USER $SITE_HOME
 }
 
 ws_site_setup_nginx() {
@@ -88,6 +102,7 @@ ws_site_create() {
     local APP_ENV="production"
     local FORCE=0
     local PUSHREPO=0
+    local SITE_HOME=$(ws_get_site_home $SITE_NAME)
 
     for arg in "$@"; do
     case $arg in
@@ -103,17 +118,17 @@ ws_site_create() {
     esac; done
 
     # Make sure the site doesn't already exist.
-    if [ -d "/home/$WARPSPEED_USER/sites/$SITE_NAME" ] && [ $FORCE -ne 1 ]; then
-        echo "Error: The site /home/$WARPSPEED_USER/sites/$SITE_NAME already exists. Use --force to overwrite configuration."
+    if [ -d "$SITE_HOME" ] && [ $FORCE -ne 1 ]; then
+        echo "Error: The site $SITE_HOME already exists. Use --force to overwrite configuration."
         exit 1
     fi
 
     case $TYPE in
         php)
-            ws_site_create_structure $SITE_NAME public
+            ws_site_create_structure php $SITE_NAME public
 
             # Copy the site template to the public directory (do not overwrite if exists).
-            cp -n $WARPSPEED_ROOT/templates/php/index.php /home/$WARPSPEED_USER/sites/$SITE_NAME/public
+            cp -n $WARPSPEED_ROOT/templates/php/index.php $SITE_HOME/public
 
             # Create site specific directories for uploads and sessions.
             sudo mkdir -p /var/lib/php/$SITE_NAME/upload
@@ -149,18 +164,18 @@ ws_site_create() {
             ws_site_setup_nginx $SITE_NAME site-php.conf
         ;;
         html)
-            ws_site_create_structure $SITE_NAME public
+            ws_site_create_structure html $SITE_NAME public
             ws_site_setup_nginx $SITE_NAME site-html.conf
         ;;
         ruby)
-            ws_site_create_structure $SITE_NAME public tmp
+            ws_site_create_structure ruby $SITE_NAME public tmp
             ws_site_setup_nginx $SITE_NAME site-ruby.conf
-            cp -n $WARPSPEED_ROOT/templates/ruby/config.ru /home/$WARPSPEED_USER/sites/$SITE_NAME
+            cp -n $WARPSPEED_ROOT/templates/ruby/config.ru $SITE_HOME
         ;;
         python)
-            ws_site_create_structure $SITE_NAME public tmp
+            ws_site_create_structure python $SITE_NAME public tmp
             ws_site_setup_nginx $SITE_NAME site-python.conf
-            cp -n $WARPSPEED_ROOT/templates/python/passenger_wsgi.py /home/$WARPSPEED_USER/sites/$SITE_NAME
+            cp -n $WARPSPEED_ROOT/templates/python/passenger_wsgi.py $SITE_HOME
         ;;
         *)
             ws_show_usage
@@ -168,7 +183,7 @@ ws_site_create() {
     esac;
 
     # Ensure that the ownership settings on the site folder are correct.
-    chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/sites/$SITE_NAME
+    chown -R $WARPSPEED_USER:$WARPSPEED_USER $SITE_HOME
 
     sudo service nginx reload
 
@@ -176,7 +191,7 @@ ws_site_create() {
         ws_site_create_git_push_deploy_repo $SITE_NAME
     fi
 
-    echo "New site created at: /home/$WARPSPEED_USER/sites/$SITE_NAME"
+    echo "New site created at: $SITE_HOME"
     echo "Setup DNS or modify your hosts file to allow site to be accessed via: $SITE_NAME."
 }
 
@@ -184,32 +199,46 @@ ws_site_reload() {
     local SITE_NAME=$1
     ws_site_error_on_missing $SITE_NAME
     sudo service nginx reload
-    if [ -f "/etc/init/php5-fpm-$SITE_NAME.conf" ]; then
-        sudo service php5-fpm-$SITE_NAME restart
-    else
-        touch /home/$WARPSPEED_USER/sites/$SITE_NAME/tmp/restart.txt
-    fi
+    local SITE_HOME=$(ws_get_site_home $SITE_NAME)
+    local SITE_TYPE=$(ws_get_config_value SITE_TYPE $SITE_NAME)
+    case $SITE_TYPE in
+        php)
+            sudo service php5-fpm-$SITE_NAME restart
+        ;;
+        ruby)
+            touch $SITE_HOME/tmp/restart.txt
+        ;;
+        python)
+            touch $SITE_HOME/tmp/restart.txt
+        ;;
+    esac;
 }
 
 ws_site_remove() {
     local SITE_NAME=$1
+    local SITE_HOME=$(ws_get_site_home $SITE_NAME)
+    local SITE_REPO=$(ws_get_site_repo $SITE_NAME)
     ws_site_error_on_missing $SITE_NAME
     # Remove nginx config and reload.
     sudo rm -f /etc/nginx/sites-enabled/$SITE_NAME
     sudo rm -f /etc/nginx/sites-available/$SITE_NAME
     sudo service nginx reload
-    # Check if we need to cleanup php files and services.
-    if [ -f /etc/init/php5-fpm-$SITE_NAME.conf ]; then
-        sudo service php5-fpm-$SITE_NAME stop
-        sudo rm -f /etc/init/php5-fpm-$SITE_NAME.conf
-        sudo initctl reload-configuration
-        sudo rm -rf /var/lib/php/$SITE_NAME
-        sudo rm -f /var/log/php/$SITE_NAME-*.log
-        sudo rm -f /etc/php5/fpm/pool.d/$SITE_NAME.conf
-    fi
+    
+    local SITE_TYPE=$(ws_get_config_value SITE_TYPE $SITE_NAME)
+    case $SITE_TYPE in
+        php)
+            sudo service php5-fpm-$SITE_NAME stop
+            sudo rm -f /etc/init/php5-fpm-$SITE_NAME.conf
+            sudo initctl reload-configuration
+            sudo rm -rf /var/lib/php/$SITE_NAME
+            sudo rm -f /var/log/php/$SITE_NAME-*.log
+            sudo rm -f /etc/php5/fpm/pool.d/$SITE_NAME.conf
+        ;;
+    esac;
+
     # Remove site files and push repo. 
-    rm -rf /home/$WARPSPEED_USER/sites/$SITE_NAME
-    rm -rf /home/$WARPSPEED_USER/repos/$SITE_NAME.git
+    rm -rf $SITE_HOME
+    rm -rf $SITE_REPO
     echo "All files for site $SITE_NAME have been removed."
 }
 
@@ -292,6 +321,23 @@ ws_postgres_db_backup() {
         echo "Created the db backup directory."
     fi
     # todo
+}
+
+ws_get_site_home() {
+    local SITE_NAME=$1
+    echo "/home/$WARPSPEED_USER/sites/$SITE_NAME"
+}
+
+ws_get_site_repo() {
+    local SITE_NAME=$1
+    echo "/home/$WARPSPEED_USER/repos/$SITE_NAME.git"
+}
+
+ws_get_config_value() {
+    local KEY=$1
+    local SITE_NAME=$2
+    local SITE_HOME=$(ws_get_site_home $SITE_NAME)
+    sed -n -e "/$KEY[ ]*=/p" $SITE_HOME/warpspeed.conf | sed "s/^$KEY[ ]*=[\" ]*\([a-z0-9A-Z\-\_ ]*\)[\" ]*$/\1/"
 }
 
 # Determine what command is being called.
