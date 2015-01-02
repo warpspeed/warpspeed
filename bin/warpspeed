@@ -73,11 +73,6 @@ ws_site_create_structure() {
     # make site directory
     mkdir -p "$SITE_HOME"
 
-    # create site config if it doesn't already exist
-    if [ ! -f "$SITE_HOME/warpspeed.conf" ]; then
-        echo "SITE_TYPE=$SITE_TYPE" >> "$SITE_HOME/warpspeed.conf"
-    fi
-
     # create all specified folders
     for folder in "$@"; do
         mkdir -p "$SITE_HOME/$folder"
@@ -182,6 +177,9 @@ ws_site_create() {
         ;;
     esac;
 
+    # Update warpspeed configuration file.
+    ws_set_config_value SITE_TYPE $SITE_NAME $TYPE
+
     # Ensure that the ownership settings on the site folder are correct.
     chown -R $WARPSPEED_USER:$WARPSPEED_USER $SITE_HOME
 
@@ -239,6 +237,10 @@ ws_site_remove() {
     # Remove site files and push repo. 
     rm -rf $SITE_HOME
     rm -rf $SITE_REPO
+
+    # Remove config settings.
+    ws_clear_config_values $SITE_NAME
+
     echo "All files for site $SITE_NAME have been removed."
 }
 
@@ -336,8 +338,25 @@ ws_get_site_repo() {
 ws_get_config_value() {
     local KEY=$1
     local SITE_NAME=$2
-    local SITE_HOME=$(ws_get_site_home $SITE_NAME)
-    sed -n -e "/$KEY[ ]*=/p" $SITE_HOME/warpspeed.conf | sed "s/^$KEY[ ]*=[\" ]*\([a-z0-9A-Z\-\_ ]*\)[\" ]*$/\1/"
+    sed -n -e "/$SITE_NAME:$KEY[ ]*=/p" $WARPSPEED_ROOT/warpspeed.conf | sed "s/^$SITE_NAME:$KEY[ ]*=[\" ]*\([a-z0-9A-Z\-\_ ]*\)[\" ]*$/\1/"
+}
+
+ws_set_config_value() {
+    local KEY=$1
+    local SITE_NAME=$2
+    local VALUE=$3
+    if [ -f "$WARPSPEED_ROOT/warpspeed.conf" ] && [ -n "$(ws_get_config_value $KEY $SITE_NAME)" ]; then
+        # Entry already exists, replace it.
+        sed -i "/^$SITE_NAME:$KEY[ ]*=/c\$SITE_NAME:$KEY=$VALUE" "$WARPSPEED_ROOT/warpspeed.conf"
+    else
+        # Entry doesn't exist, add it.
+        echo "$SITE_NAME:$KEY=$VALUE" >> "$WARPSPEED_ROOT/warpspeed.conf"
+    fi
+}
+
+ws_clear_config_values() {
+    local SITE_NAME=$1
+    sed -i "/^$SITE_NAME:/d" "$WARPSPEED_ROOT/warpspeed.conf"
 }
 
 # Determine what command is being called.

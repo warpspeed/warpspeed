@@ -15,9 +15,20 @@ ws_require_root
 
 apt-get -y install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties
 
-cd /usr/local
-git clone git://github.com/sstephenson/rbenv.git rbenv
-git clone git://github.com/sstephenson/ruby-build.git rbenv/plugins/ruby-build
+#cd /usr/local
+#git clone git://github.com/sstephenson/rbenv.git rbenv
+#git clone git://github.com/sstephenson/ruby-build.git rbenv/plugins/ruby-build
+
+git clone git://github.com/sstephenson/rbenv.git ~/.rbenv
+git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.ws_env_ruby
+echo 'eval "$(rbenv init -)"' >> ~/.ws_env_ruby
+
+rbenv install 2.1.5
+gem install bundler
+
+export RBENV_VERSION=2.1.5
 
 chown -R $WARPSPEED_USER:$WARPSPEED_USER rbenv
 
