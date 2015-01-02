@@ -77,6 +77,9 @@ ws_set_timezone "UTC"
 ws_log_header "Running system updates."
 ws_run_system_updates
 
+ws_log_header "Installing common packages."
+ws_setup_common_packages
+
 ws_log_header "Configuring unattended upgrades."
 ws_setup_automatic_updates
 

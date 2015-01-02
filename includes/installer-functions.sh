@@ -37,7 +37,10 @@ ws_set_timezone() {
 ws_run_system_updates() {
     apt-get update
     apt-get -y upgrade
-    apt-get -y install python-software-properties build-essential git-core
+}
+
+ws_setup_common_packages() {
+    apt-get -y install python-software-properties build-essential git-core supervisor
 }
 
 ws_create_user() {
