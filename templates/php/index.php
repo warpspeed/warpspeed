@@ -20,7 +20,7 @@
 </head>
 <body>
     <div id="heading">
-        Warspeed says hello, from PHP!
+        Warpspeed says hello, from PHP!
     </div>
     <?php phpinfo(); ?>
 </body>
