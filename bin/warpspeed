@@ -350,7 +350,7 @@ ws_get_site_repo() {
 ws_get_config_value() {
     local KEY=$1
     local SITE_NAME=$2
-    sed -n -e "/$SITE_NAME:$KEY[ ]*=/p" $WARPSPEED_ROOT/warpspeed.conf | sed "s/^$SITE_NAME:$KEY[ ]*=[\" ]*\([a-z0-9A-Z\-\_ ]*\)[\" ]*$/\1/"
+    sed -n -e "/^$SITE_NAME:$KEY[ ]*=/p" $WARPSPEED_ROOT/warpspeed.conf | sed "s/^$SITE_NAME:$KEY[ ]*=[\" ]*\([a-z0-9A-Z\-\_ ]*\)[\" ]*$/\1/"
 }
 
 ws_set_config_value() {
