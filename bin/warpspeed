@@ -126,7 +126,7 @@ ws_site_create() {
 
     # Make sure the site doesn't already exist.
     if [ -d "$SITE_HOME" ] && [ $FORCE -ne 1 ]; then
-        echo "Error: The site $SITE_HOME already exists. Use --force to overwrite configuration."
+        echo "Error: The directory $SITE_HOME already exists. Use --force to overwrite/re-create configuration."
         exit 1
     fi
 
@@ -228,12 +228,24 @@ ws_site_remove() {
     local SITE_NAME=$1
     local SITE_HOME=$(ws_get_site_home $SITE_NAME)
     local SITE_REPO=$(ws_get_site_repo $SITE_NAME)
+    local REMOVE_ALL=0
+
+    # Gather passed flags.
+    for arg in "$@"; do
+    case $arg in
+        --all)
+            local REMOVE_ALL=1
+        ;;
+    esac; done
+
     ws_site_error_on_missing $SITE_NAME
+
     # Remove nginx config and reload.
     sudo rm -f /etc/nginx/sites-enabled/$SITE_NAME
     sudo rm -f /etc/nginx/sites-available/$SITE_NAME
     sudo service nginx reload
     
+    # Perform conditional removals based on site type.
     local SITE_TYPE=$(ws_get_config_value SITE_TYPE $SITE_NAME)
     case $SITE_TYPE in
         php)
@@ -246,14 +258,17 @@ ws_site_remove() {
         ;;
     esac;
 
-    # Remove site files and push repo. 
-    rm -rf $SITE_HOME
-    rm -rf $SITE_REPO
-
     # Remove config settings.
     ws_clear_config_values $SITE_NAME
 
-    echo "All files for site $SITE_NAME have been removed."
+    # Remove site files and push repo only if --all flag was passed.
+    if [ $REMOVE_ALL -eq 1 ]; then
+        rm -rf $SITE_HOME
+        rm -rf $SITE_REPO
+        echo "All configuration and files for site $SITE_NAME have been removed."
+    else
+        echo "All configuration for site $SITE_NAME has been removed."
+    fi
 }
 
 ws_mysql_db_create() {
@@ -390,7 +405,7 @@ case $COMMAND in
     ;;
     site:remove)
         ws_sudo_test
-        ws_site_remove $1
+        ws_site_remove $@
     ;;
     site:reload)
         ws_sudo_test
