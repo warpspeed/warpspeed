@@ -85,13 +85,13 @@ ws_site_create_structure() {
 ws_site_setup_nginx() {
     local SITE_NAME=$1
     local SITE_TEMPLATE=$2
-    local WILDCARDS=$3
+    local WILDCARD=$3
     sudo cp -f $WARPSPEED_ROOT/templates/nginx/$SITE_TEMPLATE /etc/nginx/sites-available/$SITE_NAME
-    if [ $WILDCARDS -eq 1 ]; then
-        # wildcards are enabled, place a '.' before the domain when setting server_name
+    if [ $WILDCARD -eq 1 ]; then
+        # wildcard subdomains enabled, place a '.' before the domain when setting server_name
         sudo sed -i "s/{{server_name}}/.$SITE_NAME/g" /etc/nginx/sites-available/$SITE_NAME
     else
-        # no wildcards, just use domain as server name
+        # no wildcard subdomains, just use domain as server name
         sudo sed -i "s/{{server_name}}/$SITE_NAME/g" /etc/nginx/sites-available/$SITE_NAME
     fi
     sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/nginx/sites-available/$SITE_NAME
@@ -105,7 +105,7 @@ ws_site_create() {
     local APP_ENV="production"
     local FORCE=0
     local PUSHREPO=0
-    local WILDCARDS=0
+    local WILDCARD=0
     local SITE_HOME=$(ws_get_site_home $SITE_NAME)
 
     for arg in "$@"; do
@@ -119,8 +119,8 @@ ws_site_create() {
         --push)
             local PUSHREPO=1
         ;;
-        --wildcards)
-            local WILDCARDS=1
+        --wildcard)
+            local WILDCARD=1
         ;;
     esac; done
 
@@ -168,20 +168,20 @@ ws_site_create() {
             sudo service php5-fpm-$SITE_NAME restart
 
             # Configure the nginx site.
-            ws_site_setup_nginx $SITE_NAME site-php.conf $WILDCARDS
+            ws_site_setup_nginx $SITE_NAME site-php.conf $WILDCARD
         ;;
         html)
             ws_site_create_structure html $SITE_NAME public
-            ws_site_setup_nginx $SITE_NAME site-html.conf $WILDCARDS
+            ws_site_setup_nginx $SITE_NAME site-html.conf $WILDCARD
         ;;
         ruby)
             ws_site_create_structure ruby $SITE_NAME public tmp
-            ws_site_setup_nginx $SITE_NAME site-ruby.conf $WILDCARDS
+            ws_site_setup_nginx $SITE_NAME site-ruby.conf $WILDCARD
             cp -n $WARPSPEED_ROOT/templates/ruby/config.ru $SITE_HOME
         ;;
         python)
             ws_site_create_structure python $SITE_NAME public tmp
-            ws_site_setup_nginx $SITE_NAME site-python.conf $WILDCARDS
+            ws_site_setup_nginx $SITE_NAME site-python.conf $WILDCARD
             cp -n $WARPSPEED_ROOT/templates/python/passenger_wsgi.py $SITE_HOME
         ;;
         *)
