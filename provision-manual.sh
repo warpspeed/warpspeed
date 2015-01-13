@@ -34,6 +34,9 @@ if [ -z "$INSTALLERS" ]; then
     INSTALLERS=$DEFAULT_INSTALLERS
 fi
 
+# Run update to make sure git-core will be available.
+apt-get update
+
 # Ensure git is installed.
 apt-get -y install git-core
 
