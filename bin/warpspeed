@@ -430,7 +430,7 @@ case $COMMAND in
         ws_postgres_db_backup $@
     ;;
     update)
-        git clone --depth=1 https://github.com/warpspeed/warpspeed "$WARPSPEED_ROOT/tmp-clone" && rm -rf "$WARPSPEED_ROOT/.git" && mv "$WARPSPEED_ROOT/tmp-clone/.git" "$WARPSPEED_ROOT" && rm -rf "$WARPSPEED_ROOT/tmp-clone" && git -C "$WARPSPEED_ROOT" reset --hard
+        git clone --branch warpspeed-v1 --depth=1 https://github.com/warpspeed/warpspeed "$WARPSPEED_ROOT/tmp-clone" && rm -rf "$WARPSPEED_ROOT/.git" && mv "$WARPSPEED_ROOT/tmp-clone/.git" "$WARPSPEED_ROOT" && rm -rf "$WARPSPEED_ROOT/tmp-clone" && git -C "$WARPSPEED_ROOT" reset --hard
     ;;
     *)
         ws_show_usage
