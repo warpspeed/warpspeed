@@ -187,7 +187,7 @@ ws_site_create() {
         node)
             ws_site_create_structure node $SITE_NAME public tmp
             ws_site_setup_nginx $SITE_NAME site-node.conf $WILDCARD
-            cp -n $WARPSPEED_ROOT/node/python/passenger_wsgi.py $SITE_HOME
+            cp -n $WARPSPEED_ROOT/templates/node/app.js $SITE_HOME
         ;;
         *)
             ws_show_usage
