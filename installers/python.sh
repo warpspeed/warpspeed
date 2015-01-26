@@ -13,4 +13,4 @@ source $WARPSPEED_ROOT/includes/installer-functions.sh
 # Require that the root user be executing this script.
 ws_require_root
 
-apt-get -y install python-dev python-pip python-virtualenv
+apt-get -y install python-dev python-pip python-virtualenv virtualenvwrapper

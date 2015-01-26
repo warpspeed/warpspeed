@@ -13,8 +13,7 @@ source $WARPSPEED_ROOT/includes/installer-functions.sh
 # Require that the root user be executing this script.
 ws_require_root
 
-
-# todo, improve password handling
+# Obtain password from environment or parameter.
 if [ -z "$PASSWORD" ]; then
     if [ -z "$1" ]; then
         # Password to add to mysql root user must be set or passed in.
@@ -33,12 +32,4 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password password $MY
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQLPASSWORD"
 
 apt-get -y install mysql-server
-
-# sed -i 's/^bind-address.*/bind-address = */' /etc/mysql/my.cnf
-# mysql --user="root" --password="$MYSQLPASSWORD" -e "GRANT ALL ON *.* TO root@'$IPADDRESS' IDENTIFIED BY '$MYSQLPASSWORD';"
-# mysql --user="root" --password="$MYSQLPASSWORD" -e "GRANT ALL ON *.* TO root@'%' IDENTIFIED BY '$MYSQLPASSWORD';"
-# mysql --user="root" --password="$MYSQLPASSWORD" -e "GRANT ALL ON *.* TO warpspeed@'$IPADDRESS' IDENTIFIED BY '$MYSQLPASSWORD';"
-# mysql --user="root" --password="$MYSQLPASSWORD" -e "GRANT ALL ON *.* TO warpspeed@'%' IDENTIFIED BY '$MYSQLPASSWORD';"
-# mysql --user="root" --password="$MYSQLPASSWORD" -e "FLUSH PRIVILEGES;"
-
 service mysql restart

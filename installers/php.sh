@@ -53,12 +53,3 @@ mv composer.phar /usr/local/bin/composer
 service php5-fpm stop
 rm /etc/init.d/php5-fpm
 rm /etc/init/php5-fpm.conf
-#cp $WARPSPEED_ROOT/templates/php/php5-fpm-checkconf /usr/lib/php5/php5-fpm-checkconf-warpspeed
-
-# todo
-# if [ $WARPSPEED_USER == "vagrant" ]; then
-# cat > /home/$WARPSPEED_USER/.ws_env_php << EOF
-# export LARAVEL_ENV="local"
-# EOF
-# chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.ws_env_php
-# fi

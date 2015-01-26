@@ -15,5 +15,4 @@ ws_require_root
 
 apt-get -y install beanstalkd
 sed -i "s/#START=yes/START=yes/g" /etc/default/beanstalkd
-# sed -i "s/BEANSTALKD_LISTEN_ADDR.*/BEANSTALKD_LISTEN_ADDR=0.0.0.0/" /etc/default/beanstalkd
 service beanstalkd restart

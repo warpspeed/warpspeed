@@ -14,5 +14,4 @@ source $WARPSPEED_ROOT/includes/installer-functions.sh
 ws_require_root
 
 apt-get install -y redis-server
-#sed -i 's/bind 127.0.0.1/bind 0.0.0.0/' /etc/redis/redis.conf
 service redis-server restart

@@ -13,12 +13,5 @@ source $WARPSPEED_ROOT/includes/installer-functions.sh
 # Require that the root user be executing this script.
 ws_require_root
 
-# todo work out password issue
-
 aptitude -y install postgresql postgresql-contrib
-
-# sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.3/main/postgresql.conf
-# echo "host    all             all             0.0.0.0/0               md5" | tee -a /etc/postgresql/9.3/main/pg_hba.conf
-# sudo -u postgres psql -c "CREATE ROLE warpspeed LOGIN UNENCRYPTED PASSWORD '$1' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
-
 service postgresql restart
