@@ -173,7 +173,7 @@ ws_site_create() {
         html)
             ws_site_create_structure html $SITE_NAME public
             ws_site_setup_nginx $SITE_NAME site-html.conf $WILDCARD
-            cp -n $WARPSPEED_ROOT/templates/html/index.html $SITE_HOME
+            cp -n $WARPSPEED_ROOT/templates/html/index.html $SITE_HOME/public
         ;;
         ruby)
             ws_site_create_structure ruby $SITE_NAME public tmp
