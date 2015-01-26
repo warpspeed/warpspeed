@@ -13,6 +13,8 @@ source $WARPSPEED_ROOT/includes/installer-functions.sh
 # Require that the root user be executing this script.
 ws_require_root
 
+ws_log_header "Installing beanstalkd."
+
 apt-get -y install beanstalkd
 sed -i "s/#START=yes/START=yes/g" /etc/default/beanstalkd
 service beanstalkd restart

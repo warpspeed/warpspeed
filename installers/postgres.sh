@@ -13,5 +13,7 @@ source $WARPSPEED_ROOT/includes/installer-functions.sh
 # Require that the root user be executing this script.
 ws_require_root
 
+ws_log_header "Installing postgresql."
+
 aptitude -y install postgresql postgresql-contrib
 service postgresql restart

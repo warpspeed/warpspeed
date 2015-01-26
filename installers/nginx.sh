@@ -13,6 +13,8 @@ source $WARPSPEED_ROOT/includes/installer-functions.sh
 # Require that the root user be executing this script.
 ws_require_root
 
+ws_log_header "Installing nginx."
+
 # Add phusion APT repository.
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7
 apt-get -y install apt-transport-https ca-certificates
