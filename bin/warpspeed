@@ -383,7 +383,7 @@ ws_set_config_value() {
     local VALUE=$3
     if [ -f "$WARPSPEED_ROOT/warpspeed.conf" ] && [ -n "$(ws_get_config_value $KEY $SITE_NAME)" ]; then
         # Entry already exists, replace it.
-        sed -i "/^$SITE_NAME:$KEY[ ]*=/c\$SITE_NAME:$KEY=$VALUE" "$WARPSPEED_ROOT/warpspeed.conf"
+        sed -i "/^$SITE_NAME:$KEY[ ]*=/c$SITE_NAME:$KEY=$VALUE" "$WARPSPEED_ROOT/warpspeed.conf"
     else
         # Entry doesn't exist, add it.
         echo "$SITE_NAME:$KEY=$VALUE" >> "$WARPSPEED_ROOT/warpspeed.conf"
