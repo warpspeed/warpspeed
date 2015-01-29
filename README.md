@@ -8,7 +8,7 @@ WarpSpeed is designed for use with Ubuntu 14.04 LTS 64 bit. A variety of install
 
 ### WarpSpeed.io Web Interface
 
-WarpSpeed.io allows you to use all of these scripts very easily through a intuitive web interface. You can connect to your favorite server provider, create a server, install your stack, and deploy your first site with just a few clicks.
+WarpSpeed.io allows you to use all of these scripts very easily through an intuitive web interface. You can connect to your favorite server provider, create a server, install your stack, and deploy your first site with just a few clicks. It also supports additional features such as editing site configuration files and setting up cron jobs.
 
 [https://warpspeed.io](https://warpspeed.io "WarpSpeed.io")
 
@@ -28,6 +28,8 @@ wget -O warpspeed-provisioner.sh https://raw.githubusercontent.com/warpspeed/war
 
 The manual provisioner will ask a few questions. Be prepared with an SSH public key to use for authentication to the server. You will also be able to customize what stack is installed on your server. Look in the `installers` folder of this repository to see what options are available.
 
+If you don't already have an SSH key set up, follow this great guide here: https://help.github.com/articles/generating-ssh-keys/.
+
 Once your server is provisioned, you should be able to SSH to your server by typing the following at your terminal:
 
 <pre>
@@ -36,7 +38,7 @@ ssh warpspeed@server-ip-here
 
 ## Server Management
 
-Once provisioned, you can easily manage your server with the `warpspeed` command. All options will be available via the WarpSpeed.io web interface or by using the scripts manually on your server. Just type `warpspeed` after you have logged into your server and you will see this:
+Once provisioned, you can easily manage your server with the `warpspeed` command. Just type `warpspeed` after you have logged into your server and you will see this:
 
 <pre>
 Usage: warpspeed [COMMAND] [PARAMS] [OPTIONS]...
@@ -46,7 +48,7 @@ Usage: warpspeed [COMMAND] [PARAMS] [OPTIONS]...
 Available commands:
 
   site:create [TYPE] [NAME] [OPTIONS]...
-  site:remove [NAME]
+  site:remove [NAME] [OPTIONS]...
   site:reload [NAME]
   site:update [NAME]
 
