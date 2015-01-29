@@ -82,6 +82,7 @@ ws_setup_bash_profile() {
 
 ws_setup_ssh_keys() {
     local SSHKEY=$1
+    mkdir -p /root/.ssh
     mkdir -p /home/$WARPSPEED_USER/.ssh
     ssh-keygen -f /home/$WARPSPEED_USER/.ssh/id_rsa -t rsa -N ''
     ssh-keyscan -H github.com >> /home/$WARPSPEED_USER/.ssh/known_hosts
