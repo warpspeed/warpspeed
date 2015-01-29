@@ -4,11 +4,17 @@ We make web deployment easy. For complete information, please visit: http://warp
 
 ## Server Provisioning
 
-WarpSpeed is designed for use with Ubuntu 14.04 LTS. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the WarpSpeed.io web interface (coming soon).
+WarpSpeed is designed for use with Ubuntu 14.04 LTS. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
 
-### WarpSpeed.io Web Interface (Coming Soon)
+### WarpSpeed.io Web Interface
 
-WarpSpeed.io will allow you to use all of these scripts very easily through a intuitive web interface. You will be able to connect to your favorite server provider, create a server, install your stack, and deploy your first site with just a few clicks.
+WarpSpeed.io allows you to use all of these scripts very easily through a intuitive web interface. You can connect to your favorite server provider, create a server, install your stack, and deploy your first site with just a few clicks.
+
+[https://warpspeed.io](https://warpspeed.io "WarpSpeed.io")
+
+### Server Providers
+
+The WarpSpeed.io web interface currently supports [Digital Ocean](https://www.digitalocean.com/?refcode=e8387d479043 "Digital Ocean") and [Linode](https://www.linode.com/?r=bed2c06e157de72a8f97d0c7035069800c9b342b "Linode"). It will soon support deployment on any server provider. If you use the WarpSpeed scripts directly, you can deploy to any server provider by following the standalone usage instructions below.
 
 ### Standalone Usage
 
@@ -53,8 +59,26 @@ Available commands:
   update
 </pre>
 
-For complete information on available commands please visit http://warpspeed.io.
+The `TYPE` parameter for the site:create command can be any of the following:
+
+<pre>
+html
+node
+php
+python
+ruby
+</pre>
+
+The `OPTIONS` for the site:create command can be any of the following:
+
+<pre>
+--force     # Forces overwrite of existing configuration for a site folder that is already present.
+--push      # Creates a push repository so that code can be push deployed.
+--wildcard  # Setups us wildcards for nginx so that the site will respond to *.domain.com
+</pre>
+
+For complete information on available commands please visit [https://warpspeed.io](https://warpspeed.io "WarpSpeed.io").
 
 ## License
 
-&copy; Turner Logic, LLC. Distributed under the GNU GPL v2.0.
+&copy; [Turner Logic, LLC](http://turnerlogic.com "Turner Logic"). Distributed under the GNU GPL v2.0.
