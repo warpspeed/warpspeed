@@ -1,10 +1,10 @@
 # WarpSpeed Server Provisioning and Management
 
-We make web deployment easy. For complete information, please visit: http://warpspeed.io
+We make web deployment easy. For complete information, please visit: [https://warpspeed.io](https://warpspeed.io "WarpSpeed.io").
 
 ## Server Provisioning
 
-WarpSpeed is designed for use with Ubuntu 14.04 LTS. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
+WarpSpeed is designed for use with Ubuntu 14.04 LTS 64 bit. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
 
 ### WarpSpeed.io Web Interface
 
@@ -18,7 +18,7 @@ The WarpSpeed.io web interface currently supports [Digital Ocean](https://www.di
 
 ### Standalone Usage
 
-To use the WarpSpeed scripts in a standalone fashion, you first need to create a server. You can use a server like RackSpace, Digital Ocean, Linode, etc. to create your server. Make sure you use an Ubuntu 14.04 LTS base image, regardless of your server provider.
+To use the WarpSpeed scripts in a standalone fashion, you first need to create a server. You can use a server like [RackSpace](http://www.rackspace.com/cloud/servers "RackSpace"), [Digital Ocean](https://www.digitalocean.com/?refcode=e8387d479043 "Digital Ocean"), [Linode](https://www.linode.com/?r=bed2c06e157de72a8f97d0c7035069800c9b342b "Linode"), etc. to create your server. Make sure you use an Ubuntu 14.04 LTS 64 bit base image, regardless of your server provider.
 
 Once you have created your server, log in as root and run the following command:
 
@@ -28,7 +28,7 @@ wget -O warpspeed-provisioner.sh https://raw.githubusercontent.com/warpspeed/war
 
 The manual provisioner will ask a few questions. Be prepared with an SSH public key to use for authentication to the server. You will also be able to customize what stack is installed on your server. Look in the `installers` folder of this repository to see what options are available.
 
-Once your server is provisioned, you should be able to SSH to your server without using a password by typing the following at your terminal:
+Once your server is provisioned, you should be able to SSH to your server by typing the following at your terminal:
 
 <pre>
 ssh warpspeed@server-ip-here
@@ -59,7 +59,7 @@ Available commands:
   update
 </pre>
 
-The `TYPE` parameter for the site:create command can be any of the following:
+The `TYPE` for the `site:create` command can be any of the following:
 
 <pre>
 html
@@ -69,7 +69,7 @@ python
 ruby
 </pre>
 
-The `OPTIONS` for the site:create command can be any of the following:
+The `OPTIONS` for the `site:create` command can be any of the following:
 
 <pre>
 --force     # Forces overwrite of existing configuration for a site folder that is already present.
@@ -77,7 +77,7 @@ The `OPTIONS` for the site:create command can be any of the following:
 --wildcard  # Setups us wildcards for nginx so that the site will respond to *.domain.com
 </pre>
 
-For complete information on available commands please visit [https://warpspeed.io](https://warpspeed.io "WarpSpeed.io").
+For complete information on available commands please visit: [https://warpspeed.io](https://warpspeed.io "WarpSpeed.io").
 
 ## License
 
