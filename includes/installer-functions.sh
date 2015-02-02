@@ -40,7 +40,7 @@ ws_run_system_updates() {
 }
 
 ws_setup_common_packages() {
-    apt-get -y install python-software-properties build-essential git-core supervisor
+    apt-get -y install python-software-properties build-essential git-core supervisor curl zlib1g-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev
 }
 
 ws_create_user() {
