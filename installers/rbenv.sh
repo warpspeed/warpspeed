@@ -18,9 +18,25 @@ ws_log_header "Installing rbenv."
 # Make sure git is installed.
 apt-get -y install git-core
 
-# Clone the rbenv and ruby-build repos.
-git clone git://github.com/sstephenson/rbenv.git /home/$WARPSPEED_USER/.rbenv
+# Clone the rbenv repo.
+git clone https://github.com/sstephenson/rbenv.git /home/$WARPSPEED_USER/.rbenv
+
+# Make sure the plugins and versions directories exist.
+mkdir -p /home/$WARPSPEED_USER/.rbenv/plugins
+mkdir -p /home/warpspeed/.rbenv/versions
+
+# Install commonly used plugins.
 git clone https://github.com/sstephenson/ruby-build.git /home/$WARPSPEED_USER/.rbenv/plugins/ruby-build
+git clone https://github.com/sstephenson/rbenv-vars.git /home/$WARPSPEED_USER/.rbenv/plugins/rbenv-vars
+git clone https://github.com/sstephenson/rbenv-gem-rehash.git /home/$WARPSPEED_USER/.rbenv/plugins/rbenv-gem-rehash
+git clone https://github.com/sstephenson/rbenv-default-gems.git /home/$WARPSPEED_USER/.rbenv/plugins/rbenv-default-gems
+
+# Specify gems to install by default with each new ruby version.
+echo 'rack' > /home/$WARPSPEED_USER/.rbenv/default-gems
+echo 'bundler' >> /home/$WARPSPEED_USER/.rbenv/default-gems
+
+# Don't install docs locally.
+echo "gem: --no-ri --no-rdoc" > ~/.gemrc
 
 # Setup environment.
 echo 'export PATH="/home/$WARPSPEED_USER/.rbenv/bin:$PATH"' >> /home/$WARPSPEED_USER/.bash_profile
