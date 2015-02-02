@@ -86,6 +86,7 @@ ws_site_setup_nginx() {
     local SITE_NAME=$1
     local SITE_TEMPLATE=$2
     local WILDCARD=$3
+    local APP_ENV=$4
     sudo cp -f $WARPSPEED_ROOT/templates/nginx/$SITE_TEMPLATE /etc/nginx/sites-available/$SITE_NAME
     if [ $WILDCARD -eq 1 ]; then
         # wildcard subdomains enabled, place a '.' before the domain when setting server_name
@@ -96,6 +97,7 @@ ws_site_setup_nginx() {
     fi
     sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/nginx/sites-available/$SITE_NAME
     sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/nginx/sites-available/$SITE_NAME
+    sudo sed -i "s/{{environment}}/$APP_ENV/g" /etc/nginx/sites-available/$SITE_NAME
     sudo ln -fs /etc/nginx/sites-available/$SITE_NAME /etc/nginx/sites-enabled/$SITE_NAME
 }
 
@@ -146,9 +148,7 @@ ws_site_create() {
             sudo cp -f $WARPSPEED_ROOT/templates/php/www.conf /etc/php5/fpm/pool.d/$SITE_NAME.conf
             sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
             sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
-
-            # Set APP_ENV environment variable in php fpm pool.
-            echo "env[APP_ENV] = $APP_ENV" | sudo tee -a /etc/php5/fpm/pool.d/$SITE_NAME.conf
+            sudo sed -i "s/{{environment}}/$APP_ENV/g" /etc/php5/fpm/pool.d/$SITE_NAME.conf
 
             # Create an init.d file for managing this php-fpm site.
             sudo cp -f $WARPSPEED_ROOT/templates/php/php5-fpm-init.conf /etc/init/php5-fpm-$SITE_NAME.conf
@@ -168,26 +168,26 @@ ws_site_create() {
             sudo service php5-fpm-$SITE_NAME restart
 
             # Configure the nginx site.
-            ws_site_setup_nginx $SITE_NAME site-php.conf $WILDCARD
+            ws_site_setup_nginx $SITE_NAME site-php.conf $WILDCARD "$APP_ENV"
         ;;
         html)
             ws_site_create_structure html $SITE_NAME public
-            ws_site_setup_nginx $SITE_NAME site-html.conf $WILDCARD
+            ws_site_setup_nginx $SITE_NAME site-html.conf $WILDCARD "$APP_ENV"
             cp -n $WARPSPEED_ROOT/templates/html/index.html $SITE_HOME/public
         ;;
         ruby)
             ws_site_create_structure ruby $SITE_NAME public tmp
-            ws_site_setup_nginx $SITE_NAME site-ruby.conf $WILDCARD
+            ws_site_setup_nginx $SITE_NAME site-ruby.conf $WILDCARD "$APP_ENV"
             cp -n $WARPSPEED_ROOT/templates/ruby/config.ru $SITE_HOME
         ;;
         python)
             ws_site_create_structure python $SITE_NAME public tmp
-            ws_site_setup_nginx $SITE_NAME site-python.conf $WILDCARD
+            ws_site_setup_nginx $SITE_NAME site-python.conf $WILDCARD "$APP_ENV"
             cp -n $WARPSPEED_ROOT/templates/python/passenger_wsgi.py $SITE_HOME
         ;;
         node)
             ws_site_create_structure node $SITE_NAME public tmp
-            ws_site_setup_nginx $SITE_NAME site-node.conf $WILDCARD
+            ws_site_setup_nginx $SITE_NAME site-node.conf $WILDCARD "$APP_ENV"
             cp -n $WARPSPEED_ROOT/templates/node/app.js $SITE_HOME
         ;;
         *)
