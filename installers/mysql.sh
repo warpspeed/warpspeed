@@ -33,5 +33,5 @@ IPADDRESS=$(ifconfig eth0 | awk -F: '/inet addr:/ {print $2}' | awk '{ print $1 
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQLPASSWORD"
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQLPASSWORD"
 
-apt-get -y install mysql-server
+apt-get -y install mysql-server mysql-client libmysqlclient-dev
 service mysql restart

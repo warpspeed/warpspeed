@@ -15,5 +15,5 @@ ws_require_root
 
 ws_log_header "Installing postgresql."
 
-aptitude -y install postgresql postgresql-contrib
+aptitude -y install postgresql postgresql-contrib libpq-dev
 service postgresql restart
