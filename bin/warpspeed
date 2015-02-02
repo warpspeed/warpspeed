@@ -221,15 +221,6 @@ ws_site_reload() {
         php)
             sudo service php5-fpm-$SITE_NAME restart
         ;;
-        ruby)
-            touch $SITE_HOME/tmp/restart.txt
-        ;;
-        python)
-            touch $SITE_HOME/tmp/restart.txt
-        ;;
-        node)
-            touch $SITE_HOME/tmp/restart.txt
-        ;;
     esac;
 }
 
