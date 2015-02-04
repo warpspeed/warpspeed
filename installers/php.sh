@@ -15,7 +15,7 @@ ws_require_root
 
 ws_log_header "Installing php."
 
-apt-get -y install php5 php5-cli php5-pgsql php5-mysql php5-curl php5-mcrypt php5-gd php5-imagick php5-fpm
+apt-get -y install php5 php5-cli php5-pgsql php5-mysql php5-mongo php5-curl php5-mcrypt php5-gd php5-imagick php5-fpm php5-memcached php5-xdebug php5-dev php5-json
 
 # Remove the default php-fpm pool.
 mv -f /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf.orig
@@ -42,10 +42,10 @@ cp $PHPINI $PHPINI.orig
 sed -i 's/^;date.timezone =.*/date.timezone = UTC/' $PHPINI
 sed -i 's@;error_log =.*@error_log = /var/log/php/error-cli.log@' $PHPINI
 
-# Ensure that mcrypt is enabled
+# Ensure that mcrypt is enabled.
 php5enmod mcrypt
 
-# Download and install composer globally
+# Download and install composer globally.
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 

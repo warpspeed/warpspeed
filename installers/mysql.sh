@@ -16,22 +16,38 @@ ws_require_root
 ws_log_header "Installing mysql."
 
 # Obtain password from environment or parameter.
-if [ -z "$PASSWORD" ]; then
+if [ -z "$DB_PASSWORD" ]; then
     if [ -z "$1" ]; then
-        # Password to add to mysql root user must be set or passed in.
+        # Password must be set or passed in, warn and exit.
         echo "Usage: $0 password"
         exit 1
     else
-        MYSQLPASSWORD="$1"
+        DB_PASSWORD="$1"
     fi
-else
-    MYSQLPASSWORD="$PASSWORD"
 fi
 
+# Obtain system IP address.
 IPADDRESS=$(ifconfig eth0 | awk -F: '/inet addr:/ {print $2}' | awk '{ print $1 }')
 
-debconf-set-selections <<< "mysql-server mysql-server/root_password password $MYSQLPASSWORD"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $MYSQLPASSWORD"
+# Pre-set root password.
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_PASSWORD"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_PASSWORD"
 
+# Install mysql.
 apt-get -y install mysql-server mysql-client libmysqlclient-dev
+
+# Configure mysql installation for remote access.
+sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
+mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO root@'%' IDENTIFIED BY '$DB_PASSWORD';FLUSH PRIVILEGES;"
+
+# Create warpspeed user.
+mysql --user="root" --password="$DB_PASSWORD" -e "CREATE USER 'warpspeed'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD';"
+mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO 'warpspeed'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;"
+mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO 'warpspeed'@'%' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;"
+mysql --user="root" --password="$DB_PASSWORD" -e "FLUSH PRIVILEGES;"
+
+# Create sample database.
+mysql --user="root" --password="$DB_PASSWORD" -e "CREATE DATABASE warpspeed;"
+
+# Restart the db server.
 service mysql restart

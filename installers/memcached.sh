@@ -15,5 +15,11 @@ ws_require_root
 
 ws_log_header "Installing memcached."
 
-apt-get install -y memcached
+# Install memcached.
+apt-get -y install memcached
+
+# Configure for external connections.
+sed -i "s/-l\s+127.0.0.1/-l 0.0.0.0/" /etc/memcached.conf
+
+# Restart service.
 service memcached restart

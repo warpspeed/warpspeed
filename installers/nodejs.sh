@@ -15,8 +15,10 @@ ws_require_root
 
 ws_log_header "Installing nodejs."
 
+# Add updated node repository.
 apt-get -y install python-software-properties
 add-apt-repository -y ppa:chris-lea/node.js
 apt-get update
 
+# Install node.
 apt-get -y install nodejs

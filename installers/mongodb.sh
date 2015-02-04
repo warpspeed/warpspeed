@@ -15,10 +15,11 @@ ws_require_root
 
 ws_log_header "Installing mongodb."
 
+# Install mongodb.
 apt-get -y install mongodb-server
 
-# If php is installed, add mongo extension.
-php -v > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-    apt-get -y install php5-mongo
-fi
+# Configure for external connections.
+sed -i "s/^bind_ip = */bind_ip = 0.0.0.0/" /etc/mongod.conf
+
+# Restart service.
+service mongodb restart
