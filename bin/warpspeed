@@ -19,7 +19,7 @@ ws_show_usage() {
     echo "Available commands:"
     echo -en "\n"
     echo "  site:create [TYPE] [NAME] [OPTIONS]..."
-    echo "  site:remove [NAME]"
+    echo "  site:remove [NAME] [OPTIONS]..."
     echo "  site:reload [NAME]"
     echo "  site:update [NAME]"
     echo -en "\n"
