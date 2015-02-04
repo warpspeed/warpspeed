@@ -7,8 +7,11 @@
 DEFAULT_INSTALLERS="--nginx --php --python --rbenv --beanstalkd --mysql --postgresql --mongodb"
 
 # Read input from user.
-echo "WarpSpeed user password (for sudo):"
+echo "WarpSpeed user password (for sudo) (alphanumeric only):"
 read PASSWORD
+
+echo "Database password (alphanumeric only):"
+read DB_PASSWORD
 
 echo "SSH public key for authentication (password access will be disabled):"
 read SSHKEY
@@ -47,4 +50,4 @@ if [ ! -d /home/$USERNAME/.warpspeed ]; then
 fi
 
 # Run the provisioning script and pass along any desired installer params.
-source /home/$USERNAME/.warpspeed/provision.sh -h="$HOSTNAME" -u="$USERNAME" -p="$PASSWORD" -k="$SSHKEY" $INSTALLERS
+source /home/$USERNAME/.warpspeed/provision.sh -h="$HOSTNAME" -u="$USERNAME" -p="$PASSWORD" -d="$DB_PASSWORD" -k="$SSHKEY" $INSTALLERS

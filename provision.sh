@@ -22,6 +22,10 @@ IPADDRESS=$(ws_get_ip_address)
 # Process command line arguments and make sure the required args were passed.
 for arg in "$@"; do
 case $arg in
+    -d=*|--db_password=*)
+        DB_PASSWORD="${arg#*=}"
+        shift
+    ;;
     -h=*|--hostname=*)
         HOSTNAME="${arg#*=}"
         shift
@@ -53,11 +57,12 @@ if [ -z "$HOSTNAME" ] || [ -z "$SSHKEY" ] || [ -z "$PASSWORD" ]; then
     echo "Mandatory arguments:" 1>&2
     echo "  -h, --hostname=HOSTNAME         Hostname to be used for server." 1>&2
     echo "  -k, --sshkey=\"SSH PUBLIC KEY\"   Public key used for authentication to server." 1>&2
-    echo "  -p, --password=PASSWORD         Password for the warpspeed user (and database admins)." 1>&2
+    echo "  -p, --password=PASSWORD         Sudo password (and db password if one is not specified) (alphanumeric only)." 1>&2
     echo -en "\n" 1>&2
     echo "Optional arguments:" 1>&2
     echo "  --installer                     Installer script to run. Ex: --php will run the 'php.sh'" 1>&2
     echo "                                  installer script found in the installers directory." 1>&2
+    echo "  -d, --db_password=PASSWORD      Database password (alphanumeric only)." 1>&2
     echo "  -u, --user=username             Overrides default username (warpspeed)." 1>&2
     echo -en "\n" 1>&2
     exit 1
@@ -65,7 +70,12 @@ fi
 
 # Username defaults to warpspeed if not overridden.
 if [ -z "$WARPSPEED_USER" ]; then
-    $WARPSPEED_USER="warpspeed"
+    WARPSPEED_USER="warpspeed"
+fi
+
+# Database password defaults to sudo password if not specified
+if [ -z "$DB_PASSWORD" ]; then
+    DB_PASSWORD=$PASSWORD
 fi
 
 ws_log_header "Configuring hostname."
