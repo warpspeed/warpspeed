@@ -19,7 +19,7 @@ ws_log_header "Installing mongodb."
 apt-get -y install mongodb-server
 
 # Configure for external connections.
-sed -i "s/^bind_ip = */bind_ip = 0.0.0.0/" /etc/mongod.conf
+sed -i "s/bind_ip = 127.0.0.1/bind_ip = 0.0.0.0/" /etc/mongodb.conf
 
 # Restart service.
 service mongodb restart

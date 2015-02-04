@@ -19,7 +19,7 @@ ws_log_header "Installing redis."
 apt-get -y install redis-server
 
 # Configure for external connections.
-sed -i "s/^bind\s+127.0.0.1/bind 0.0.0.0/" /etc/mongod.conf
+sed -i "s/bind 127.0.0.1/bind 0.0.0.0/" /etc/redis/redis.conf
 
 # Restart service.
 service redis-server restart
