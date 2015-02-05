@@ -36,7 +36,7 @@ echo 'rack' > /home/$WARPSPEED_USER/.rbenv/default-gems
 echo 'bundler' >> /home/$WARPSPEED_USER/.rbenv/default-gems
 
 # Don't install docs locally.
-echo "gem: --no-ri --no-rdoc" > ~/.gemrc
+echo "gem: --no-ri --no-rdoc" > /home/$WARPSPEED_USER/.gemrc
 
 # Setup environment.
 echo 'export PATH="/home/$WARPSPEED_USER/.rbenv/bin:$PATH"' >> /home/$WARPSPEED_USER/.bash_profile
