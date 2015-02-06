@@ -1,0 +1,6 @@
+# Do not allow the default site to fall back to a real site.
+# Return a 444 empty response.
+server {
+    listen 80 default_server;
+    return 444;
+}
