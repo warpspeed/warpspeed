@@ -40,10 +40,10 @@ sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgre
 echo "host    all             all             0.0.0.0/0               md5" | tee -a /etc/postgresql/9.4/main/pg_hba.conf
 
 # Create warpspeed user.
-sudo -u postgres psql -c "CREATE ROLE warpspeed LOGIN UNENCRYPTED PASSWORD '$DB_PASSWORD' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
+sudo -u postgres psql -c "CREATE ROLE $WARPSPEED_USER LOGIN UNENCRYPTED PASSWORD '$DB_PASSWORD' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
 
 # Create sample database.
-sudo -u postgres createdb --owner=warpspeed warpspeed
+sudo -u postgres createdb --owner=$WARPSPEED_USER $WARPSPEED_USER
 
 # Restart the db server.
 service postgresql restart

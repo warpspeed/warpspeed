@@ -41,13 +41,13 @@ sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO root@'%' IDENTIFIED BY '$DB_PASSWORD';FLUSH PRIVILEGES;"
 
 # Create warpspeed user.
-mysql --user="root" --password="$DB_PASSWORD" -e "CREATE USER 'warpspeed'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD';"
-mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO 'warpspeed'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;"
-mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO 'warpspeed'@'%' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;"
+mysql --user="root" --password="$DB_PASSWORD" -e "CREATE USER '$WARPSPEED_USER'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD';"
+mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO '$WARPSPEED_USER'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;"
+mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO '$WARPSPEED_USER'@'%' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;"
 mysql --user="root" --password="$DB_PASSWORD" -e "FLUSH PRIVILEGES;"
 
 # Create sample database.
-mysql --user="root" --password="$DB_PASSWORD" -e "CREATE DATABASE warpspeed;"
+mysql --user="root" --password="$DB_PASSWORD" -e "CREATE DATABASE $WARPSPEED_USER;"
 
 # Restart the db server.
 service mysql restart
