@@ -25,8 +25,13 @@ apt-get update
 # Install nginx and passenger.
 apt-get -y install nginx-full passenger
 
-# Disable the default site.
+# Disable the default site and back up the config.
 rm -f /etc/nginx/sites-enabled/default
+mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.sample
+
+# Copy the warpspeed default site config and enable it.
+cp $WARPSPEED_ROOT/templates/nginx/default /etc/nginx/sites-available/default
+ln -fs /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # Create a location for site specific log files.
 mkdir -p /var/log/nginx
