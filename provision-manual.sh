@@ -4,7 +4,7 @@
 # (c) Turner Logic, LLC. Distributed under the GNU GPL v2.0.
 
 # Default set of installers to run.
-DEFAULT_INSTALLERS="--nginx --php --python --rbenv --beanstalkd --mysql --postgresql --mongodb"
+DEFAULT_INSTALLERS="--nginx --php --python --nodejs --rbenv --beanstalkd --mysql --postgresql --mongodb"
 
 # Read input from user.
 echo "WarpSpeed user password (for sudo) (alphanumeric only):"
