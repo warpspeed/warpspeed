@@ -83,19 +83,23 @@ ws_setup_bash_profile() {
 ws_setup_ssh_keys() {
     local SSHKEY=$1
     mkdir -p /root/.ssh
-    mkdir -p /home/$WARPSPEED_USER/.ssh
-    ssh-keygen -f /home/$WARPSPEED_USER/.ssh/id_rsa -t rsa -N ''
-    ssh-keyscan -H github.com >> /home/$WARPSPEED_USER/.ssh/known_hosts
-    ssh-keyscan -H bitbucket.org >> /home/$WARPSPEED_USER/.ssh/known_hosts
+    touch /root/.ssh/authorized_keys
+    ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
+    ssh-keyscan -H github.com >> /root/.ssh/known_hosts
+    ssh-keyscan -H bitbucket.org >> /root/.ssh/known_hosts
     if [ -n "$SSHKEY" ]; then
         # Add the warpspeed ssh key, overwriting any existing keys.
-        echo "# WARPSPEED" > ~/.ssh/authorized_keys
-        echo "$SSHKEY" >> ~/.ssh/authorized_keys
-        # Add the .ssh dir for the new user and copy over the authorized keys.
-        cp ~/.ssh/authorized_keys /home/$WARPSPEED_USER/.ssh/authorized_keys
-        chmod 0700 /home/$WARPSPEED_USER/.ssh
-        chmod 0600 /home/$WARPSPEED_USER/.ssh/authorized_keys
+        echo "# WARPSPEED" > /root/.ssh/authorized_keys
+        echo "$SSHKEY" >> /root/.ssh/authorized_keys
     fi
+    # Setup proper permissions.
+    chmod 0700 /root/.ssh
+    chmod 0600 /root/.ssh/authorized_keys
+    # Copy all files to warpspeed user.
+    mkdir -p /home/$WARPSPEED_USER/.ssh
+    cp -f /root/.ssh/* /home/$WARPSPEED_USER/.ssh/
+    # Setup proper permissions.
+    chmod 0700 /home/$WARPSPEED_USER/.ssh
     chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.ssh
 }
 
