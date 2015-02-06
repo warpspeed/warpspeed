@@ -82,23 +82,31 @@ ws_setup_bash_profile() {
 
 ws_setup_ssh_keys() {
     local SSHKEY=$1
+    # Ensure directories exist.
     mkdir -p /root/.ssh
-    touch /root/.ssh/authorized_keys
+    mkdir -p /home/$WARPSPEED_USER/.ssh
+    # Generate the server key pair.
     ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
+    # Copy key to warpspeed user.
+    cp -f /root/.ssh/id_rsa /home/$WARPSPEED_USER/.ssh/
+    cp -f /root/.ssh/id_rsa.pub /home/$WARPSPEED_USER/.ssh/
+    # Generate known hosts file.
     ssh-keyscan -H github.com >> /root/.ssh/known_hosts
     ssh-keyscan -H bitbucket.org >> /root/.ssh/known_hosts
+    # Copy known hosts file.
+    cp -f /root/.ssh/known_hosts /home/$WARPSPEED_USER/.ssh/
     if [ -n "$SSHKEY" ]; then
-        # Add the warpspeed ssh key, overwriting any existing keys.
+        # Add the warpspeed ssh key for root, overwriting any existing keys.
         echo "# WARPSPEED" > /root/.ssh/authorized_keys
         echo "$SSHKEY" >> /root/.ssh/authorized_keys
+        chmod 0600 /root/.ssh/authorized_keys
+        # Append the warpspeed ssh key for the warpspeed user (prevent overwrite of vagrant key).
+        echo "# WARPSPEED" >> /home/$WARPSPEED_USER/.ssh/authorized_keys
+        echo "$SSHKEY" >> /home/$WARPSPEED_USER/.ssh/authorized_keys
+        chmod 0600 /home/$WARPSPEED_USER/.ssh/authorized_keys
     fi
     # Setup proper permissions.
     chmod 0700 /root/.ssh
-    chmod 0600 /root/.ssh/authorized_keys
-    # Copy all files to warpspeed user.
-    mkdir -p /home/$WARPSPEED_USER/.ssh
-    cp -f /root/.ssh/* /home/$WARPSPEED_USER/.ssh/
-    # Setup proper permissions.
     chmod 0700 /home/$WARPSPEED_USER/.ssh
     chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.ssh
 }
