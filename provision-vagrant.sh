@@ -20,7 +20,7 @@ ws_require_root
 INSTALLERS=()
 
 # Any script that requires a password (such as database installers) will use this.
-PASSWORD=warpspeed
+PASSWORD=vagrant
 
 # Process command line arguments.
 for arg in "$@"; do
