@@ -6,8 +6,8 @@ export GIT_WORK_TREE
 git checkout -f
 
 # If a user defined post-receive script exists, run it.
-if [ -f "/home/warpspeed/sites/{{domain}}/post-receive.sh" ]; then
+if [ -f "/home/warpspeed/sites/{{domain}}/warpspeed.sh" ]; then
     cd "/home/warpspeed/sites/{{domain}}"
-    echo "Executing user-defined post-receive script..."
-    bash post-receive.sh
+    echo "Running user defined warpspeed.sh file..."
+    bash warpspeed.sh
 fi
