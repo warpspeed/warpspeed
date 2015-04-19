@@ -19,8 +19,11 @@ ws_require_root
 # Installers are added via command line args by passing --installer.
 INSTALLERS=()
 
-# Any script that requires a password (such as database installers) will use this.
+# Any installer script that requires a password will use this.
 PASSWORD=vagrant
+
+# Make sure db installers use the same password as above.
+DB_PASSWORD=$PASSWORD
 
 # Process command line arguments.
 for arg in "$@"; do
