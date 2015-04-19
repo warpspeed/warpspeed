@@ -8,6 +8,3 @@ export WARPSPEED_ROOT="/home/$WARPSPEED_USER/.warpspeed"
 
 # Add warpspeed bin directory to the path.
 export PATH="$WARPSPEED_ROOT/bin:$PATH"
-
-# Include the .bashrc file.
-[[ -r ~/.bashrc ]] && . ~/.bashrc
