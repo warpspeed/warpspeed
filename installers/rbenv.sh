@@ -39,9 +39,11 @@ echo 'bundler' >> /home/$WARPSPEED_USER/.rbenv/default-gems
 echo "gem: --no-ri --no-rdoc" > /home/$WARPSPEED_USER/.gemrc
 
 # Setup environment.
-echo 'export PATH="/home/$WARPSPEED_USER/.rbenv/bin:$PATH"' >> /home/$WARPSPEED_USER/.bash_profile
-echo 'eval "$(rbenv init -)"' >> /home/$WARPSPEED_USER/.bash_profile
+echo '# Rbenv initialization.' >> /home/$WARPSPEED_USER/.bashrc
+echo 'export PATH="/home/$WARPSPEED_USER/.rbenv/bin:$PATH"' >> /home/$WARPSPEED_USER/.bashrc
+echo 'eval "$(rbenv init -)"' >> /home/$WARPSPEED_USER/.bashrc
+echo -en "\n"
 
 # Ensure proper permissions.
 chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.rbenv
-chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.bash_profile
+chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.bashrc

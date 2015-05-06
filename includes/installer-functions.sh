@@ -74,8 +74,13 @@ ws_setup_swap_space() {
 }
 
 ws_setup_bash_profile() {
+    # Setup the .bashrc file.
+    cp -f $WARPSPEED_ROOT/templates/bash/.bashrc ~/.bashrc
+    sed -i "s/{{user}}/$WARPSPEED_USER/g" ~/.bashrc
+    cp -f ~/.bashrc /home/$WARPSPEED_USER/.bashrc
+    chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.bashrc
+    # Setup the .bash_profile file.
     cp -f $WARPSPEED_ROOT/templates/bash/.bash_profile ~/.bash_profile
-    sed -i "s/{{user}}/$WARPSPEED_USER/g" ~/.bash_profile
     cp -f ~/.bash_profile /home/$WARPSPEED_USER/.bash_profile
     chown $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.bash_profile
 }
