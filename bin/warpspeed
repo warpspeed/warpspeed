@@ -304,7 +304,7 @@ ws_mysql_db_backup() {
     echo "Please enter your mysql root database password when prompted."
 
     if [ -z "$DB" ]; then
-        local FILENAME="$BACKUPDIR/all_dbs_$(date +%Y-%m-%d_%H%M%S).sql.gz"
+        local FILENAME="$BACKUPDIR/all_mysql_dbs_$(date +%Y-%m-%d_%H%M%S).sql.gz"
         mysqldump -u root -p --add-drop-table --all-databases | gzip -9 > $FILENAME
     else
         local FILENAME="$BACKUPDIR/$DB_$(date +%Y-%m-%d_%H%M%S).sql.gz"
@@ -349,7 +349,18 @@ ws_postgres_db_backup() {
         mkdir -p $BACKUPDIR
         echo "Created the db backup directory."
     fi
-    # todo
+
+    if [ -z "$DB" ]; then
+        local FILENAME="$BACKUPDIR/all_postgres_dbs_$(date +%Y-%m-%d_%H%M%S).sql.gz"
+        pg_dumpall | gzip -9 > $FILENAME
+    else
+        local FILENAME="$BACKUPDIR/$DB_$(date +%Y-%m-%d_%H%M%S).sql.gz"
+        pg_dump $1 | gzip -9 > $FILENAME
+    fi
+
+    if [ $? -eq 0 ]; then
+        echo "Backup saved to: $FILENAME"
+    fi
 }
 
 ws_get_site_home() {
