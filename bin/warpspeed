@@ -21,7 +21,6 @@ ws_show_usage() {
     echo "  site:create [TYPE] [NAME] [OPTIONS]..."
     echo "  site:remove [NAME] [OPTIONS]..."
     echo "  site:reload [NAME]"
-    echo "  site:update [NAME]"
     echo -en "\n"
     echo "  mysql:db [DBNAME] [USER] [PASS]"
     echo "  mysql:backup [DBNAME]"
@@ -421,10 +420,6 @@ case $COMMAND in
     site:reload)
         ws_sudo_test
         ws_site_reload $1
-    ;;
-    site:update)
-        ws_site_error_on_missing $1
-        git -C "/home/$WARPSPEED_USER/sites/$1" pull origin master
     ;;
     mysql:db)
         ws_mysql_db_create $@
