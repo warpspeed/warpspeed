@@ -59,8 +59,8 @@ ws_site_create_git_push_deploy_repo() {
     sed -i "s/{{domain}}/$SITE_NAME/g" /home/$WARPSPEED_USER/repos/$SITE_NAME.git/hooks/post-receive
     chmod +x "/home/$WARPSPEED_USER/repos/$SITE_NAME.git/hooks/post-receive"
     chown -R $WARPSPEED_USER:$WARPSPEED_USER "/home/$WARPSPEED_USER/repos/$SITE_NAME.git"
-    echo "Use: git remote add web ssh://$WARPSPEED_USER@$SITE_NAME/home/$WARPSPEED_USER/repos/$SITE_NAME.git"
-    echo "and: git push web +master:refs/heads/master"
+    echo "Use: git remote add warpspeed ssh://$WARPSPEED_USER@$SITE_NAME/home/$WARPSPEED_USER/repos/$SITE_NAME.git"
+    echo "and: git push warpspeed master"
 }
 
 ws_site_create_structure() {
