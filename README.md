@@ -50,7 +50,6 @@ Available commands:
   site:create [TYPE] [NAME] [OPTIONS]...
   site:remove [NAME] [OPTIONS]...
   site:reload [NAME]
-  site:update [NAME]
 
   mysql:db [DBNAME] [USER] [PASS]
   mysql:backup [DBNAME]
