@@ -57,8 +57,9 @@ ws_create_user() {
 }
 
 ws_setup_automatic_updates() {
-    apt-get -y install unattended-upgrades
+    apt-get -y install unattended-upgrades update-notifier-common
     cp templates/apt/10periodic /etc/apt/apt.conf.d/10periodic
+    cp templates/apt/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades
     cp templates/apt/50unattended-upgrades/etc/apt/apt.conf.d/50unattended-upgrades
 }
 
