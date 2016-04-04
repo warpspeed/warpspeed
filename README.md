@@ -78,6 +78,14 @@ The `OPTIONS` for the `site:create` command can be any of the following:
 --wildcard  # Setups us wildcards for nginx so that the site will respond to *.domain.com
 </pre>
 
+The `OPTIONS` for the `site:remove` command can be any of the following:
+  
+<pre>
+--all      # Remove both the site and git repo folder matching passed NAME
+</pre>
+
+
+
 For complete information on available commands please visit: [https://warpspeed.io](https://warpspeed.io "WarpSpeed.io").
 
 ## License
