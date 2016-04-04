@@ -106,7 +106,7 @@ ws_log_header "Configuring fail2ban."
 ws_setup_fail2ban
 
 ws_log_header "Configuring warpspeed user."
-ws_create_user $WARPSPEED_USER $PASSWORD sudo www-data
+ws_create_user $WARPSPEED_USER $PASSWORD sudo www-data adm
 
 ws_log_header "Configuring ssh keys and known hosts."
 ws_setup_ssh_keys "$SSHKEY"
