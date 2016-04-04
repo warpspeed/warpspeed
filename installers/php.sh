@@ -15,7 +15,12 @@ ws_require_root
 
 ws_log_header "Installing php."
 
-apt-get -y install php5 php5-cli php5-pgsql php5-mysql php5-mongo php5-curl php5-mcrypt php5-gd php5-imagick php5-fpm php5-memcached php5-xdebug php5-dev php5-json
+apt-get -y install php5 php5-cli php5-pgsql php5-mysql php5-mongo php5-curl php5-mcrypt php5-gd php5-imagick php5-fpm php5-memcached php5-dev php5-json
+
+# Install debug tools only for vagrant environment.
+if [ $WARPSPEED_USER == "vagrant" ]; then
+    apt-get -y install php5-xdebug
+fi
 
 # Remove the default php-fpm pool.
 mv -f /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf.orig
