@@ -26,18 +26,12 @@ if [ -z "$DB_PASSWORD" ]; then
     fi
 fi
 
-# Add postgresql APT repository.
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" | tee -a /etc/apt/sources.list.d/pgdg.list
-chmod 644 /etc/apt/sources.list.d/pgdg.list
-apt-get update
-
-# Install postgresql 9.4.
-apt-get -y install postgresql-9.4 postgresql-contrib libpq-dev
+# Install postgresql.
+apt-get -y install postgresql postgresql-contrib libpq-dev
 
 # Configure postgres installation for remote access and password authentication.
-sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.4/main/postgresql.conf
-echo "host    all             all             0.0.0.0/0               md5" | tee -a /etc/postgresql/9.4/main/pg_hba.conf
+sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.5/main/postgresql.conf
+echo "host    all             all             0.0.0.0/0               md5" | tee -a /etc/postgresql/9.5/main/pg_hba.conf
 
 # Create warpspeed user.
 sudo -u postgres psql -c "CREATE ROLE $WARPSPEED_USER LOGIN UNENCRYPTED PASSWORD '$DB_PASSWORD' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"

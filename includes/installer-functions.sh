@@ -64,12 +64,18 @@ ws_setup_automatic_updates() {
 }
 
 ws_setup_swap_space() {
+    # View existing swap with: "swapon --show" and: "free -h".
     local SWAP=$(free -m | grep -oP '^Swap:[\s]*\K[0-9]*')
     local SIZE=$1
+    # Only allocate if there is no exising swap.
     if [ $SWAP -eq 0 ]; then
-        fallocate -l $SIZE /swap
-        mkswap /swap
-        echo "/swap none swap sw 0 0" >> /etc/fstab
+        # Allocate, protect, and make the swapfile.
+        fallocate -l $SIZE /swapfile
+        chmod 600 /swapfile
+        mkswap /swapfile
+        # Backup the fstab file and then update the configuration.
+        cp /etc/fstab /etc/fstab.orig
+        echo "/swapfile none swap sw 0 0" >> /etc/fstab
         swapon -ae
     fi
 }
@@ -120,11 +126,16 @@ ws_setup_ssh_keys() {
 ws_setup_fail2ban() {
     apt-get -y install fail2ban
     cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-    sed -ri "/^\[ssh-ddos\]$/,/^\[/s/enabled[[:blank:]]*=.*/enabled = true/" /etc/fail2ban/jail.local
+    # Enable jails for sshd and sshd-ddos.
+    sed -i "/^\[sshd\]$/a enabled = true" /etc/fail2ban/jail.local
+    sed -i "/^\[sshd-ddos\]$/a enabled = true" /etc/fail2ban/jail.local
     ws_flag_service fail2ban
 }
 
 ws_setup_ssh_security() {
+    # Backup sshd_config file.
+    cp /etc/ssh/sshd_config /etc/ssh/sshd_config.orig
+    # Decrease login grace time and disable password authentication.
     sed -i "s/LoginGraceTime 120/LoginGraceTime 30/" /etc/ssh/sshd_config
     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
     ws_flag_service ssh

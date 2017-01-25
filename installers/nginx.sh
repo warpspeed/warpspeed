@@ -18,12 +18,12 @@ ws_log_header "Installing nginx."
 # Add phusion APT repository.
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 561F9B9CAC40B2F7
 apt-get -y install apt-transport-https ca-certificates
-echo 'deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main' >> /etc/apt/sources.list.d/passenger.list
+echo 'deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main' >> /etc/apt/sources.list.d/passenger.list
 chmod 644 /etc/apt/sources.list.d/passenger.list
 apt-get update
 
 # Install nginx and passenger.
-apt-get -y install nginx-full passenger
+apt-get -y install nginx-extras passenger
 
 # Disable the default site and back up the config.
 rm -f /etc/nginx/sites-enabled/default

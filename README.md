@@ -4,7 +4,7 @@ We make web deployment easy. For complete information, please visit: [https://wa
 
 ## Server Provisioning
 
-WarpSpeed is designed for use with Ubuntu 14.04 LTS 64 bit. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
+WarpSpeed is designed for use with Ubuntu 16.04 LTS 64 bit. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
 
 ### WarpSpeed.io Web Interface
 

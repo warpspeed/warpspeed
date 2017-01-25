@@ -27,7 +27,7 @@ if [ -z "$DB_PASSWORD" ]; then
 fi
 
 # Obtain system IP address.
-IPADDRESS=$(ifconfig eth0 | awk -F: '/inet addr:/ {print $2}' | awk '{ print $1 }')
+IPADDRESS=$(ws_get_ip_address)
 
 # Pre-set root password.
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_PASSWORD"
