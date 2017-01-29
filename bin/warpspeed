@@ -243,7 +243,7 @@ ws_site_remove() {
         php)
             sudo service php7.0-fpm-$SITE_NAME stop
             sudo systemctl disable php7.0-fpm-$SITE_NAME.service
-            sudo rm -f /lib/systemd/system/php7.0-fpm-$SITE_NAME.conf
+            sudo rm -f /lib/systemd/system/php7.0-fpm-$SITE_NAME.service
             sudo rm -rf /var/lib/php/$SITE_NAME
             sudo rm -f /var/log/php/$SITE_NAME-*.log
             sudo rm -f /etc/php/7.0/fpm/pool.d/$SITE_NAME.conf
