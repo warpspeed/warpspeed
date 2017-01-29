@@ -36,7 +36,7 @@ ws_set_timezone() {
 
 ws_run_system_updates() {
     apt-get update
-    apt-get -y upgrade
+    DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
 }
 
 ws_setup_common_packages() {
