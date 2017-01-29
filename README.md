@@ -18,7 +18,7 @@ The WarpSpeed.io web interface currently supports [Digital Ocean](https://www.di
 
 ### Standalone Usage
 
-To use the WarpSpeed scripts in a standalone fashion, you first need to create a server. You can use a server like [RackSpace](http://www.rackspace.com/cloud/servers "RackSpace"), [Digital Ocean](https://www.digitalocean.com/?refcode=e8387d479043 "Digital Ocean"), [Linode](https://www.linode.com/?r=bed2c06e157de72a8f97d0c7035069800c9b342b "Linode"), etc. to create your server. Make sure you use an Ubuntu 14.04 LTS 64 bit base image, regardless of your server provider.
+To use the WarpSpeed scripts in a standalone fashion, you first need to create a server. You can use a server like [RackSpace](http://www.rackspace.com/cloud/servers "RackSpace"), [Digital Ocean](https://www.digitalocean.com/?refcode=e8387d479043 "Digital Ocean"), [Linode](https://www.linode.com/?r=bed2c06e157de72a8f97d0c7035069800c9b342b "Linode"), etc. to create your server. Make sure you use an Ubuntu 16.04 LTS 64 bit base image, regardless of your server provider.
 
 Once you have created your server, log in as root and run the following command:
 
