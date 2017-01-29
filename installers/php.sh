@@ -56,5 +56,4 @@ mv composer.phar /usr/local/bin/composer
 
 # Stop the service and remove startup files.
 service php7.0-fpm stop
-rm /etc/init.d/php7.0-fpm
-rm /etc/init/php7.0-fpm.conf
+systemctl disable php7.0-fpm
