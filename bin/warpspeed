@@ -149,19 +149,12 @@ ws_site_create() {
             sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php/7.0/fpm/pool.d/$SITE_NAME.conf
             sudo sed -i "s/{{environment}}/$APP_ENV/g" /etc/php/7.0/fpm/pool.d/$SITE_NAME.conf
 
-            # Create an init.d file for managing this php-fpm site.
-            sudo cp -f $WARPSPEED_ROOT/templates/php/php7.0-fpm-init.conf /etc/init/php7.0-fpm-$SITE_NAME.conf
-            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/init/php7.0-fpm-$SITE_NAME.conf
+            # Create an systemd file for managing this php-fpm site.
+            sudo cp -f $WARPSPEED_ROOT/templates/php/php7.0-fpm.service /lib/systemd/system/php7.0-fpm-$SITE_NAME.service
+            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/php7.0-fpm-$SITE_NAME.service
 
-            # When using vagrant, the upstart service needs to wait till the vagrant share is mounted.
-            if [ $WARPSPEED_USER == "vagrant" ]; then
-                sudo sed -i "s/{{starton}}/vagrant-mounted/g" /etc/init/php7.0-fpm-$SITE_NAME.conf
-            else
-                sudo sed -i "s/{{starton}}/runlevel [2345]/g" /etc/init/php7.0-fpm-$SITE_NAME.conf
-            fi
-
-            # Reload the upstart config to make the new service available.
-            sudo initctl reload-configuration
+            # Enable the new service to make it available.
+            sudo systemctl enable php7.0-fpm-$SITE_NAME.service
 
             # Start/restart the new service.
             sudo service php7.0-fpm-$SITE_NAME restart
@@ -249,8 +242,8 @@ ws_site_remove() {
     case $SITE_TYPE in
         php)
             sudo service php7.0-fpm-$SITE_NAME stop
-            sudo rm -f /etc/init/php7.0-fpm-$SITE_NAME.conf
-            sudo initctl reload-configuration
+            sudo systemctl disable php7.0-fpm-$SITE_NAME.service
+            sudo rm -f /lib/systemd/system/php7.0-fpm-$SITE_NAME.conf
             sudo rm -rf /var/lib/php/$SITE_NAME
             sudo rm -f /var/log/php/$SITE_NAME-*.log
             sudo rm -f /etc/php/7.0/fpm/pool.d/$SITE_NAME.conf
