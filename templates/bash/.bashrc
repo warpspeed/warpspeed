@@ -4,7 +4,7 @@
 # It also automatically gets loaded during interactive logins because it is called via the .bash_profile.
 
 # Any environment settings or non-visual customizations should be added to this file.
-# Please do not modify any of the WarpSpeed envionrment settings or things will not work as expected.
+# Please do not modify any of the WarpSpeed environment settings or things will not work as expected.
 
 # Specify the WarpSpeed user.
 export WARPSPEED_USER="{{user}}"
