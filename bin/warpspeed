@@ -153,6 +153,13 @@ ws_site_create() {
             sudo cp -f $WARPSPEED_ROOT/templates/php/php7.0-fpm.service /lib/systemd/system/php7.0-fpm-$SITE_NAME.service
             sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/php7.0-fpm-$SITE_NAME.service
 
+            # When using vagrant, the service needs to wait till the vagrant share is mounted.
+            if [ $WARPSPEED_USER == "vagrant" ]; then
+                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /etc/init/php7.0-fpm-$SITE_NAME.conf
+            else
+                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /etc/init/php7.0-fpm-$SITE_NAME.conf
+            fi
+
             # Enable the new service to make it available.
             sudo systemctl enable php7.0-fpm-$SITE_NAME.service
 

@@ -11,4 +11,4 @@ ExecReload=/usr/lib/php/php7.0-fpm-checkconf
 ExecReload=/bin/kill -USR2 $MAINPID
 
 [Install]
-WantedBy=multi-user.target
+WantedBy={{wantedby}}
