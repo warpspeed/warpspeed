@@ -15,7 +15,7 @@ ws_require_root
 
 ws_log_header "Installing php."
 
-apt-get -y install php php-cli php-pgsql php-mysql php-mongodb php-curl php-mcrypt php-gd php-imagick php-fpm php-memcached php-dev php-json php-zip php-intl php-imap
+apt-get -y install php php-cli php-pgsql php-mysql php-mongodb php-curl php-mcrypt php-gd php-imagick php-fpm php-memcached php-dev php-json php-zip php-intl php-imap php-mbstring
 
 # Install debug tools only for vagrant environment.
 if [ $WARPSPEED_USER == "vagrant" ]; then
