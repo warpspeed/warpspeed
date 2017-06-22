@@ -437,7 +437,7 @@ case $COMMAND in
     ;;
     update)
         TEMP_FOLDER=tmp-clone-$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
-        git clone --branch master --depth=1 https://github.com/warpspeed/warpspeed "$WARPSPEED_ROOT/$TEMP_FOLDER" && rm -rf "$WARPSPEED_ROOT/.git" && mv "$WARPSPEED_ROOT/$TEMP_FOLDER/.git" "$WARPSPEED_ROOT" && rm -rf "$WARPSPEED_ROOT/$TEMP_FOLDER" && git -C "$WARPSPEED_ROOT" reset --hard
+        git clone --branch warpspeed-v2 --depth=1 https://github.com/warpspeed/warpspeed "$WARPSPEED_ROOT/$TEMP_FOLDER" && rm -rf "$WARPSPEED_ROOT/.git" && mv "$WARPSPEED_ROOT/$TEMP_FOLDER/.git" "$WARPSPEED_ROOT" && rm -rf "$WARPSPEED_ROOT/$TEMP_FOLDER" && git -C "$WARPSPEED_ROOT" reset --hard
     ;;
     *)
         ws_show_usage
