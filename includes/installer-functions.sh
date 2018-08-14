@@ -19,7 +19,7 @@ ws_require_root() {
 }
 
 ws_get_ip_address() {
-    echo $(ifconfig eth0 | awk -F: '/inet addr:/ {print $2}' | awk '{ print $1 }')
+    echo $(ifconfig eth0 | grep "inet " | awk -F'[: ]+' '{ print $3 }')
 }
 
 ws_set_hostname() {
