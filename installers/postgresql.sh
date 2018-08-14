@@ -29,10 +29,6 @@ fi
 # Install postgresql.
 apt-get -y install postgresql postgresql-contrib libpq-dev
 
-# Configure postgres installation for remote access and password authentication.
-sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/9.5/main/postgresql.conf
-echo "host    all             all             0.0.0.0/0               md5" | tee -a /etc/postgresql/9.5/main/pg_hba.conf
-
 # Create warpspeed user.
 sudo -u postgres psql -c "CREATE ROLE $WARPSPEED_USER LOGIN UNENCRYPTED PASSWORD '$DB_PASSWORD' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
 

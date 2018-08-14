@@ -36,10 +36,6 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 # Install mysql.
 apt-get -y install mysql-server mysql-client libmysqlclient-dev
 
-# Configure mysql installation for remote access.
-sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
-mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO root@'%' IDENTIFIED BY '$DB_PASSWORD';FLUSH PRIVILEGES;"
-
 # Create warpspeed user.
 mysql --user="root" --password="$DB_PASSWORD" -e "CREATE USER '$WARPSPEED_USER'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD';"
 mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO '$WARPSPEED_USER'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;"

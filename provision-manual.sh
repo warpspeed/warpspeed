@@ -40,11 +40,11 @@ fi
 # Make sure apt is not expecting input.
 export DEBIAN_FRONTEND="noninteractive"
 
-# Run update to make sure git-core will be available.
+# Run update to make sure git will be available.
 apt-get update
 
 # Ensure git is installed.
-apt-get -y install git-core
+apt-get -y install git
 
 # Clone warpspeed repository if it is not present.
 if [ ! -d /home/$USERNAME/.warpspeed ]; then

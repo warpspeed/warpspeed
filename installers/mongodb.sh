@@ -21,8 +21,5 @@ apt-get -y install mongodb-server
 # Backup original configuration.
 cp /etc/mongodb.conf /etc/mongodb.conf.orig
 
-# Configure for external connections.
-sed -i "s/bind_ip = 127.0.0.1/bind_ip = 0.0.0.0/" /etc/mongodb.conf
-
 # Restart service.
 service mongodb restart
