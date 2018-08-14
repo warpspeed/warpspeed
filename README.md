@@ -4,7 +4,7 @@ We make web deployment easy. For complete information, please visit: [https://wa
 
 ## Server Provisioning
 
-WarpSpeed is designed for use with Ubuntu 16.04 LTS 64 bit. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
+WarpSpeed is designed for use with Ubuntu 18.04 LTS 64 bit. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
 
 ### WarpSpeed.io Web Interface
 
@@ -23,7 +23,7 @@ To use the WarpSpeed scripts in a standalone fashion, you first need to create a
 Once you have created your server, log in as root and run the following command:
 
 <pre>
-wget -O warpspeed-provisioner.sh https://raw.githubusercontent.com/warpspeed/warpspeed/master/provision-manual.sh; bash warpspeed-provisioner.sh
+wget -O warpspeed-provisioner.sh https://raw.githubusercontent.com/warpspeed/warpspeed/warpspeed-v3/provision-manual.sh; bash warpspeed-provisioner.sh
 </pre>
 
 The manual provisioner will ask a few questions. Be prepared with an SSH public key to use for authentication to the server. You will also be able to customize what stack is installed on your server. Look in the `installers` folder of this repository to see what options are available.
