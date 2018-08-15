@@ -30,7 +30,7 @@ fi
 apt-get -y install postgresql postgresql-contrib libpq-dev
 
 # Create warpspeed user.
-sudo -u postgres psql -c "CREATE ROLE $WARPSPEED_USER LOGIN UNENCRYPTED PASSWORD '$DB_PASSWORD' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
+sudo -u postgres psql -c "CREATE ROLE $WARPSPEED_USER LOGIN PASSWORD '$DB_PASSWORD' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
 
 # Create sample database.
 sudo -u postgres createdb --owner=$WARPSPEED_USER $WARPSPEED_USER
