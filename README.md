@@ -23,7 +23,7 @@ To use the WarpSpeed scripts in a standalone fashion, you first need to create a
 Once you have created your server, log in as root and run the following command:
 
 <pre>
-wget -O warpspeed-provisioner.sh https://raw.githubusercontent.com/warpspeed/warpspeed/master/provision-manual.sh; bash warpspeed-provisioner.sh
+wget -O warpspeed-provisioner.sh https://raw.githubusercontent.com/warpspeed/warpspeed/warpspeed-v3/provision-manual.sh; bash warpspeed-provisioner.sh
 </pre>
 
 The manual provisioner will ask a few questions. Be prepared with an SSH public key to use for authentication to the server. You will also be able to customize what stack is installed on your server. Look in the `installers` folder of this repository to see what options are available.
