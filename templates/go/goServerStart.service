@@ -4,9 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/{{user}}/sites/{{domain}}/goWebServer
-ExecStart=/home/{{user}}/sites/{{domain}}/goWebServer start
-ExecStop=/home/{{user}}/sites/{{domain}}/goWebServer stop
+WorkingDirectory=/home/{{user}}/sites/{{domain}}
+ExecStart=/home/{{user}}/sites/{{domain}}/goWebServer-{{domain}} start
+ExecStop=/home/{{user}}/sites/{{domain}}/goWebServer-{{domain}} stop
 Restart=always
 
 [Install]
