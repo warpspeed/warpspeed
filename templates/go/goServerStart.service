@@ -1,0 +1,13 @@
+[Unit]
+Description=GO web server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/{{user}}/sites/{{domain}}/goWebServer
+ExecStart=/home/{{user}}/sites/{{domain}}/goWebServer start
+ExecStop=/home/{{user}}/sites/{{domain}}/goWebServer stop
+Restart=always
+
+[Install]
+WantedBy={{wantedby}}
