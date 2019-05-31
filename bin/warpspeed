@@ -193,20 +193,20 @@ ws_site_create() {
             ws_site_create_structure go $SITE_NAME public tmp
             ws_site_setup_nginx $SITE_NAME site-go.conf $WILDCARD "$APP_ENV"
 
-            sudo cp -f $WARPSPEED_ROOT/templates/go/goServerStart.service /lib/systemd/system/goServerStart-$SITE_NAME.service
+            sudo cp -f $WARPSPEED_ROOT/templates/go/goServerStart.service /lib/systemd/system/$SITE_NAME.service
             # Maybe use {{domain}} for name of compiled GO executable in the service file eg. ExecStart=/home/{{user}}/sites/{{domain}}/{{domain}}
-            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/goServerStart-$SITE_NAME.service
-            sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /lib/systemd/system/goServerStart-$SITE_NAME.service
+            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/$SITE_NAME.service
+            sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /lib/systemd/system/$SITE_NAME.service
 
             if [ $WARPSPEED_USER == "vagrant" ]; then
-                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /lib/systemd/system/goServerStart-$SITE_NAME.service
+                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /lib/systemd/system/$SITE_NAME.service
             else
-                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /lib/systemd/system/goServerStart-$SITE_NAME.service
+                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /lib/systemd/system/$SITE_NAME.service
             fi
 
-            sudo systemctl enable goServerStart-$SITE_NAME.service
+            sudo systemctl enable $SITE_NAME.service
 
-            sudo service goServerStart-$SITE_NAME restart
+            sudo service $SITE_NAME restart
         ;;
         *)
             ws_show_usage
