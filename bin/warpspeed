@@ -192,7 +192,8 @@ ws_site_create() {
         go)
             ws_site_create_structure go $SITE_NAME public tmp
             ws_site_setup_nginx $SITE_NAME site-go.conf $WILDCARD "$APP_ENV"
-
+            cp -n $WARPSPEED_ROOT/templates/go/server.go $SITE_HOME
+            
             sudo cp -f $WARPSPEED_ROOT/templates/go/goServerStart.service /lib/systemd/system/$SITE_NAME.service
             # Maybe use {{domain}} for name of compiled GO executable in the service file eg. ExecStart=/home/{{user}}/sites/{{domain}}/{{domain}}
             sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/$SITE_NAME.service
