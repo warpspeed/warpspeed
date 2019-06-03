@@ -1,0 +1,17 @@
+[Unit]
+Description=GO Web Server
+ConditionPathExists=/home/{{user}}/sites/{{domain}}/app
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/{{user}}/sites/{{domain}}
+ExecStart=/home/{{user}}/sites/{{domain}}/app start
+ExecStop=/home/{{user}}/sites/{{domain}}/app stop
+# Restart=always
+Restart=on-failure
+RestartSec=10
+startLimitIntervalSec=60
+
+[Install]
+WantedBy={{wantedby}}
