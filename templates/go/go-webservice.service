@@ -1,13 +1,13 @@
 [Unit]
 Description=GO Web Server
-ConditionPathExists=/home/{{user}}/sites/{{domain}}/app
+ConditionPathExists=/home/{{user}}/sites/{{domain}}/dist/app
 After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/{{user}}/sites/{{domain}}
-ExecStart=/home/{{user}}/sites/{{domain}}/app start
-ExecStop=/home/{{user}}/sites/{{domain}}/app stop
+WorkingDirectory=/home/{{user}}/sites/{{domain}}/dist
+ExecStart=/home/{{user}}/sites/{{domain}}/dist/app start
+ExecStop=/home/{{user}}/sites/{{domain}}/dist/app stop
 # Restart=always
 Restart=on-failure
 RestartSec=10
