@@ -20,7 +20,7 @@ echo "Installers options (default: $DEFAULT_INSTALLERS):"
 read INSTALLERS
 
 # Setup defaults and process params.
-REPOPATH="warpspeed/warpspeed"
+REPOPATH="RyanMStewart/warpspeed"
 USERNAME="warpspeed"
 
 if [ -z "$PASSWORD" ]; then
