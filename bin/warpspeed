@@ -237,6 +237,7 @@ ws_site_reload() {
     case $SITE_TYPE in
         php)
             sudo service php7.2-fpm-$SITE_NAME restart
+        ;;
         go)
             sudo service go-webservice-$SITE_NAME restart
         ;;
@@ -274,6 +275,7 @@ ws_site_remove() {
             sudo rm -rf /var/lib/php/$SITE_NAME
             sudo rm -f /var/log/php/$SITE_NAME-*.log
             sudo rm -f /etc/php/7.2/fpm/pool.d/$SITE_NAME.conf
+        ;;
         go)
             sudo service go-webservice-$SITE_NAME stop
             sudo systemctl disable go-webservice-$SITE_NAME.service
