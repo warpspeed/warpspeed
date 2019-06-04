@@ -9,7 +9,7 @@ ExecStart=/home/{{user}}/sites/{{domain}}/dist/app start
 ExecStop=/home/{{user}}/sites/{{domain}}/dist/app stop
 Restart=on-failure
 RestartSec=10
-startLimitIntervalSec=60
+StartLimitIntervalSec=60
 
 [Install]
 WantedBy={{wantedby}}
