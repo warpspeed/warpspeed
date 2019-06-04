@@ -189,6 +189,24 @@ ws_site_create() {
             ws_site_setup_nginx $SITE_NAME site-node.conf $WILDCARD "$APP_ENV"
             cp -n $WARPSPEED_ROOT/templates/node/app.js $SITE_HOME
         ;;
+        go)
+            ws_site_create_structure go $SITE_NAME public tmp
+            ws_site_setup_nginx $SITE_NAME site-go.conf $WILDCARD "$APP_ENV"
+            
+            sudo cp -f $WARPSPEED_ROOT/templates/go/go-webservice.service /lib/systemd/system/go-webservice-$SITE_NAME.service
+            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/go-webservice-$SITE_NAME.service
+            sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /lib/systemd/system/go-webservice-$SITE_NAME.service
+
+            if [ $WARPSPEED_USER == "vagrant" ]; then
+                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /lib/systemd/system/go-webservice-$SITE_NAME.service
+            else
+                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /lib/systemd/system/go-webservice-$SITE_NAME.service
+            fi
+
+            sudo systemctl enable go-webservice-$SITE_NAME.service
+
+            sudo service go-webservice-$SITE_NAME restart
+        ;;
         *)
             ws_show_usage
         ;;
@@ -219,6 +237,9 @@ ws_site_reload() {
     case $SITE_TYPE in
         php)
             sudo service php7.2-fpm-$SITE_NAME restart
+        ;;
+        go)
+            sudo service go-webservice-$SITE_NAME restart
         ;;
     esac;
 }
@@ -254,6 +275,13 @@ ws_site_remove() {
             sudo rm -rf /var/lib/php/$SITE_NAME
             sudo rm -f /var/log/php/$SITE_NAME-*.log
             sudo rm -f /etc/php/7.2/fpm/pool.d/$SITE_NAME.conf
+        ;;
+        go)
+            sudo service go-webservice-$SITE_NAME stop
+            sudo systemctl disable go-webservice-$SITE_NAME.service
+            sudo rm -f /lib/systemd/system/go-webservice-$SITE_NAME.service
+            sudo rm -f /var/log/nginx/$SITE_NAME-error.log
+            sudo rm -f /home/$WARPSPEED_USER/sites/$SITE_NAME/go-$SITE_NAME.sock
         ;;
     esac;
 

@@ -1,0 +1,16 @@
+[Unit]
+Description=GO Web Server
+After=network.target
+StartLimitInterval=60
+StartLimitBurst=10
+
+[Service]
+Type=simple
+WorkingDirectory=/home/{{user}}/sites/{{domain}}/dist
+ExecStart=/home/{{user}}/sites/{{domain}}/dist/app start
+ExecStop=/home/{{user}}/sites/{{domain}}/dist/app stop
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy={{wantedby}}
