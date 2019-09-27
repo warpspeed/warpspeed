@@ -1,0 +1,18 @@
+[Unit]
+Description=Go Web App for {{domain}}
+After=network.target
+StartLimitInterval=555
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User={{user}}
+Group={{user}}
+Environment=GO_ENV={{environment}}
+Restart=on-failure
+RestartSec=10
+WorkingDirectory=/home/{{user}}/sites/{{domain}}/dist
+ExecStart=/home/{{user}}/sites/{{domain}}/dist/app
+
+[Install]
+WantedBy={{wantedby}}
