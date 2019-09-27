@@ -42,7 +42,7 @@ echo "gem: --no-ri --no-rdoc" > /home/$WARPSPEED_USER/.gemrc
 echo '# Rbenv initialization.' >> /home/$WARPSPEED_USER/.bashrc
 echo 'export PATH="/home/$WARPSPEED_USER/.rbenv/bin:$PATH"' >> /home/$WARPSPEED_USER/.bashrc
 echo 'eval "$(rbenv init -)"' >> /home/$WARPSPEED_USER/.bashrc
-echo -en "\n"
+echo -en "\n" >>  /home/$WARPSPEED_USER/.bashrc
 
 # Ensure proper permissions.
 chown -R $WARPSPEED_USER:$WARPSPEED_USER /home/$WARPSPEED_USER/.rbenv

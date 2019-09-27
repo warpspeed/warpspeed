@@ -14,3 +14,4 @@ export WARPSPEED_ROOT="/home/$WARPSPEED_USER/.warpspeed"
 
 # Add WarpSpeed bin directory to the path.
 export PATH="$WARPSPEED_ROOT/bin:$PATH"
+
