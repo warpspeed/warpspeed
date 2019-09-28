@@ -203,9 +203,9 @@ ws_site_create() {
             
             # When using vagrant, the service needs to wait till the vagrant share is mounted.
             if [ $WARPSPEED_USER == "vagrant" ]; then
-                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /lib/systemd/system/go-webservice-$SITE_NAME.service
+                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /lib/systemd/system/go-$SITE_NAME.service
             else
-                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /lib/systemd/system/go-webservice-$SITE_NAME.service
+                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /lib/systemd/system/go-$SITE_NAME.service
             fi
 
             # Enable the new service to make it available.
