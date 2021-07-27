@@ -60,7 +60,7 @@ Unattended-Upgrade::DevRelease "false";
 //Unattended-Upgrade::Remove-Unused-Kernel-Packages "false";
 
 // Do automatic removal of new unused dependencies after the upgrade
-// (equivalent to apt-get autoremove)
+// (equivalent to apt autoremove)
 //Unattended-Upgrade::Remove-Unused-Dependencies "false";
 
 // Automatically reboot *WITHOUT CONFIRMATION*

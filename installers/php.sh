@@ -15,11 +15,11 @@ ws_require_root
 
 ws_log_header "Installing php."
 
-apt-get -y install php-fpm php-cli php-pgsql php-mysql php-mongodb php-curl php-gd php-imagick php-fpm php-memcached php-dev php-json php-zip php-intl php-imap php-mbstring
+apt -y install php-fpm php-cli php-pgsql php-mysql php-mongodb php-curl php-gd php-imagick php-fpm php-memcached php-dev php-json php-zip php-intl php-imap php-mbstring
 
 # Install debug tools only for vagrant environment.
 if [ $WARPSPEED_USER == "vagrant" ]; then
-    apt-get -y install php-xdebug
+    apt -y install php-xdebug
 fi
 
 # Remove the default php-fpm pool.
@@ -34,9 +34,9 @@ mkdir -p /var/lib/php
 chown -R $WARPSPEED_USER:www-data /var/lib/php
 
 # Install mcrypt.
-apt-get -y install php-pecl
-apt-get -y install gcc make autoconf libc-dev pkg-config
-apt-get -y install libmcrypt-dev
+apt -y install php-pecl
+apt -y install gcc make autoconf libc-dev pkg-config
+apt -y install libmcrypt-dev
 yes '' | pecl install mcrypt-1.0.1
 
 # Backup original and then modify php ini settings for fpm.

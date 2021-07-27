@@ -16,7 +16,7 @@ ws_require_root
 ws_log_header "Installing redis."
 
 # Install redis.
-apt-get -y install redis-server
+apt -y install redis-server
 
 # Restart service.
 service redis-server restart

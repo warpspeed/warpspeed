@@ -27,7 +27,7 @@ if [ -z "$DB_PASSWORD" ]; then
 fi
 
 # Install postgresql.
-apt-get -y install postgresql postgresql-contrib libpq-dev
+apt -y install postgresql postgresql-contrib libpq-dev
 
 # Create warpspeed user.
 sudo -u postgres psql -c "CREATE ROLE $WARPSPEED_USER LOGIN PASSWORD '$DB_PASSWORD' SUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;"
