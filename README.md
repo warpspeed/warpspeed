@@ -4,7 +4,7 @@ We make web deployment easy. For complete information, please visit: [https://wa
 
 ## Server Provisioning
 
-WarpSpeed is designed for use with Ubuntu 18.04 LTS 64 bit. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
+WarpSpeed is designed for use with Ubuntu 20.04 LTS 64 bit. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
 
 ### WarpSpeed.io Web Interface
 
@@ -18,7 +18,7 @@ The WarpSpeed.io web interface currently supports [Digital Ocean](https://www.di
 
 ### Standalone Usage
 
-To use the WarpSpeed scripts in a standalone fashion, you first need to create a server. You can use a server like [RackSpace](http://www.rackspace.com/cloud/servers "RackSpace"), [Digital Ocean](https://www.digitalocean.com/?refcode=e8387d479043 "Digital Ocean"), [Linode](https://www.linode.com/?r=bed2c06e157de72a8f97d0c7035069800c9b342b "Linode"), etc. to create your server. Make sure you use an Ubuntu 16.04 LTS 64 bit base image, regardless of your server provider.
+To use the WarpSpeed scripts in a standalone fashion, you first need to create a server. You can use a server like [RackSpace](http://www.rackspace.com/cloud/servers "RackSpace"), [Digital Ocean](https://www.digitalocean.com/?refcode=e8387d479043 "Digital Ocean"), [Linode](https://www.linode.com/?r=bed2c06e157de72a8f97d0c7035069800c9b342b "Linode"), etc. to create your server. Make sure you use an Ubuntu 20.04 LTS 64 bit base image, regardless of your server provider.
 
 Once you have created your server, log in as root and run the following command:
 
