@@ -1,9 +1,15 @@
-var http = require('http');
+const http = require('http');
 
-var server = http.createServer(function (request, response) {
-  response.writeHead(200, {"Content-Type": "text/plain"});
-  response.end("WarpSpeed say hello, from Node!\n");
+const hostname = '127.0.0.1';
+const port = 3000;
+
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('WarpSpeed say hello, from Node!\n');
 });
 
 // passenger will auto-set listen port
-server.listen(3000);
+server.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});

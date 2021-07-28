@@ -18,5 +18,5 @@ ws_log_header "Installing nodejs."
 # Install node.
 apt -y install curl apt-transport-https ca-certificates
 
-curl -sL https://deb.nodesource.com/setup_10.x | bash -
+curl -sL https://deb.nodesource.com/setup_16.x | bash -
 apt install -y nodejs
