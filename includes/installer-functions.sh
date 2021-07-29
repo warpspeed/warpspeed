@@ -40,7 +40,7 @@ ws_run_system_updates() {
 }
 
 ws_setup_common_packages() {
-    apt-get -y install software-properties-common build-essential git supervisor curl zlib1g-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev zip unzip libgmp-dev
+    apt-get -y install build-essential curl git libcurl4-openssl-dev libgmp-dev libreadline-dev libsqlite3-dev libssl-dev libxml2-dev libxslt1-dev libyaml-dev net-tools software-properties-common sqlite3 supervisor unzip zip zlib1g-dev
 }
 
 ws_create_user() {
