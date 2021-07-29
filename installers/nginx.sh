@@ -23,7 +23,7 @@ echo 'deb https://oss-binaries.phusionpassenger.com/apt/passenger bionic main' >
 apt-get update
 
 # Install nginx and passenger.
-apt-get install -y nginx-extras libnginx-mod-http-passenger
+apt-get install -y nginx-common nginx-extras libnginx-mod-http-passenger
 
 # Disable the default site and back up the config.
 rm -f /etc/nginx/sites-enabled/default
