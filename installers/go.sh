@@ -19,7 +19,6 @@ ws_log_header "Installing go."
 wget -c https://dl.google.com/go/go1.16.6.linux-amd64.tar.gz
 
 # Extract files, set permissions, and move to proper location.
-tar -C /usr/local -xzvf go1.16.6.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.16.6.linux-amd64.tar.gz
 
 # Setup go environment.
