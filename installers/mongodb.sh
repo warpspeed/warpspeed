@@ -16,7 +16,7 @@ ws_require_root
 ws_log_header "Installing mongodb."
 
 # Install mongodb.
-apt -y install mongodb-server
+apt-get -y install mongodb-server
 
 # Backup original configuration.
 cp /etc/mongodb.conf /etc/mongodb.conf.orig

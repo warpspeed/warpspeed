@@ -34,7 +34,7 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_PASSWORD"
 
 # Install mysql.
-apt -y install mysql-server mysql-client libmysqlclient-dev
+apt-get -y install mysql-server mysql-client libmysqlclient-dev
 
 # Create warpspeed user.
 mysql --user="root" --password="$DB_PASSWORD" -e "CREATE USER '$WARPSPEED_USER'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD';"

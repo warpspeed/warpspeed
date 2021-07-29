@@ -78,7 +78,7 @@ if [ -z "$DB_PASSWORD" ]; then
     DB_PASSWORD=$PASSWORD
 fi
 
-# Make sure apt is not expecting input.
+# Make sure apt-get is not expecting input.
 export DEBIAN_FRONTEND="noninteractive"
 
 ws_log_header "Configuring hostname."

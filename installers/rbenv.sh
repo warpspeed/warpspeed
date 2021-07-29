@@ -16,7 +16,7 @@ ws_require_root
 ws_log_header "Installing rbenv."
 
 # Make sure git is installed.
-apt -y install git-core
+apt-get -y install git-core
 
 # Clone the rbenv repo.
 git clone https://github.com/sstephenson/rbenv.git /home/$WARPSPEED_USER/.rbenv

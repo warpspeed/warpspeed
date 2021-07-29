@@ -17,11 +17,11 @@ ws_log_header "Installing php8.0."
 
 add-apt-repository ppa:ondrej/php
 
-apt -y install php8.0 php8.0-cli php8.0-curl php8.0-dev php8.0-fpm php8.0-gd php8.0-imagick php8.0-imap php8.0-intl php8.0-mbstring php8.0-memcached php8.0-mongodb php8.0-mysql php8.0-pgsql php8.0-zip
+apt-get -y install php8.0 php8.0-cli php8.0-curl php8.0-dev php8.0-fpm php8.0-gd php8.0-imagick php8.0-imap php8.0-intl php8.0-mbstring php8.0-memcached php8.0-mongodb php8.0-mysql php8.0-pgsql php8.0-zip
 
 # Install debug tools only for vagrant environment.
 if [ $WARPSPEED_USER == "vagrant" ]; then
-    apt -y install php8.0-xdebug
+    apt-get -y install php8.0-xdebug
 fi
 
 # Remove the default php-fpm pool.
@@ -36,9 +36,9 @@ mkdir -p /var/lib/php
 chown -R $WARPSPEED_USER:www-data /var/lib/php
 
 # Install mcrypt.
-apt -y install php-pecl
-apt -y install gcc make autoconf libc-dev pkg-config
-apt -y install libmcrypt-dev
+apt-get -y install php-pecl
+apt-get -y install gcc make autoconf libc-dev pkg-config
+apt-get -y install libmcrypt-dev
 yes '' | pecl install mcrypt-1.0.4
 
 # Backup original and then modify php ini settings for fpm.

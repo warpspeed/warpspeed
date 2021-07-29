@@ -16,4 +16,4 @@ ws_require_root
 ws_log_header "Installing python."
 
 # Install python and associated tools.
-apt -y install python3-dev python3-pip python3-virtualenv virtualenvwrapper
+apt-get -y install python3-dev python3-pip python3-virtualenv virtualenvwrapper

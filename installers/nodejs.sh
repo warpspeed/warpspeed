@@ -16,7 +16,7 @@ ws_require_root
 ws_log_header "Installing nodejs."
 
 # Install node.
-apt -y install curl apt-transport-https ca-certificates
+apt-get -y install curl apt-transport-https ca-certificates
 
 curl -sL https://deb.nodesource.com/setup_16.x | bash -
-apt install -y nodejs
+apt-get install -y nodejs
