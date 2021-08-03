@@ -15,6 +15,8 @@ ws_require_root
 
 ws_log_header "Installing nginx."
 
+apt-get install -y nginx
+
 # Add phusion APT repository.
 apt-get install -y dirmngr gnupg
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
@@ -23,7 +25,12 @@ echo 'deb https://oss-binaries.phusionpassenger.com/apt/passenger focal main' >>
 apt-get update
 
 # Install nginx and passenger.
-apt-get install -y nginx-extras libnginx-mod-http-passenger
+apt-get install -y libnginx-mod-http-passenger
+
+# Ensure the config files are in-place
+if [ ! -f /etc/nginx/modules-enabled/50-mod-http-passenger.conf ]; then
+    sudo ln -s /usr/share/nginx/modules-available/mod-http-passenger.load /etc/nginx/modules-enabled/50-mod-http-passenger.conf
+fi
 
 # Disable the default site and back up the config.
 rm -f /etc/nginx/sites-enabled/default
