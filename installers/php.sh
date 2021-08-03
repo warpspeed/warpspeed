@@ -15,7 +15,8 @@ ws_require_root
 
 ws_log_header "Installing php8.0."
 
-add-apt-repository ppa:ondrej/php
+LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
+apt-get update
 
 apt-get -y install php8.0 php8.0-cli php8.0-curl php8.0-dev php8.0-fpm php8.0-gd php8.0-imagick php8.0-imap php8.0-intl php8.0-mbstring php8.0-memcached php8.0-mongodb php8.0-mysql php8.0-pgsql php8.0-zip
 
