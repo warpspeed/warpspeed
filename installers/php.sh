@@ -33,12 +33,6 @@ chown -R $WARPSPEED_USER:www-data /var/log/php
 mkdir -p /var/lib/php
 chown -R $WARPSPEED_USER:www-data /var/lib/php
 
-# Install mcrypt.
-apt-get -y install php-pecl
-apt-get -y install gcc make autoconf libc-dev pkg-config
-apt-get -y install libmcrypt-dev
-yes '' | pecl install mcrypt-1.0.4
-
 # Backup original and then modify php ini settings for fpm.
 PHPINI=/etc/php/7.4/fpm/php.ini
 cp $PHPINI $PHPINI.orig
@@ -46,14 +40,12 @@ sed -i 's/^display_errors = On/display_errors = Off/' $PHPINI
 sed -i 's/^expose_php = On/expose_php = Off/' $PHPINI
 sed -i 's/^;date.timezone =.*/date.timezone = UTC/' $PHPINI
 sed -i 's/^;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/' $PHPINI
-echo 'extension=mcrypt.so' >> $PHPINI
 
 # Backup original and then modify php ini settings for cli.
 PHPINI=/etc/php/7.4/cli/php.ini
 cp $PHPINI $PHPINI.orig
 sed -i 's/^;date.timezone =.*/date.timezone = UTC/' $PHPINI
 sed -i 's@;error_log =.*@error_log = /var/log/php/error-cli.log@' $PHPINI
-echo 'extension=mcrypt.so' >> $PHPINI
 
 # Download and install composer globally.
 curl -sS https://getcomposer.org/installer | php
