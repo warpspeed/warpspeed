@@ -144,27 +144,27 @@ ws_site_create() {
             sudo chown -R $WARPSPEED_USER:$WARPSPEED_USER /var/lib/php/$SITE_NAME
 
             # Setup a site specific php-fpm configuration.
-            sudo cp -f $WARPSPEED_ROOT/templates/php/www.conf /etc/php/7.2/fpm/pool.d/$SITE_NAME.conf
-            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/php/7.2/fpm/pool.d/$SITE_NAME.conf
-            sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php/7.2/fpm/pool.d/$SITE_NAME.conf
-            sudo sed -i "s/{{environment}}/$APP_ENV/g" /etc/php/7.2/fpm/pool.d/$SITE_NAME.conf
+            sudo cp -f $WARPSPEED_ROOT/templates/php/www.conf /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
+            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
+            sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
+            sudo sed -i "s/{{environment}}/$APP_ENV/g" /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
 
             # Create an systemd file for managing this php-fpm site.
-            sudo cp -f $WARPSPEED_ROOT/templates/php/php7.2-fpm.service /lib/systemd/system/php7.2-fpm-$SITE_NAME.service
-            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/php7.2-fpm-$SITE_NAME.service
+            sudo cp -f $WARPSPEED_ROOT/templates/php/php7.4-fpm.service /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
+            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
 
             # When using vagrant, the service needs to wait till the vagrant share is mounted.
             if [ $WARPSPEED_USER == "vagrant" ]; then
-                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /lib/systemd/system/php7.2-fpm-$SITE_NAME.service
+                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
             else
-                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /lib/systemd/system/php7.2-fpm-$SITE_NAME.service
+                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
             fi
 
             # Enable the new service to make it available.
-            sudo systemctl enable php7.2-fpm-$SITE_NAME.service
+            sudo systemctl enable php7.4-fpm-$SITE_NAME.service
 
             # Start/restart the new service.
-            sudo service php7.2-fpm-$SITE_NAME restart
+            sudo service php7.4-fpm-$SITE_NAME restart
 
             # Configure the nginx site.
             ws_site_setup_nginx $SITE_NAME site-php.conf $WILDCARD "$APP_ENV"
@@ -246,7 +246,7 @@ ws_site_reload() {
     local SITE_TYPE=$(ws_get_config_value SITE_TYPE $SITE_NAME)
     case $SITE_TYPE in
         php)
-            sudo service php7.2-fpm-$SITE_NAME restart
+            sudo service php7.4-fpm-$SITE_NAME restart
         ;;
         go)
             sudo service go-$SITE_NAME restart
@@ -279,12 +279,12 @@ ws_site_remove() {
     local SITE_TYPE=$(ws_get_config_value SITE_TYPE $SITE_NAME)
     case $SITE_TYPE in
         php)
-            sudo service php7.2-fpm-$SITE_NAME stop
-            sudo systemctl disable php7.2-fpm-$SITE_NAME.service
-            sudo rm -f /lib/systemd/system/php7.2-fpm-$SITE_NAME.service
+            sudo service php7.4-fpm-$SITE_NAME stop
+            sudo systemctl disable php7.4-fpm-$SITE_NAME.service
+            sudo rm -f /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
             sudo rm -rf /var/lib/php/$SITE_NAME
             sudo rm -f /var/log/php/$SITE_NAME-*.log
-            sudo rm -f /etc/php/7.2/fpm/pool.d/$SITE_NAME.conf
+            sudo rm -f /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
         ;;
         go)
             sudo service go-$SITE_NAME stop

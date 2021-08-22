@@ -13,17 +13,17 @@ source $WARPSPEED_ROOT/includes/installer-functions.sh
 # Require that the root user be executing this script.
 ws_require_root
 
-ws_log_header "Installing php."
+ws_log_header "Installing php7.4."
 
-apt-get -y install php-fpm php-cli php-pgsql php-mysql php-mongodb php-curl php-gd php-imagick php-fpm php-memcached php-dev php-json php-zip php-intl php-imap php-mbstring
+apt-get -y install php7.4 php7.4-cli php7.4-curl php7.4-dev php7.4-fpm php7.4-gd php7.4-imagick php7.4-imap php7.4-intl php7.4-mbstring php7.4-memcached php7.4-mongodb php7.4-mysql php7.4-pgsql php7.4-zip
 
 # Install debug tools only for vagrant environment.
 if [ $WARPSPEED_USER == "vagrant" ]; then
-    apt-get -y install php-xdebug
+    apt-get -y install php7.4-xdebug
 fi
 
 # Remove the default php-fpm pool.
-mv -f /etc/php/7.2/fpm/pool.d/www.conf /etc/php/7.2/fpm/pool.d/www.conf.orig
+mv -f /etc/php/7.4/fpm/pool.d/www.conf /etc/php/7.4/fpm/pool.d/www.conf.orig
 
 # Create directory for logging.
 mkdir -p /var/log/php
@@ -33,32 +33,24 @@ chown -R $WARPSPEED_USER:www-data /var/log/php
 mkdir -p /var/lib/php
 chown -R $WARPSPEED_USER:www-data /var/lib/php
 
-# Install mcrypt.
-apt-get -y install php-pecl
-apt-get -y install gcc make autoconf libc-dev pkg-config
-apt-get -y install libmcrypt-dev
-yes '' | pecl install mcrypt-1.0.1
-
 # Backup original and then modify php ini settings for fpm.
-PHPINI=/etc/php/7.2/fpm/php.ini
+PHPINI=/etc/php/7.4/fpm/php.ini
 cp $PHPINI $PHPINI.orig
 sed -i 's/^display_errors = On/display_errors = Off/' $PHPINI
 sed -i 's/^expose_php = On/expose_php = Off/' $PHPINI
 sed -i 's/^;date.timezone =.*/date.timezone = UTC/' $PHPINI
 sed -i 's/^;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/' $PHPINI
-echo 'extension=mcrypt.so' >> $PHPINI
 
 # Backup original and then modify php ini settings for cli.
-PHPINI=/etc/php/7.2/cli/php.ini
+PHPINI=/etc/php/7.4/cli/php.ini
 cp $PHPINI $PHPINI.orig
 sed -i 's/^;date.timezone =.*/date.timezone = UTC/' $PHPINI
 sed -i 's@;error_log =.*@error_log = /var/log/php/error-cli.log@' $PHPINI
-echo 'extension=mcrypt.so' >> $PHPINI
 
 # Download and install composer globally.
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 
 # Stop the service and remove startup files.
-service php7.2-fpm stop
-systemctl disable php7.2-fpm
+service php7.4-fpm stop
+systemctl disable php7.4-fpm

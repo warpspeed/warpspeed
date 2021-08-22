@@ -37,7 +37,7 @@ if [ -z "$INSTALLERS" ]; then
     INSTALLERS=$DEFAULT_INSTALLERS
 fi
 
-# Make sure apt is not expecting input.
+# Make sure apt-get is not expecting input.
 export DEBIAN_FRONTEND="noninteractive"
 
 # Run update to make sure git will be available.
