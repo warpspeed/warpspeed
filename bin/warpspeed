@@ -312,7 +312,7 @@ ws_mysql_db_create() {
     local PASS=$3
     local SQL="CREATE DATABASE IF NOT EXISTS $DB;"
     if [ -n "$USER" ] && [ -n "$PASS" ]; then
-        local SQL="${SQL}GRANT ALL ON $DB.* TO '$USER'@'localhost' IDENTIFIED BY '$PASS';FLUSH PRIVILEGES;"
+        local SQL="${SQL}GRANT ALL ON $DB.* TO '$USER'@'localhost' IDENTIFIED WITH mysql_native_password BY '$PASS';FLUSH PRIVILEGES;"
     fi
     echo "Please enter your mysql root database password when prompted."
     mysql -uroot -p -e "$SQL"
