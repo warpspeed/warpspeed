@@ -23,6 +23,10 @@ case $arg in
         DB_PASSWORD="${arg#*=}"
         shift
     ;;
+    -e*|--email=*)
+        CERTBOT_EMAIL="${arg#*=}"
+        shift
+    ;;
     -h=*|--hostname=*)
         HOSTNAME="${arg#*=}"
         shift
@@ -46,12 +50,13 @@ case $arg in
     ;;
 esac; done
 
-if [ -z "$HOSTNAME" ] || [ -z "$SSHKEY" ] || [ -z "$PASSWORD" ]; then
+if [ -z "$HOSTNAME" ] || [ -z "$SSHKEY" ] || [ -z "$PASSWORD" ] || [ -z "$CERTBOT_EMAIL" ]; then
     echo "Usage: provision.sh [OPTION]..." 1>&2
     echo "Initializes a server and runs any installer scripts specified in the options." 1>&2
     echo "For complete information, visit: warpspeed.io" 1>&2
     echo -en "\n" 1>&2
     echo "Mandatory arguments:" 1>&2
+    echo "  -e, --email=CERTBOT EMAIL         Email of system admin for certificate renewals." 1>&2
     echo "  -h, --hostname=HOSTNAME         Hostname to be used for server." 1>&2
     echo "  -k, --sshkey=\"SSH PUBLIC KEY\"   Public key used for authentication to server." 1>&2
     echo "  -p, --password=PASSWORD         Sudo password (and db password if one is not specified) (alphanumeric only)." 1>&2
