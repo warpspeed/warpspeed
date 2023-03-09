@@ -15,11 +15,14 @@ ws_require_root
 
 ws_log_header "Installing go."
 
+# Name of the go binaries to download.
+FILENAME=go1.20.2.linux-amd64.tar.gz
+
 # Download go binaries.
-wget -nv https://dl.google.com/go/go1.17.linux-amd64.tar.gz
+wget -nv https://dl.google.com/go/$FILENAME
 
 # Extract files, set permissions, and move to proper location.
-tar -C /usr/local -xzf go1.17.linux-amd64.tar.gz
+tar -C /usr/local -xzf $FILENAME
 
 # Setup go environment.
 echo '# Go configuration.' >> /home/$WARPSPEED_USER/.bashrc
@@ -29,4 +32,4 @@ echo 'export PATH=$GOPATH/bin:$GOROOT/bin:$PATH' >> ~/.bashrc
 echo -en "\n" >> /home/$WARPSPEED_USER/.bashrc
 
 # Clean up.
-rm go1.17.linux-amd64.tar.gz
+rm $FILENAME

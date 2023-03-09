@@ -35,12 +35,12 @@ ws_set_timezone() {
 }
 
 ws_run_system_updates() {
-    apt-get update
-    apt-get -y upgrade
+    apt update
+    apt upgrade -y
 }
 
 ws_setup_common_packages() {
-    apt-get -y install build-essential curl git libcurl4-openssl-dev libgmp-dev libreadline-dev libsqlite3-dev libssl-dev libxml2-dev libxslt1-dev libyaml-dev net-tools software-properties-common sqlite3 supervisor unzip zip zlib1g-dev
+    apt install -y apt-transport-https build-essential curl git net-tools software-properties-common supervisor unzip zip
 }
 
 ws_create_user() {
@@ -57,10 +57,11 @@ ws_create_user() {
 }
 
 ws_setup_automatic_updates() {
-    apt-get -y install unattended-upgrades update-notifier-common
+    apt install -y unattended-upgrades update-notifier-common
     cp -f $WARPSPEED_ROOT/templates/apt/10periodic /etc/apt/apt.conf.d/10periodic
     cp -f $WARPSPEED_ROOT/templates/apt/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades
     cp -f $WARPSPEED_ROOT/templates/apt/50unattended-upgrades /etc/apt/apt.conf.d/50unattended-upgrades
+    systemctl start unattended-upgrades
 }
 
 ws_setup_swap_space() {
@@ -124,7 +125,7 @@ ws_setup_ssh_keys() {
 }
 
 ws_setup_fail2ban() {
-    apt-get -y install fail2ban
+    apt install -y fail2ban
     cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
     # Enable jails for sshd and sshd-ddos.
     sed -i "/^\[sshd\]$/a enabled = true" /etc/fail2ban/jail.local
@@ -142,7 +143,7 @@ ws_setup_ssh_security() {
 }
 
 ws_setup_firewall() {
-    apt-get -y install ufw
+    apt install -y install ufw
     # Set default rules: deny all incoming traffic, allow all outgoing traffic.
     ufw default deny incoming
     ufw default allow outgoing

@@ -15,22 +15,12 @@ ws_require_root
 
 ws_log_header "Installing nginx."
 
-apt-get install -y nginx
+apt update
+apt install -y ca-certificates apt-transport-https software-properties-common
 
-# Add phusion APT repository.
-apt-get install -y dirmngr gnupg
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
-apt-get install -y apt-transport-https ca-certificates
-echo 'deb https://oss-binaries.phusionpassenger.com/apt/passenger focal main' >> /etc/apt/sources.list.d/passenger.list
-apt-get update
+add-apt-repository -y ppa:ondrej/nginx
 
-# Install nginx and passenger.
-apt-get install -y libnginx-mod-http-passenger
-
-# Ensure the config files are in-place
-if [ ! -f /etc/nginx/modules-enabled/50-mod-http-passenger.conf ]; then
-    sudo ln -s /usr/share/nginx/modules-available/mod-http-passenger.load /etc/nginx/modules-enabled/50-mod-http-passenger.conf
-fi
+apt install -y nginx
 
 # Disable the default site and back up the config.
 rm -f /etc/nginx/sites-enabled/default

@@ -26,24 +26,17 @@ if [ -z "$DB_PASSWORD" ]; then
     fi
 fi
 
-# Obtain system IP address.
-IPADDRESS=$(ws_get_ip_address)
-
-# Pre-set root password.
-debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_PASSWORD"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_PASSWORD"
-
 # Install mysql.
-apt-get -y install mysql-server mysql-client libmysqlclient-dev
+apt install -y mysql-server
 
-# Create warpspeed user.
-mysql --user="root" --password="$DB_PASSWORD" -e "CREATE USER '$WARPSPEED_USER'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD';"
-mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO '$WARPSPEED_USER'@'$IPADDRESS' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;"
-mysql --user="root" --password="$DB_PASSWORD" -e "GRANT ALL ON *.* TO '$WARPSPEED_USER'@'%' IDENTIFIED BY '$DB_PASSWORD' WITH GRANT OPTION;"
-mysql --user="root" --password="$DB_PASSWORD" -e "FLUSH PRIVILEGES;"
+# Root starts out with no password. Create a new warpspeed superuser.
+mysql -e "CREATE USER '$WARPSPEED_USER'@'localhost' IDENTIFIED BY '$DB_PASSWORD';"
+mysql -e "GRANT ALL ON *.* TO '$WARPSPEED_USER'@'localhost' WITH GRANT OPTION;FLUSH PRIVILEGES;"
 
-# Create sample database.
-mysql --user="root" --password="$DB_PASSWORD" -e "CREATE DATABASE $WARPSPEED_USER;"
+# Drop the root user.
+mysql -e "DROP USER 'root'@'localhost';FLUSH PRIVILEGES;"
+# If you'd prefer to keep the root user, comment out drop command and uncomment this alter password command.
+# mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$DB_PASSWORD';FLUSH PRIVILEGES;"
 
 # Restart the db server.
 service mysql restart

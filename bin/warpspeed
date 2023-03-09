@@ -21,6 +21,7 @@ ws_show_usage() {
     echo "  site:create [TYPE] [NAME] [OPTIONS]..."
     echo "  site:remove [NAME] [OPTIONS]..."
     echo "  site:reload [NAME]"
+    echo "  site:secure [NAME]"
     echo -en "\n"
     echo "  mysql:db [DBNAME] [USER] [PASS]"
     echo "  mysql:backup [DBNAME]"
@@ -144,27 +145,27 @@ ws_site_create() {
             sudo chown -R $WARPSPEED_USER:$WARPSPEED_USER /var/lib/php/$SITE_NAME
 
             # Setup a site specific php-fpm configuration.
-            sudo cp -f $WARPSPEED_ROOT/templates/php/www.conf /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
-            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
-            sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
-            sudo sed -i "s/{{environment}}/$APP_ENV/g" /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
+            sudo cp -f $WARPSPEED_ROOT/templates/php/www.conf /etc/php/8.2/fpm/pool.d/$SITE_NAME.conf
+            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /etc/php/8.2/fpm/pool.d/$SITE_NAME.conf
+            sudo sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/php/8.2/fpm/pool.d/$SITE_NAME.conf
+            sudo sed -i "s/{{environment}}/$APP_ENV/g" /etc/php/8.2/fpm/pool.d/$SITE_NAME.conf
 
             # Create an systemd file for managing this php-fpm site.
-            sudo cp -f $WARPSPEED_ROOT/templates/php/php7.4-fpm.service /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
-            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
+            sudo cp -f $WARPSPEED_ROOT/templates/php/php8.2-fpm.service /lib/systemd/system/php8.2-fpm-$SITE_NAME.service
+            sudo sed -i "s/{{domain}}/$SITE_NAME/g" /lib/systemd/system/php8.2-fpm-$SITE_NAME.service
 
             # When using vagrant, the service needs to wait till the vagrant share is mounted.
             if [ $WARPSPEED_USER == "vagrant" ]; then
-                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
+                sudo sed -i "s/{{wantedby}}/vagrant.mount/g" /lib/systemd/system/php8.2-fpm-$SITE_NAME.service
             else
-                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
+                sudo sed -i "s/{{wantedby}}/multi-user.target/g" /lib/systemd/system/php8.2-fpm-$SITE_NAME.service
             fi
 
             # Enable the new service to make it available.
-            sudo systemctl enable php7.4-fpm-$SITE_NAME.service
+            sudo systemctl enable php8.2-fpm-$SITE_NAME.service
 
             # Start/restart the new service.
-            sudo service php7.4-fpm-$SITE_NAME restart
+            sudo service php8.2-fpm-$SITE_NAME restart
 
             # Configure the nginx site.
             ws_site_setup_nginx $SITE_NAME site-php.conf $WILDCARD "$APP_ENV"
@@ -173,21 +174,6 @@ ws_site_create() {
             ws_site_create_structure html $SITE_NAME public
             ws_site_setup_nginx $SITE_NAME site-html.conf $WILDCARD "$APP_ENV"
             cp -n $WARPSPEED_ROOT/templates/html/index.html $SITE_HOME/public
-        ;;
-        ruby)
-            ws_site_create_structure ruby $SITE_NAME public tmp
-            ws_site_setup_nginx $SITE_NAME site-ruby.conf $WILDCARD "$APP_ENV"
-            cp -n $WARPSPEED_ROOT/templates/ruby/config.ru $SITE_HOME
-        ;;
-        python)
-            ws_site_create_structure python $SITE_NAME public tmp
-            ws_site_setup_nginx $SITE_NAME site-python.conf $WILDCARD "$APP_ENV"
-            cp -n $WARPSPEED_ROOT/templates/python/passenger_wsgi.py $SITE_HOME
-        ;;
-        node)
-            ws_site_create_structure node $SITE_NAME public tmp
-            ws_site_setup_nginx $SITE_NAME site-node.conf $WILDCARD "$APP_ENV"
-            cp -n $WARPSPEED_ROOT/templates/node/app.js $SITE_HOME
         ;;
         go)
             ws_site_create_structure go $SITE_NAME dist
@@ -246,7 +232,7 @@ ws_site_reload() {
     local SITE_TYPE=$(ws_get_config_value SITE_TYPE $SITE_NAME)
     case $SITE_TYPE in
         php)
-            sudo service php7.4-fpm-$SITE_NAME restart
+            sudo service php8.2-fpm-$SITE_NAME restart
         ;;
         go)
             sudo service go-$SITE_NAME restart
@@ -279,12 +265,12 @@ ws_site_remove() {
     local SITE_TYPE=$(ws_get_config_value SITE_TYPE $SITE_NAME)
     case $SITE_TYPE in
         php)
-            sudo service php7.4-fpm-$SITE_NAME stop
-            sudo systemctl disable php7.4-fpm-$SITE_NAME.service
-            sudo rm -f /lib/systemd/system/php7.4-fpm-$SITE_NAME.service
+            sudo service php8.2-fpm-$SITE_NAME stop
+            sudo systemctl disable php8.2-fpm-$SITE_NAME.service
+            sudo rm -f /lib/systemd/system/php8.2-fpm-$SITE_NAME.service
             sudo rm -rf /var/lib/php/$SITE_NAME
             sudo rm -f /var/log/php/$SITE_NAME-*.log
-            sudo rm -f /etc/php/7.4/fpm/pool.d/$SITE_NAME.conf
+            sudo rm -f /etc/php/8.2/fpm/pool.d/$SITE_NAME.conf
         ;;
         go)
             sudo service go-$SITE_NAME stop
@@ -304,6 +290,12 @@ ws_site_remove() {
     else
         echo "All configuration for site $SITE_NAME has been removed."
     fi
+}
+
+ws_site_secure() {
+    local SITE_NAME=$1
+    local SITE_HOME=$(ws_get_site_home $SITE_NAME)
+    certbot --non-interactive --agree-tos --no-eff-email -m $CERTBOT_EMAIL --cert-name $SITE_NAME -nginx -d $SITE_NAME -d www.$SITE_NAME
 }
 
 ws_mysql_db_create() {
@@ -456,6 +448,9 @@ case $COMMAND in
     site:reload)
         ws_sudo_test
         ws_site_reload $1
+    ;;
+    site:secure)
+        ws_site_secure $1
     ;;
     mysql:db)
         ws_mysql_db_create $@

@@ -4,7 +4,7 @@
 # (c) Turner Logic, LLC. Distributed under the GNU GPL v2.0.
 
 # Default set of installers to run.
-DEFAULT_INSTALLERS="--nginx --php --python --nodejs --go --rbenv --beanstalkd --mysql --postgresql --mongodb"
+DEFAULT_INSTALLERS="--nginx --php --go --beanstalkd --mysql --postgresql --mongodb"
 
 # Read input from user.
 echo "WarpSpeed user password (for sudo) (alphanumeric only):"
@@ -37,14 +37,17 @@ if [ -z "$INSTALLERS" ]; then
     INSTALLERS=$DEFAULT_INSTALLERS
 fi
 
-# Make sure apt-get is not expecting input.
+# Make sure apt is not expecting input.
 export DEBIAN_FRONTEND="noninteractive"
 
+# Make sure that apt is configured to auto-restart services that need restarting.
+sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+
 # Run update to make sure git will be available.
-apt-get update
+apt update
 
 # Ensure git is installed.
-apt-get -y install git
+apt install -y git
 
 # Clone warpspeed repository if it is not present.
 if [ ! -d /home/$USERNAME/.warpspeed ]; then

@@ -4,21 +4,11 @@ We make web deployment easy. For complete information, please visit: [https://wa
 
 ## Server Provisioning
 
-WarpSpeed is designed for use with Ubuntu 20.04 LTS 64 bit. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
+WarpSpeed is designed for use with Ubuntu 22.04 LTS 64 bit. A variety of installer scripts are available within this repository to configure your server just as you want it. The scripts in this repository can be used standalone, or in conjunction with the [WarpSpeed.io](https://warpspeed.io "WarpSpeed.io") web interface.
 
-### WarpSpeed.io Web Interface
+### Usage
 
-WarpSpeed.io allows you to use all of these scripts very easily through an intuitive web interface. You can connect to your favorite server provider, create a server, install your stack, and deploy your first site with just a few clicks. It also supports additional features such as editing site configuration files and setting up cron jobs.
-
-[https://warpspeed.io](https://warpspeed.io "WarpSpeed.io")
-
-### Server Providers
-
-The WarpSpeed.io web interface currently supports [Digital Ocean](https://www.digitalocean.com/?refcode=e8387d479043 "Digital Ocean") and [Linode](https://www.linode.com/?r=bed2c06e157de72a8f97d0c7035069800c9b342b "Linode"). It will soon support deployment on any server provider. If you use the WarpSpeed scripts directly, you can deploy to any server provider by following the standalone usage instructions below.
-
-### Standalone Usage
-
-To use the WarpSpeed scripts in a standalone fashion, you first need to create a server. You can use a server like [RackSpace](http://www.rackspace.com/cloud/servers "RackSpace"), [Digital Ocean](https://www.digitalocean.com/?refcode=e8387d479043 "Digital Ocean"), [Linode](https://www.linode.com/?r=bed2c06e157de72a8f97d0c7035069800c9b342b "Linode"), etc. to create your server. Make sure you use an Ubuntu 20.04 LTS 64 bit base image, regardless of your server provider.
+To use the WarpSpeed scripts, you first need to create a server. You can use a server like [RackSpace](http://www.rackspace.com/cloud/servers "RackSpace"), [Digital Ocean](https://www.digitalocean.com/?refcode=e8387d479043 "Digital Ocean"), [Linode](https://www.linode.com/?r=bed2c06e157de72a8f97d0c7035069800c9b342b "Linode"), etc. to create your server. Make sure you use an Ubuntu 22.04 LTS 64 bit base image, regardless of your server provider.
 
 Once you have created your server, log in as root and run the following command:
 
@@ -50,6 +40,7 @@ Available commands:
   site:create [TYPE] [NAME] [OPTIONS]...
   site:remove [NAME] [OPTIONS]...
   site:reload [NAME]
+  site:secure [NAME]
 
   mysql:db [DBNAME] [USER] [PASS]
   mysql:backup [DBNAME]
@@ -64,10 +55,8 @@ The `TYPE` for the `site:create` command can be any of the following:
 
 <pre>
 html
-node
 php
-python
-ruby
+go
 </pre>
 
 The `OPTIONS` for the `site:create` command can be any of the following:
