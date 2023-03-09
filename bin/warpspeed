@@ -307,7 +307,7 @@ ws_mysql_db_create() {
         local SQL="${SQL}CREATE USER '$USER'@'localhost' IDENTIFIED BY '$PASS';GRANT ALL ON $DB.* TO '$USER'@'localhost';FLUSH PRIVILEGES;"
     fi
     echo "Please enter your mysql root database password when prompted."
-    mysql -uroot -p -e "$SQL"
+    mysql -u warpspeed -p -e "$SQL"
     if [ $? -eq 0 ]; then
         if [ -n "$USER" ] && [ -n "$PASS" ]; then
             echo "Database: '$DB' was created successfully and is accessible by user: '$USER'."
@@ -332,10 +332,10 @@ ws_mysql_db_backup() {
 
     if [ -z "$DB" ]; then
         local FILENAME="$BACKUPDIR/all_mysql_dbs_$(date +%Y-%m-%d_%H%M%S).sql.gz"
-        mysqldump -u root -p --add-drop-table --all-databases | gzip -9 > $FILENAME
+        mysqldump -u warpspeed -p --add-drop-table --all-databases | gzip -9 > $FILENAME
     else
         local FILENAME="$BACKUPDIR/$DB_$(date +%Y-%m-%d_%H%M%S).sql.gz"
-        mysqldump -u root -p --add-drop-table $1 | gzip -9 > $FILENAME
+        mysqldump -u warpspeed -p --add-drop-table $1 | gzip -9 > $FILENAME
     fi
 
     if [ $? -eq 0 ]; then
