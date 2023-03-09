@@ -16,9 +16,6 @@ ws_require_root
 # Installers are added via command line args by passing --installer.
 INSTALLERS=()
 
-# Retrieve system ip address.
-IPADDRESS=$(ws_get_ip_address)
-
 # Process command line arguments and make sure the required args were passed.
 for arg in "$@"; do
 case $arg in
@@ -123,8 +120,15 @@ ws_run_installers "${INSTALLERS[@]}"
 ws_log_header "Restarting services."
 ws_restart_flagged_services
 
-echo "Server initialization complete."
+# Retrieve system ip address.
+IPADDRESS=$(ws_get_ip_address)
+
+ws_log_header "Server initialization complete."
 echo "User: $WARPSPEED_USER was created with password: $PASSWORD"
 echo "Please record this information and keep it in a safe place."
+echo "\n"
 echo "To remotely access this server, use the following command:"
 echo "ssh $WARPSPEED_USER@$IPADDRESS"
+echo "\n"
+echo "Please use the 'reboot' command to restart your server now."
+echo "\n"
