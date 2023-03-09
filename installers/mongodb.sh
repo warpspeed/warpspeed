@@ -15,11 +15,17 @@ ws_require_root
 
 ws_log_header "Installing mongodb."
 
+curl -fsSL https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+echo “deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse” | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+
+apt update
+
 # Install mongodb.
-apt-get -y install mongodb-server
+apt install -y mongodb-org
 
 # Backup original configuration.
 cp /etc/mongodb.conf /etc/mongodb.conf.orig
 
-# Restart service.
-service mongodb restart
+# Start service and keep it enabled.
+systemctl start mongod
+systemctl enable mongod

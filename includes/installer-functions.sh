@@ -40,7 +40,7 @@ ws_run_system_updates() {
 }
 
 ws_setup_common_packages() {
-    apt install -y apt-transport-https build-essential curl git net-tools software-properties-common supervisor unzip zip
+    apt install -y apt-transport-https build-essential curl git gnupg2 lsb-release net-tools software-properties-common supervisor unzip zip
 }
 
 ws_create_user() {
