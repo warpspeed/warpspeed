@@ -25,11 +25,12 @@ wget -nv https://dl.google.com/go/$FILENAME
 tar -C /usr/local -xzf $FILENAME
 
 # Setup go environment.
-echo '# Go configuration.' >> /home/$WARPSPEED_USER/.bashrc
-echo 'export GOROOT=/usr/local/go' >> ~/.bashrc
-echo 'export GOPATH=$WARPSPEED_ROOT/sites' >> ~/.bashrc
-echo 'export PATH=$GOPATH/bin:$GOROOT/bin:$PATH' >> ~/.bashrc
-echo -en "\n" >> /home/$WARPSPEED_USER/.bashrc
+BASHRC=/home/$WARPSPEED_USER/.bashrc
+echo '# Go configuration.' >> $BASHRC
+echo 'export GOROOT=/usr/local/go' >> $BASHRC
+echo 'export GOPATH=$WARPSPEED_ROOT/sites' >> $BASHRC
+echo 'export PATH=$GOPATH/bin:$GOROOT/bin:$PATH' >> $BASHRC
+echo -en "\n" >> $BASHRC
 
 # Clean up.
 rm $FILENAME
