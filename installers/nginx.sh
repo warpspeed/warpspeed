@@ -38,4 +38,6 @@ mv -f /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
 cp $WARPSPEED_ROOT/templates/nginx/nginx.conf /etc/nginx/nginx.conf
 sed -i "s/{{user}}/$WARPSPEED_USER/g" /etc/nginx/nginx.conf
 
-service nginx restart
+# Start and enable service.
+systemctl start nginx
+systemctl enable nginx

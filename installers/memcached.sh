@@ -21,5 +21,6 @@ apt-get -y install memcached
 # Backup original configuration.
 cp /etc/memcached.conf /etc/memcached.conf.orig
 
-# Restart service.
-service memcached restart
+# Start and enable service.
+systemctl start memcached
+systemctl enable memcached

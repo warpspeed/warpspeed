@@ -16,4 +16,7 @@ ws_require_root
 ws_log_header "Installing beanstalkd."
 
 apt-get -y install beanstalkd
-service beanstalkd restart
+
+# Start and enable service.
+systemctl start beanstalkd
+systemctl enable beanstalkd

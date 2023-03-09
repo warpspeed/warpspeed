@@ -35,5 +35,6 @@ sudo -u postgres psql -c "CREATE ROLE $WARPSPEED_USER LOGIN PASSWORD '$DB_PASSWO
 # Create sample database.
 sudo -u postgres createdb --owner=$WARPSPEED_USER $WARPSPEED_USER
 
-# Restart the db server.
-service postgresql restart
+# Start and enable service.
+systemctl start postgresql
+systemctl enable postgresql

@@ -38,5 +38,6 @@ mysql -e "DROP USER 'root'@'localhost';FLUSH PRIVILEGES;"
 # If you'd prefer to keep the root user, comment out drop command and uncomment this alter password command.
 # mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$DB_PASSWORD';FLUSH PRIVILEGES;"
 
-# Restart the db server.
-service mysql restart
+# Start and enable service.
+systemctl start mysql
+systemctl enable mysql

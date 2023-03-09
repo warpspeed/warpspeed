@@ -18,5 +18,6 @@ ws_log_header "Installing redis."
 # Install redis.
 apt-get -y install redis-server
 
-# Restart service.
-service redis-server restart
+# Start and enable service.
+systemctl start redis-server
+systemctl enable redis-server
