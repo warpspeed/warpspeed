@@ -28,8 +28,8 @@ fi
 
 # Store certbot email.
 BASHRC=/home/$WARPSPEED_USER/.bashrc
-echo '# Certbot configuration.' >> $BASHRC
-echo 'export CERTBOT_EMAIL=$CERTBOT_EMAIL' >> $BASHRC
+echo "# Certbot configuration." >> $BASHRC
+echo "export CERTBOT_EMAIL=$CERTBOT_EMAIL" >> $BASHRC
 echo -en "\n" >> $BASHRC
 
 snap install core
