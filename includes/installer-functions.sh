@@ -143,7 +143,7 @@ ws_setup_ssh_security() {
 }
 
 ws_setup_firewall() {
-    apt install -y install ufw
+    apt install -y ufw
     # Set default rules: deny all incoming traffic, allow all outgoing traffic.
     ufw default deny incoming
     ufw default allow outgoing
