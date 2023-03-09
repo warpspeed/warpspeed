@@ -295,7 +295,7 @@ ws_site_remove() {
 ws_site_secure() {
     local SITE_NAME=$1
     local SITE_HOME=$(ws_get_site_home $SITE_NAME)
-    sudo certbot --non-interactive --agree-tos --no-eff-email -m $CERTBOT_EMAIL --cert-name $SITE_NAME --nginx -d $SITE_NAME -d www.$SITE_NAME
+    sudo certbot --non-interactive --agree-tos --no-eff-email -m $CERTBOT_EMAIL --cert-name $SITE_NAME --nginx -d $SITE_NAME
 }
 
 ws_mysql_db_create() {
