@@ -16,8 +16,6 @@ ws_require_root
 ws_log_header "Installing nginx."
 
 apt update
-apt install -y ca-certificates apt-transport-https software-properties-common
-
 add-apt-repository -y ppa:ondrej/nginx
 
 apt install -y nginx
